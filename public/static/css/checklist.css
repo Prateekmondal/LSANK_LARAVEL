@@ -1,0 +1,9 @@
+.form-check label {
+    vertical-align: top;
+  }
+.checkboxinput {
+vertical-align: top;
+}
+.form-check label span {
+vertical-align: middle;
+}

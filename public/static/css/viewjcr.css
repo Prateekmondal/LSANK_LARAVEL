@@ -1,0 +1,8 @@
+.table-responsive {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+thead {
+    font-weight: 600;
+}
