@@ -85,11 +85,13 @@
                                             </div>
                                     </td>
                                     <td class="align-middle w-auto me-3">
-                                        @if($jcr->final_submitted==0 and auth()->user()->can('edit JCR'))
-                                            <div><a class="btn btn-outline-warning m-1 w-100" type="submit" title="Edit" name="jcredit"
-                                                href="{{ route('jcr.show', ['id' => $jcr->id]) }}"><i class="fa fa-edit mx-1"
-                                                    aria-hidden="true"></i>Edit</a></div>
-                                        @endif
+                                        @can('update_jcr')
+                                            @if($jcr->final_submitted==0)
+                                                <div><a class="btn btn-outline-warning m-1 w-100" type="submit" title="Edit" name="jcredit"
+                                                    href="{{ route('jcr.show', ['id' => $jcr->id]) }}"><i class="fa fa-edit mx-1"
+                                                        aria-hidden="true"></i>Edit</a></div>
+                                            @endif
+                                        @endcan
                                         <div><a class="btn btn-outline-info m-1 w-100" type="submit" title="Download" name="jcrdownload"
                                             href="{{ route('jcr.download', ['id' => $jcr->id]) }}"><i class="fa fa-download mx-1"
                                                 aria-hidden="true"></i>Download</a></div>

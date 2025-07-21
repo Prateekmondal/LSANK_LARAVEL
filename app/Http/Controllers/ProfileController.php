@@ -17,25 +17,31 @@ class ProfileController extends Controller
      */
     public function index(Request $request): View
     {
-        return view('profile.edit', [
+        return view('profile.profile', [
             'user' => $request->user(),
         ]);
     }
 
-    public function update_avatar(Request $request){
+    public function update_avatar(Request $request)
+    {
+        // Handle the user upload of avatar
+        // dd($request->file('avatar'));
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg',
+        ]);
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $user = Auth::user();
+            dd($user->cpf);
+            $filename = 'IMG' . $user->get('cpf') . '.' . $avatar->getClientOriginalExtension();
+            // dd(Storage::disk('public')->path('images/profile_image'));
+            $avatar->storeAs('images/profile_image', $filename, 'public');
+            // dd($filename);
+            $user->avatar = $filename;
+            $user->save();
+        }
 
-    	// Handle the user upload of avatar
-    	if($request->hasFile('avatar')){
-    		$avatar = $request->file('avatar');
-    		$filename = time() . '.' . $avatar->getClientOriginalExtension();
-    		Storage::putFile('images', $filename);
-
-    		$user = Auth::user();
-    		$user->avatar = $filename;
-    		$user->save();
-    	}
-
-    	return view('profile', array('user' => Auth::user()) );
+        return Redirect::route('profile.edit')->with('status', 'avatar-updated');
 
     }
 
@@ -52,6 +58,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
+        // dd($request->user()->fill($request->validated()));
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

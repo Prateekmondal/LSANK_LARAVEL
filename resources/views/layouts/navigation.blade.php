@@ -33,7 +33,7 @@
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <img src="{{ asset("storage/images/profile_image/".Auth::user()->avatar) }}" alt="User" class="user-avatar me-1" style="width: 2rem; height: 2rem; border-radius:50%;">
+                                <img src="{{ Storage::url('images/profile_image/'.Auth::user()->avatar) }}" alt="User" class="user-avatar me-1" style="width: 2rem; height: 2rem; border-radius:50%;">
                                 {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">

@@ -25,7 +25,7 @@ class JcrController extends Controller
     public function view()
     {
         $user = Auth::user();
-        if ($user->hasPermissionTo('edit JCR')) {
+        if ($user->can('view_any_jcr')) {
             $jcrs = Jcr::with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
                 ->orderBy('arrivalOffice_time', 'desc')->paginate(50);
         } else {
@@ -44,7 +44,7 @@ class JcrController extends Controller
         $pl_count = $user->jcrs()->where('logType', 'PL')->count();
         $total_count = $user->jcrs()->count();
         $jcrs = $user->jcrs()->with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
-                ->orderBy('arrivalOffice_time', 'desc')->paginate(10);
+            ->orderBy('arrivalOffice_time', 'desc')->paginate(10);
         // dd($jcrs);
         return view("dashboard", ['jcrs' => $jcrs, 'user' => $user, 'ch' => $ch_count, 'oh' => $oh_count, 'pl' => $pl_count, 'total' => $total_count]);
     }
@@ -91,7 +91,7 @@ class JcrController extends Controller
     public function show(Request $request): RedirectResponse|View
     {
         $users = User::all();
-        if (Auth::user()->hasRole('super-admin')) {
+        if (Auth::user()->can('update_jcr')) {
             # code...
             $jcrs = Jcr::with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
             // dd($jcrs);
@@ -102,16 +102,10 @@ class JcrController extends Controller
             }
         } else {
             # code...
-            $jcrs = Auth::user()->jcrs()->with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
-            // dd($jcrs);
-            if ($jcrs->final_submitted == 0) {
-                return view("editjcr", ['jcrs' => $jcrs, 'users' => $users]);
-            } else {
-                return redirect()->route('jcr.view');
-            }
+            return redirect()->route('jcr.view');
         }
-
     }
+
 
     /**
      * Display the specified resource.
@@ -122,10 +116,9 @@ class JcrController extends Controller
     public function download(Request $request): View
     {
         $users = User::all();
-        if (Auth::user()->hasRole('super-admin')) {
+        if (Auth::user()->can('view_any_jcr')) {
             $jcrs = Jcr::with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
-        }
-        else {
+        } else {
             $jcrs = Auth::user()->jcrs()->with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
         }
         // dd($jcrs);
@@ -346,8 +339,8 @@ class JcrController extends Controller
             'oilpercnt' => 'nullable|string',
             'kcl_barytes' => 'nullable|string',
             'salinity' => 'nullable|string',
-            'lastcirc_from' => 'nullable|date_format:d-m-Y H:i',
-            'lastcirc_to' => 'nullable|date_format:d-m-Y H:i',
+            'lastcirc_from' => 'nullable|date_format:Y-m-d H:i',
+            'lastcirc_to' => 'nullable|date_format:Y-m-d H:i',
 
             // cable information'
             'cableSize' => 'required|string',

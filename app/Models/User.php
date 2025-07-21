@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Models\Concerns\HasAvatar;
 use Illuminate\Support\Facades\Gate;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles; 
+    // use HasAvatar;
 
     public $timestamps = false;
 
@@ -24,12 +26,17 @@ class User extends Authenticatable implements FilamentUser
      * @var list<string>
      */
     protected $fillable = [
+        'seniority',
         'cpf',
         'name',
+        'designation',
         'email',
-        'password',
-        'avatar',
+        'phone',
         'description',
+        'avatar',
+        'status',
+        'email_verified_at',
+        'password',
     ];
 
     /**
@@ -62,6 +69,19 @@ class User extends Authenticatable implements FilamentUser
         static::created(function ($user) {
             $user->assignRole('Field_Officer'); // Assign default role on user creation
         });
+    }
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            set: function (?string $value) {
+                if (!empty($this->avatar_url) && (is_null($value) || $value !== $this->avatar_url)) {
+                    Storage::disk('public')->delete($this->avatar_url);
+                }
+
+                return $value;
+            },
+        );
     }
 
     public function canAccessPanel(Panel $panel): bool

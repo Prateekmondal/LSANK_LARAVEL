@@ -1,10 +1,5 @@
-@extends('dashboard')
-@push('css')
-<link rel="stylesheet" href="resources/css/app.css">
-@endpush
-@push('js')
-<script src="resources/js/app.js"></script>
-@endpush
+@extends('layouts.app')
+
 @section('content')
 
 <div name="header">

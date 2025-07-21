@@ -6,7 +6,7 @@
     @php
         $loggingTypes = ['WL', 'PCL', 'FISHING', 'TCP', 'TCP-DST', 'LWD'];
         $logTypes = ['OH', 'CH', 'PL'];
-        $unitNos = ['GJ-16-AA-5015', 'GJ-16-AA-5016', 'GJ-16-AA-5017', 'GJ-16-BS-2279', 'GJ-16-AF-9702', 'GJ-16-AF-9723'];
+        $unitNos = ["GJ-16-BS-4773","GJ-16-BS-4995", "GJ-16-AF-9723", "GJ-16-BS-2279","GJ-16-BS-4842", "GJ-16-AF-9702"];
         $wellOwners = ['Asset', 'Basin', 'Cambay'];
         $wellTypes = ['Dev', 'Exp'];
         $rigTypes = ['DRILLING', 'WORKOVER', 'RIGLESS'];
@@ -807,13 +807,13 @@
                                         <label for='id_lastcirc_from' class='form-label'>
                                             Last Circulation from
                                         </label>
-                                        <input type='datetime' name='lastcirc_from' placeholder='YYYY-MM-DD HH:MM' data-mask='0000-00-00 00:00' class='datetimeinput form-control' id='id_lastcirc_from' autocomplete='off' value='' {{ old('lastcirc_from') }}>
+                                        <input type='datetime' name='lastcirc_from' placeholder='YYYY-MM-DD HH:MM' data-mask='0000-00-00 00:00' class='datetimeinput form-control' id='id_lastcirc_from' autocomplete='off' value='{{ old("lastcirc_from") }}'>
                                     </div>
                                     <div id='div_id_lastcirc_to' class='mb-3'>
                                         <label for='id_lastcirc_to' class='form-label'>
                                             Last Circulation to
                                         </label>
-                                        <input type='datetime' name='lastcirc_to' placeholder='YYYY-MM-DD HH:MM' data-mask='0000-00-00 00:00' class='datetimeinput form-control' id='id_lastcirc_to' autocomplete='off' value='' {{ old('lastcirc_to') }}>
+                                        <input type='datetime' name='lastcirc_to' placeholder='YYYY-MM-DD HH:MM' data-mask='0000-00-00 00:00' class='datetimeinput form-control' id='id_lastcirc_to' autocomplete='off' value='{{ old("lastcirc_to") }}'>
                                     </div>
                                 </div>
                             </fieldset>

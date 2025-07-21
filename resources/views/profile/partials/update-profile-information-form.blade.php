@@ -12,63 +12,93 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-    <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-gray-900 shadow-md overflow-hidden sm:rounded-lg">
-        <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
-            @csrf
-            @method('patch')
+    <div class="d-flex">
+        <div class="w-50 mt-6 px-6 py-4 shadow-md overflow-hidden">
+            <form method="post" action="{{ route('profile.update') }}" class="mt-6">
+                @csrf
+                @method('patch')
 
-            <div>
-                <x-input-label for="name" :value="__('Name')">Name</x-input-label>
-                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
-                    value="{{ old('name') ? old('name') : $user->name}}" required autofocus autocomplete="name" />
-                <x-input-error class="mt-2" :messages="$errors->get('name')" />
-            </div>
-            <div>
-                <x-input-label for="designation" :value="__('Designation')">Designation</x-input-label>
-                <x-text-input id="designation" name="designation" type="text" class="mt-1 block w-full"
-                    value="{{ old('designation') ? old('designation') : $user->designation}}" required autofocus
-                    autocomplete="designation" />
-                <x-input-error class="mt-2" :messages="$errors->get('designation')" />
-            </div>
-            <div>
-                <x-input-label for="phone" :value="__('Phone')">Phone</x-input-label>
-                <x-text-input id="phone" name="phone" type="phone" class="mt-1 block w-full" value="{{ old('phone') ? old('phone') : $user->phone}}" required autofocus autocomplete="phone" />
-                <x-input-error class="mt-2" :messages="$errors->get('phone')" />
-            </div>
+                <div class="mb-2">
+                    <x-input-label for="name" :value="__('Name')">Name</x-input-label>
+                    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
+                        value="{{ old('name') ? old('name') : $user->name}}" required autofocus autocomplete="name" />
+                    <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                </div>
+                <div class="mb-2">
+                    <x-input-label for="designation" :value="__('Designation')">Designation</x-input-label>
+                    <x-text-input id="designation" name="designation" type="text" class="mt-1 block w-full"
+                        value="{{ old('designation') ? old('designation') : $user->designation}}" required autofocus
+                        autocomplete="designation" />
+                    <x-input-error class="mt-2" :messages="$errors->get('designation')" />
+                </div>
+                <div class="mb-2">
+                    <x-input-label for="phone" :value="__('Phone')">Phone</x-input-label>
+                    <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full"
+                        value="{{ old('phone') ? old('phone') : $user->phone}}" required autofocus
+                        autocomplete="phone" />
+                    <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+                </div>
 
-            <div>
-                <x-input-label for="email" :value="__('Email')" />
-                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-                <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-                @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
-                    <div>
-                        <p class="text-sm mt-2 text-gray-800">
-                            {{ __('Your email address is unverified.') }}
+                <div class="mb-2">
+                    <x-input-label for="email" :value="__('Email')" />
+                    <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+                    <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-                            <button form="send-verification"
-                                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ __('Click here to re-send the verification email.') }}
-                            </button>
-                        </p>
+                    @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
+                        <div class="mb-2">
+                            <p class="text-sm mt-2 text-gray-800">
+                                {{ __('Your email address is unverified.') }}
 
-                        @if (session('status') === 'verification-link-sent')
-                            <p class="mt-2 font-medium text-sm text-green-600">
-                                {{ __('A new verification link has been sent to your email address.') }}
+                                <button form="send-verification"
+                                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    {{ __('Click here to re-send the verification email.') }}
+                                </button>
                             </p>
-                        @endif
-                    </div>
-                @endif
-            </div>
 
-            <div class="flex items-center gap-4">
-                <x-primary-button class="ms-4">{{ __('Save') }}</x-primary-button>
+                            @if (session('status') === 'verification-link-sent')
+                                <p class="mt-2 font-medium text-sm text-green-600">
+                                    {{ __('A new verification link has been sent to your email address.') }}
+                                </p>
+                            @endif
+                        </div>
+                    @endif
+                </div>
 
-                @if (session('status') === 'profile-updated')
-                    <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                        class="text-sm text-gray-600">{{ __('Saved.') }}</p>
-                @endif
-            </div>
-        </form>
+                <div class="mb-2">
+                    <x-input-label for="description" :value="__('Description')">Description</x-input-label>
+                    <textarea id="description" name="description" type="text" class="form-control mt-1 block w-full"
+                        required autofocus
+                        autocomplete="description">{{ old('description') ? old('description') : $user->description}}</textarea>
+                    <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                </div>
+
+            </form>
+        </div>
+
+        <div class="w-50 sm:max-w-md mt-6 px-6 py-4 overflow-hidden sm:rounded-lg">
+            <image id="avatar" name="avatar" class="mt-1 block w-full" style="width: 15rem;"
+                src="{{ Storage::url('images/profile_image/' . $user->avatar) }}" required autofocus
+                autocomplete="avatar" />
+            <form method="post" action="{{ route('profile.update_avatar') }}" class="mt-6" enctype="multipart/form-data">
+                @csrf
+                @method('patch')
+                <div class="mb-2">
+                    <x-input-label for="avatar" :value="__('Avatar')">Avatar</x-input-label>
+                    <x-text-input id="avatar" name="avatar" type="file" class="mt-1 block w-full"
+                        value="{{ old('avatar') ? old('avatar') : $user->avatar}}" autofocus
+                        autocomplete="avatar"></x-text-input>
+                    <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
+                </div>
+                <div class="flex items-center gap-4 mt-1">
+                    <x-primary-button>{{ __('Upload') }}</x-primary-button>
+
+                    @if (session('status') === 'avatar-updated')
+                        <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                            class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 </section>

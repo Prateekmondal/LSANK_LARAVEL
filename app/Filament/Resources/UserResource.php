@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use PhpParser\NodeVisitor\NameResolver;
+use Closure;
 
 class UserResource extends Resource
 {
@@ -27,9 +30,6 @@ class UserResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(1),
-                Forms\Components\TextInput::make('cpf')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('designation'),
@@ -41,16 +41,19 @@ class UserResource extends Resource
                     ->tel(),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('avatar'),
                 Forms\Components\Select::make('status')
                     ->required()
                     ->options([
-                        1=>'Active',
-                        0=>'Inactive',
-                        ])
+                        1 => 'Active',
+                        0 => 'Inactive',
+                    ])
                     ->default(1),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                Forms\Components\Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload(),
                 Forms\Components\TextInput::make('password')
+                    ->nullable()
                     ->password(),
             ]);
     }
@@ -69,17 +72,14 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('designation')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('avatar')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
                     ->sortable(),
             ])
             ->filters([

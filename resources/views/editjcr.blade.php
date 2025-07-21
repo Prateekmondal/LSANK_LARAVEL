@@ -6,7 +6,7 @@
     @php
         $loggingTypes = ['WL', 'PCL', 'FISHING', 'TCP', 'TCP-DST', 'LWD'];
         $logTypes = ['OH', 'CH', 'PL'];
-        $unitNos = ['GJ-16-AA-5015', 'GJ-16-AA-5016', 'GJ-16-AA-5017', 'GJ-16-BS-2279', 'GJ-16-AF-9702', 'GJ-16-AF-9723'];
+        $unitNos = ["GJ-16-BS-4773","GJ-16-BS-4995", "GJ-16-AF-9723", "GJ-16-BS-2279","GJ-16-BS-4842", "GJ-16-AF-9702"];
         $wellOwners = ['Asset', 'Basin', 'Cambay'];
         $wellTypes = ['Dev', 'Exp'];
         $rigTypes = ['DRILLING', 'WORKOVER', 'RIGLESS'];

@@ -32,7 +32,7 @@
                     <a class="btn btn-outline-primary btn-sm" href="{{ route('profile.edit') }}">Edit Profile</a>
                 </div>
                 <div class="profile-info">
-                    <img src="{{ asset("storage/images/profile_image/".$user->avatar) }}" alt="Profile Picture" class="profile-pic" style="width: 8rem; height: 8rem; border-radius: 50%;">
+                    <img src="{{ Storage::url('images/profile_image/'.$user->avatar) }}" alt="Profile Picture" class="profile-pic" style="width: 8rem; height: 8rem; border-radius: 50%;">
                     <div>
                         <h5>{{ $user->name }}</h5>
                         <p class="text-muted mb-1">{{ $user->designation }}</p>

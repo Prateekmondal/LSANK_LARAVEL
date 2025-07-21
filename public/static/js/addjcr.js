@@ -17,12 +17,7 @@ $(document).ready(function () {
         }
     });
 
-    // $('#id_jobDate, #id_workOrderDate,  #id_shoeDate, #id_assembled_date, #id_depOffice_date, #id_arrivalSite_date, #id_indented_date, #id_wellReadiness_date, #id_wellTaken_date, #id_rigUP_date, #id_wellHandOver_date, #id_depSite_date, #id_arrivalOffice_date, #id_lastcirc').datepicker({
-    //     dateFormat: 'dd-mm-yy',
-    //     defaultDate: new Date(),
-    // })
-
-    $('#id_jobDate, #id_workOrderDate,  #id_shoeDate, #id_assembled_date, #id_depOffice_date, #id_arrivalSite_date, #id_indented_date, #id_wellReadiness_date, #id_wellTaken_date, #id_rigUP_date, #id_wellHandOver_date, #id_depSite_date, #id_arrivalOffice_date, #id_lastcirc').datetimepicker({
+    $('#id_jobDate, #id_workOrderDate,  #id_shoeDate, #id_assembled_date, #id_depOffice_date, #id_arrivalSite_date, #id_indented_date, #id_wellReadiness_date, #id_wellTaken_date, #id_rigUP_date, #id_wellHandOver_date, #id_depSite_date, #id_arrivalOffice_date').datetimepicker({
         format: 'YYYY-MM-DD',
         useCurrent: true,
         showTodayButton: true,
@@ -40,7 +35,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#id_assembled_date").on("keyup change click", function () {
+    $("#id_assembled_date").on("keyup change click dp.change", function () {
         const dateValue = $('#id_assembled_date').val();
         $('#id_depOffice_date').val(dateValue);
         $('#id_arrivalSite_date').val(dateValue);
@@ -53,7 +48,7 @@ $(document).ready(function () {
         $('#id_arrivalOffice_date').val(dateValue);
     })
 
-    $("#id_assembled_time").on("keyup change click", function () {
+    $("#id_assembled_time").on("keyup change click dp.change", function () {
         const assembled_time = $('#id_assembled_time').val();
         $('#id_depOffice_time').val(addMinutesToTimeString(assembled_time, 30));
         // $('#id_arrivalSite_time').val(timeValue);
@@ -62,7 +57,7 @@ $(document).ready(function () {
         // $('#id_arrivalOffice_time').val(timeValue);
     })
 
-    $("#id_arrivalSite_time").on("keyup change click", function () {
+    $("#id_arrivalSite_time").on("keyup change click dp.change", function () {
         const arrivalSite_time = $('#id_arrivalSite_time').val();
         $('#id_indented_time').val(arrivalSite_time);
         $('#id_wellReadiness_time').val(arrivalSite_time);
@@ -70,7 +65,7 @@ $(document).ready(function () {
         $('#id_rigUP_time').val(arrivalSite_time);
     })
 
-    $("#id_wellHandOver_time").on("keyup change click", function () {
+    $("#id_wellHandOver_time").on("keyup change click dp.change", function () {
         const wellHandOver_time = $('#id_wellHandOver_time').val();
         $('#id_depSite_time').val(addMinutesToTimeString(wellHandOver_time, 30));
     })
