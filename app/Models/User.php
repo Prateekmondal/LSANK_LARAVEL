@@ -12,10 +12,12 @@ use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Concerns\HasAvatar;
 use Illuminate\Support\Facades\Gate;
 
+use App\Traits\Auditable;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles; 
+    use HasFactory, Notifiable, HasRoles, Auditable;
     // use HasAvatar;
 
     public $timestamps = false;
@@ -96,5 +98,16 @@ class User extends Authenticatable
     public function jcrs()
     {
         return $this->belongsToMany(Jcr::class, 'jcruser');
+    }
+
+    // Add this method to the User model
+    public function routeNotificationForMail()
+    {
+        return $this->email;
+    }
+
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'users.'.$this->id;
     }
 }

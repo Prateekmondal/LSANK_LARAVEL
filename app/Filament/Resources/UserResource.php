@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\NodeVisitor\NameResolver;
 use Closure;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -40,7 +41,10 @@ class UserResource extends Resource
                     ->required()
                     ->tel(),
                 Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->hint(fn($state, $component) => 'Left: ' . $component->getMaxLength() - strlen($state) . ' characters')
+                    ->maxlength(255)
+                    ->lazy(),
                 Forms\Components\Select::make('status')
                     ->required()
                     ->options([
@@ -49,12 +53,15 @@ class UserResource extends Resource
                     ])
                     ->default(1),
                 Forms\Components\Select::make('roles')
+                    ->required()
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload(),
                 Forms\Components\TextInput::make('password')
-                    ->nullable()
-                    ->password(),
+                    ->password()
+                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(string $context): bool => $context === 'create'),
             ]);
     }
 

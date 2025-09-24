@@ -32,7 +32,6 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'description' => ['required', 'string', 'max:255'],
-            'avatar' => ['required', 'string', 'max:255'],
         ];
     }
 }

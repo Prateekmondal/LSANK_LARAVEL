@@ -12,7 +12,7 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-    <div class="d-flex">
+    <div class="d-flex gap-4">
         <div class="w-50 mt-6 px-6 py-4 shadow-md overflow-hidden">
             <form method="post" action="{{ route('profile.update') }}" class="mt-6">
                 @csrf
@@ -72,18 +72,27 @@
                         autocomplete="description">{{ old('description') ? old('description') : $user->description}}</textarea>
                     <x-input-error class="mt-2" :messages="$errors->get('description')" />
                 </div>
+                <div class="flex items-center gap-4 mt-1">
+                    <x-primary-button>{{ __('Save') }}</x-primary-button>
 
+                    @if (session('status') === 'profile-updated')
+                        <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                            class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+                    @endif
+                </div>
             </form>
         </div>
 
         <div class="w-50 sm:max-w-md mt-6 px-6 py-4 overflow-hidden sm:rounded-lg">
-            <image id="avatar" name="avatar" class="mt-1 block w-full" style="width: 15rem;"
-                src="{{ Storage::url('images/profile_image/' . $user->avatar) }}" required autofocus
-                autocomplete="avatar" />
+            <div class="d-flex justify-content-center">
+                <image id="avatar" name="avatar" class="mt-1 block w-full" style="width: 15rem; border-radius: 50%;"
+                    src="{{ Storage::url('images/profile_image/' . $user->avatar) }}" required autofocus
+                    autocomplete="avatar" />
+            </div>
             <form method="post" action="{{ route('profile.update_avatar') }}" class="mt-6" enctype="multipart/form-data">
                 @csrf
                 @method('patch')
-                <div class="mb-2">
+                <div class="m-2">
                     <x-input-label for="avatar" :value="__('Avatar')">Avatar</x-input-label>
                     <x-text-input id="avatar" name="avatar" type="file" class="mt-1 block w-full"
                         value="{{ old('avatar') ? old('avatar') : $user->avatar}}" autofocus

@@ -15,6 +15,7 @@
     <!-- Bootstrap CSS -->
     <link href="/static/bootstrap-5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="/static/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <!-- select2 -->
     <link rel="stylesheet" href="/static/css/select2.min.css"
         integrity="sha512-yI2XOLiLTQtFA9IYePU0Q1Wt0Mjm/UkmlKMy4TU4oNXEws0LybqbifbO8t9rEIU65qdmtomQEQ+b3XfLfCzNaw=="

@@ -32,8 +32,8 @@ class ProfileController extends Controller
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
             $user = Auth::user();
-            dd($user->cpf);
-            $filename = 'IMG' . $user->get('cpf') . '.' . $avatar->getClientOriginalExtension();
+            // dd($user->cpf);
+            $filename = 'IMG-' . $user->cpf . '.' . $avatar->getClientOriginalExtension();
             // dd(Storage::disk('public')->path('images/profile_image'));
             $avatar->storeAs('images/profile_image', $filename, 'public');
             // dd($filename);

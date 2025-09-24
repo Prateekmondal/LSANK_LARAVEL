@@ -52,13 +52,8 @@
             <!-- Grid column -->
             <div class="col-4 col-sm-4 col-md-2 col-lg-2 mb-5">
                 <!-- Content -->
-                <h6 class="text-uppercase h5 fw-bold mb-5">Designed By:</h6>
-                <p class="text-start h6 mt-3"><strong>Prashant Mishra</strong></p>
-                <p class="text-start h6">SG(W)</p>
-                <p class="text-start h6">CPF: 124500</p>
             </div>
             <div class="col-6 col-sm-6 col-md-2 col-lg-2 my-auto">
-                <img class="rounded-circle" src="/static/prashant.png" width="100">
             </div>
         </div>
     </div>

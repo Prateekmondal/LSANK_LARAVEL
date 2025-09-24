@@ -11,16 +11,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('jcr.add') }}">Add JCR</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('jcr.create') }}">Add JCR</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Checklists
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Checklist-A</a></li>
-                            <li><a class="dropdown-item" href="#">Checklist-B</a></li>
-                            <li><a class="dropdown-item" href="#">Checklist-C</a></li>
+                            <li><a class="dropdown-item" href="/checklists">View Checklists</a></li>
+                            <li><a class="dropdown-item" href="/checklists/create/a">Checklist-A</a></li>
+                            <li><a class="dropdown-item" href="/checklists/create/b">Checklist-B</a></li>
+                            <li><a class="dropdown-item" href="/checklists/create/c">Checklist-C</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -31,32 +32,84 @@
                 @if (Route::has('login'))
                     @auth
                         <ul class="navbar-nav">
+                            <!-- Add this to your navbar -->
                             <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <img src="{{ Storage::url('images/profile_image/'.Auth::user()->avatar) }}" alt="User" class="user-avatar me-1" style="width: 2rem; height: 2rem; border-radius:50%;">
-                                {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                @if (auth()->user()->hasRole('super-admin'))
-                                <li><a class="dropdown-item" href="{{ route('filament.admin.pages.dashboard') }}">Admin</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                @endif
-                                <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="{{ route('profile.index') }}">Account</a></li>
-                                <li><a class="dropdown-item" href="{{ route('jcr.view') }}">View JCR</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
-        
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                                </a></li>
-                            </ul>
+                                <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-bell"></i>
+                                    @if(auth()->user()->unreadNotifications->count() > 0)
+                                        <span
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {{ auth()->user()->unreadNotifications->count() }}
+                                        </span>
+                                    @endif
+                                </a>
+                                <!-- Update the notification dropdown -->
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                                    @forelse(auth()->user()->unreadNotifications as $notification)
+                                        <li>
+                                            <a class="dropdown-item" href="{{ $notification->data['link'] }}">
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 me-2">
+                                                        <i class="bi bi-clipboard-check fs-4 text-primary"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold">{{ $notification->data['message'] }}</div>
+                                                        <small
+                                                            class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li><span class="dropdown-item">No new notifications</span></li>
+                                    @endforelse
+                                    @if(auth()->user()->unreadNotifications->count() > 0)
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <form method="POST" action="{{ route('notifications.markAllAsRead') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item text-center">Mark all as read</button>
+                                            </form>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown">
+                                    <img src="{{ Storage::url('images/profile_image/' . Auth::user()->avatar) }}" alt="User"
+                                        class="user-avatar me-1" style="width: 2rem; height: 2rem; border-radius:50%;">
+                                    {{ Auth::user()->name }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    @if (auth()->user()->hasRole('super-admin'))
+                                        <li><a class="dropdown-item" target="_blank"
+                                                href="{{ route('filament.admin.pages.dashboard') }}">Admin</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                    @endif
+                                    <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('profile.index') }}">Account</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('jcr.index') }}">View JCR</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="{{ route('logout') }}"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
+
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                        </form>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            
                         </ul>
                     @else
                         <span class="navbar-text"><a class="nav-link" href="{{ route('login') }}">Login</a></span>

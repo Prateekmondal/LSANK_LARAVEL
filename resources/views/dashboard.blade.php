@@ -81,7 +81,7 @@
                 <h4>Job Details - June 2023</h4>
                 <div>
                     <a class="btn btn-outline-secondary btn-sm me-2">Export</a>
-                    <a class="btn btn-primary btn-sm" href="{{ route('jcr.add') }}">Add New Job</a>
+                    <a class="btn btn-primary btn-sm" href="{{ route('jcr.create') }}">Add New Job</a>
                 </div>
             </div>
             <div class="table-responsive mb-3">
@@ -143,7 +143,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a class="btn btn-sm btn-outline-primary" type="submit" href="{{ route('jcr.download', ['id' => $jcr->id]) }}">View</a>
+                                        <a class="btn btn-sm btn-outline-primary" type="submit" href="{{ route('jcr.show', $jcr->id) }}">View</a>
                                     </td>
                                 </tr>
                             @endforeach

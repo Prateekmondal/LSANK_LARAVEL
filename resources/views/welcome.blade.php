@@ -26,9 +26,9 @@
             <div class="row w-100">
                 <div class="col-md-6 text-white">
                     <h1 class="display-4 fw-bold mb-4">Professional Well Logging Services</h1>
-                    <p class="lead mb-4">Providing accurate and reliable borehole data collection and analysis for over 20
+                    <p class="lead mb-4">Providing accurate and reliable borehole data collection and analysis for over 60
                         years in Ankleshwar and surrounding regions.</p>
-                    <a href="#contact" class="btn btn-primary btn-lg px-4 me-2">Get a Quote</a>
+                    <a href="#contact" class="btn btn-primary btn-lg px-4 me-2 rb-2">Contact Us</a>
                     <a href="#services" class="btn btn-outline-light btn-lg px-4">Our Services</a>
                 </div>
             </div>

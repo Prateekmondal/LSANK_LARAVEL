@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Auditable;
+
 class jcruser extends Model
 {
+    use Auditable;
     //
     protected $table = 'jcruser';
     public $timestamps = false;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jcr;
 use App\Models\User;
+use App\Models\ExplosiveChecklist;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,12 +16,36 @@ use Illuminate\Validation\Rule;
 
 class JcrController extends Controller
 {
-    //
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
+        $jcrs = Jcr::with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
+            ->orderBy('arrivalOffice_time', 'desc')->paginate(10);
+        return view('jcr.index', compact('jcrs'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
         $users = User::orderBy('seniority')->get()->where('status', 1);
-        // dd($users);
-        return view("jcr", compact('users'));
+        $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
+            ->where('creator_id', auth()->id())
+            ->get();
+        return view('jcr.create', compact('users', 'unlinkedChecklists'));
+    }
+    //
+    public function index_old()
+    {
+        $users = User::orderBy('seniority')->get()->where('status', 1);
+        $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
+            ->where('creator_id', auth()->id())
+            ->get();
+        // dd($unlinkedChecklists);
+        return view("jcrs.create", compact(['users', 'unlinkedChecklists']));
     }
     public function view()
     {
@@ -48,39 +73,274 @@ class JcrController extends Controller
         // dd($jcrs);
         return view("dashboard", ['jcrs' => $jcrs, 'user' => $user, 'ch' => $ch_count, 'oh' => $oh_count, 'pl' => $pl_count, 'total' => $total_count]);
     }
-    public function add(REQUEST $request): RedirectResponse
-    {
-        $validatedData = $this->validateRequest($request);
-        $now = Carbon::now('Asia/Kolkata')->format('Y-m-d H:i:s');
-        $current_user = Auth()->user()->name;
-        $validatedData['created_by'] = $current_user;
-        $validatedData['created_at'] = $now;
-        $validatedData['last_edited_by'] = $current_user;
-        $validatedData['last_edited_at'] = $now;
-        // dd($validatedData);
-        try {
-            DB::beginTransaction();
-            $jcr = Jcr::create(Arr::except($validatedData, ['personnel', 'logrecorded', 'explosive']));
 
-            foreach ($validatedData['personnel'] as $personnel) {
-                $jcr->users()->attach($personnel['user_id']);
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $this->validateRequest($request);
+
+        $action = $request->input('action');
+        $isDraft = $action === 'save_draft';
+
+        DB::beginTransaction();
+        try {
+            // dd($validated);
+            // $jcrData = $validated['jcr'];
+            $jcrData = array_diff_key($validated, array_flip(['personnel', 'logrecorded', 'explosives']));
+            $jcrData['creator_id'] = Auth::id();
+            $jcrData['final_submit'] = !$isDraft;
+            $jcrData['status'] = $isDraft ? Jcr::STATUS_DRAFT : Jcr::STATUS_PENDING_PARTY_CHIEF;
+
+
+            $jcr = Jcr::create($jcrData);
+
+            // Sync personnel
+            if (isset($validated['personnel'])) {
+                $personnelIds = collect($validated['personnel'])->pluck('user_id')->toArray();
+                $jcr->users()->sync($personnelIds);
             }
-            foreach ($validatedData['logrecorded'] as $logrecorded) {
-                $jcr->logs()->create($logrecorded);
+
+            // Create logs
+            if (isset($validated['logrecorded'])) {
+                $jcr->logs()->createMany($validated['logrecorded']);
             }
-            foreach ($validatedData['explosive'] as $explosive) {
-                if (!is_null($explosive['explosive'])) {
-                    $jcr->explosives()->create($explosive);
-                }
+
+            // Create explosives
+            if (isset($validated['explosives'])) {
+                $jcr->explosives()->createMany($validated['explosives']);
             }
+
             DB::commit();
-            return redirect()->route('dashboard');
+
+            if ($isDraft) {
+                return redirect()->route('jcr.index')
+                    ->with('success', 'JCR saved as draft successfully.');
+            }
+
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('success', 'JCR created successfully. Please review before final submission.');
         } catch (\Exception $e) {
             DB::rollBack();
-            // dd($e->getMessage());
             return back()->withInput()->with('error', 'Failed to create JCR: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Jcr $jcr)
+    {
+        $validated = $this->validateRequest($request, $jcr);
+
+        $action = $request->input('action');
+        $isDraft = $action === 'save_draft';
+        DB::beginTransaction();
+        try {
+            $jcrData = array_diff_key($validated, array_flip(['personnel', 'logrecorded', 'explosives']));
+            $jcrData['final_submit'] = !$isDraft;
+            // dd($validated);
+
+            $jcr->update($jcrData);
+
+            // Sync personnel
+            if (isset($validated['personnel'])) {
+                $personnelIds = collect($validated['personnel'])->pluck('user_id')->toArray();
+                $jcr->users()->sync($personnelIds);
+            }
+
+            // Update or create logs
+            if (isset($validated['logrecorded'])) {
+                $jcr->logs()->delete();
+                $jcr->logs()->createMany($validated['logrecorded']);
+            }
+
+            // Update or create explosives
+            if (isset($validated['explosives'])) {
+                $jcr->explosives()->delete();
+                $jcr->explosives()->createMany($validated['explosives']);
+            }
+
+            DB::commit();
+
+            if ($isDraft) {
+                return redirect()->route('jcr.index')
+                    ->with('success', 'JCR draft updated successfully.');
+            }
+
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('success', 'JCR updated successfully. Please review before final submission.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Failed to update JCR: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Show preview before final submission
+     */
+    public function preview(Jcr $jcr)
+    {
+        if ($jcr->final_submit) {
+            return redirect()->route('jcr.show', $jcr->id);
+        }
+
+        $jcr->load(['users', 'logs', 'explosives']);
+        return view('jcr.preview', compact('jcr'));
+    }
+
+    /**
+     * Final submission
+     */
+    public function submit(Jcr $jcr)
+    {
+        $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => Auth::user()->name, 'creator_signed_at' => now()]);
+        // dd($jcr);
+        return redirect()->route('jcr.show', $jcr->id)
+            ->with('success', 'JCR submitted successfully.');
+    }
+
+    /**
+     * Party Chief signature
+     */
+    public function partyChiefSign(Request $request, Jcr $jcr)
+    {
+        // Check if user has party chief role
+        if (!Auth::user()->hasRole('party_chief')) {
+            return redirect()->route('jcr.show', $jcr->id)
+                ->with('error', 'You are not authorized to sign as Party Chief.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $jcr->update([
+                'party_chief_signature' => Auth::user()->name,
+                'party_chief_signed_at' => now(),
+                'party_chief_id' => Auth::id(),
+                'status' => Jcr::STATUS_PENDING_OPERATION_INCHARGE,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('jcr.show', ['jcr' => $jcr->id])
+                ->with('success', 'Party Chief signature added. Waiting for Operation Incharge signature.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to add Party Chief signature: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Operation Incharge signature
+     */
+    public function operationInchargeSign(Request $request, Jcr $jcr)
+    {
+        // Check if user has operation incharge role
+        if (!Auth::user()->hasRole('operation_incharge')) {
+            return redirect()->route('jcr.show', $jcr->id)
+                ->with('error', 'You are not authorized to sign as Operation Incharge.');
+        }
+
+        $request->validate([
+            'action' => 'required|in:approve,reject',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $status = $request->action === 'approve'
+                ? Jcr::STATUS_APPROVED
+                : Jcr::STATUS_REJECTED;
+
+            if ($status === Jcr::STATUS_REJECTED) {
+                // If rejected, clear party chief signature details
+                $jcr->update([
+                    'party_chief_signature' => null,
+                    'party_chief_signed_at' => null,
+                    'party_chief_id' => null,
+                    'status' => Jcr::STATUS_PENDING_PARTY_CHIEF,
+                ]);
+            } elseif ($status === Jcr::STATUS_APPROVED) {
+                // If approved, ensure party chief signature details are intact
+                if (is_null($jcr->party_chief_signature) || is_null($jcr->party_chief_signed_at) || is_null($jcr->party_chief_id)) {
+                    throw new \Exception('Cannot approve JCR without Party Chief signature.');
+                }
+                // Update operation incharge signature details
+                else {
+                    $jcr->update([
+                        'operation_incharge_signature' => Auth::user()->name,
+                        'operation_incharge_signed_at' => now(),
+                        'operation_incharge_id' => Auth::id(),
+                        'status' => $status,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            $message = $request->action === 'approve'
+                ? 'JCR approved successfully.'
+                : 'JCR rejected.';
+
+            return redirect()->route('jcr.show', ['jcr' => $jcr->id])
+                ->with('success', $message);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to process Operation Incharge action: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    // public function show(Jcr $jcr)
+    // {
+    //     $jcr->load(['users', 'logs', 'explosives']);
+    //     // dd($jcr);
+    //     return view('jcr.show', compact('jcr'));
+    // }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Jcr $jcr)
+    {
+        $users = User::all();
+        $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
+            ->where('creator_id', auth()->id())
+            ->get();
+        $jcr->load(['users', 'logs', 'explosives']);
+        return view('jcr.edit', compact('jcr', 'users', 'unlinkedChecklists'));
+    }
+
+    public function show(Jcr $jcr)
+{
+    $jcr->load(['users', 'logs', 'explosives']);
+    $checklists = $jcr->checklists()->with(['creator', 'signatures.user', 'externalSignature'])->get();
+    
+    // Group checklists by type
+    $groupedChecklists = [
+        'a' => $checklists->where('type', 'a')->first(),
+        'b' => $checklists->where('type', 'b')->first(),
+        'c' => $checklists->where('type', 'c')->first(),
+    ];
+    
+    return view('jcr.show', compact('jcr', 'groupedChecklists'));
+}
+
+public function print(Jcr $jcr)
+{
+    $checklists = $jcr->checklists()->with(['creator', 'signatures.user', 'externalSignature'])->get();
+    
+    $groupedChecklists = [
+        'a' => $checklists->where('type', 'a')->first(),
+        'b' => $checklists->where('type', 'b')->first(),
+        'c' => $checklists->where('type', 'c')->first(),
+    ];
+    
+    return view('jcr.print', compact('jcr', 'groupedChecklists'));
+}
 
     /**
      * Display the specified resource.
@@ -88,7 +348,7 @@ class JcrController extends Controller
      * @param  \App\Models\Jcr  $jcr
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request): RedirectResponse|View
+    public function show_old(Request $request): RedirectResponse|View
     {
         $users = User::all();
         if (Auth::user()->can('update_jcr')) {
@@ -115,61 +375,62 @@ class JcrController extends Controller
      */
     public function download(Request $request): View
     {
+        dd('hello');
         $users = User::all();
         if (Auth::user()->can('view_any_jcr')) {
             $jcrs = Jcr::with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
         } else {
             $jcrs = Auth::user()->jcrs()->with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
         }
-        // dd($jcrs);
+        dd($jcrs);
         return view("downloadjcr", ['jcrs' => $jcrs, 'users' => $users]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Jcr  $jcr
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request): RedirectResponse
-    {
-        $validatedData = $this->validateRequest($request);
-        $now = Carbon::now('Asia/Kolkata')->format('Y-m-d H:i:s');
-        $current_user = Auth()->user()->name;
-        $validatedData['last_edited_by'] = $current_user;
-        $validatedData['last_edited_at'] = $now;
-        $validatedData['final_submitted_by'] = $current_user;
-        $validatedData['final_submitted_at'] = $now;
-        // dd($validatedData);
-        try {
-            DB::beginTransaction();
-            $jcr = Jcr::find($validatedData['id']);
-            $jcr->update(Arr::except($validatedData, ['id', 'personnel', 'logrecorded', 'explosive']));
+    // /**
+    //  * Update the specified resource in storage.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @param  \App\Models\Jcr  $jcr
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function update(Request $request): RedirectResponse
+    // {
+    //     $validatedData = $this->validateRequest($request);
+    //     $now = Carbon::now('Asia/Kolkata')->format('Y-m-d H:i:s');
+    //     $current_user = Auth()->user()->name;
+    //     $validatedData['last_edited_by'] = $current_user;
+    //     $validatedData['last_edited_at'] = $now;
+    //     $validatedData['final_submitted_by'] = $current_user;
+    //     $validatedData['final_submitted_at'] = $now;
+    //     // dd($validatedData);
+    //     try {
+    //         DB::beginTransaction();
+    //         $jcr = Jcr::find($validatedData['id']);
+    //         $jcr->update(Arr::except($validatedData, ['id', 'personnel', 'logrecorded', 'explosive']));
 
-            // Sync users if provided
-            if ($request->has('personnel')) {
-                $personnelIds = collect($request->input('personnel.*.user_id'))->flatten()->unique()->toArray();
-                $jcr->users()->sync($personnelIds);
-            }
+    //         // Sync users if provided
+    //         if ($request->has('personnel')) {
+    //             $personnelIds = collect($request->input('personnel.*.user_id'))->flatten()->unique()->toArray();
+    //             $jcr->users()->sync($personnelIds);
+    //         }
 
-            // Update or create associated logs if provided
-            if ($request->has('logrecorded')) {
-                $this->syncLogs($jcr, $validatedData['logrecorded']);
-            }
+    //         // Update or create associated logs if provided
+    //         if ($request->has('logrecorded')) {
+    //             $this->syncLogs($jcr, $validatedData['logrecorded']);
+    //         }
 
-            // Update or create associated explosives if provided
-            if ($request->has('explosive')) {
-                // dd($jcr->explosives());
-                $this->syncExplosives($jcr, $validatedData['explosive']);
-            }
-            DB::commit();
-            return redirect()->route('jcr.view')->with('success', 'JCR updated successfully');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withInput()->with('error', 'Failed to update JCR: ' . $e->getMessage());
-        }
-    }
+    //         // Update or create associated explosives if provided
+    //         if ($request->has('explosive')) {
+    //             // dd($jcr->explosives());
+    //             $this->syncExplosives($jcr, $validatedData['explosive']);
+    //         }
+    //         DB::commit();
+    //         return redirect()->route('jcr.view')->with('success', 'JCR updated successfully');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return back()->withInput()->with('error', 'Failed to update JCR: ' . $e->getMessage());
+    //     }
+    // }
 
     /**
      * Sync explosives for the JCR

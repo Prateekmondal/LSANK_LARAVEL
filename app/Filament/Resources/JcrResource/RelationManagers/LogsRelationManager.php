@@ -18,9 +18,59 @@ class LogsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('logRecorded')
+                Forms\Components\TextInput::make('runNo')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('logRecorded')
+                    ->required()
+                    ->options([
+                        'Perforation(CCL)' => 'Perforation(CCL)',
+                        'TTP(CCL)' => 'TTP(CCL)',
+                        'Bridge Plug(CCL)' => 'Bridge Plug(CCL)',
+                        'Junk Basket(CCL)' => 'Junk Basket(CCL)',
+                        'GR-CCL' => 'GR-CCL',
+                        'GR-TCL' => 'GR-TCL',
+                        'SBT-GR-CCL' => 'SBT-GR-CCL',
+                        'RBT-GR-CCL' => 'RBT-GR-CCL',
+                        'Production Log' => 'Production Log',
+                        'HDIL-ORIT-SP-GR' => 'HDIL-ORIT-SP-GR',
+                        'ZDEN-CN-GR' => 'ZDEN-CN-GR',
+                        'STAR-ORIT-GR' => 'STAR-ORIT-GR',
+                        'XMAC-ORIT-GR' => 'XMAC-ORIT-GR',
+                    ]),
+                Forms\Components\TextInput::make('bottomDepth')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('topDepth')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('toolNo')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('logQuality')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('bottomShotDepth')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('topShotDepth')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('charge')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('chargeNo')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('primaChord')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('primaChordQty')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('fuse')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('fuseNo')
+                    ->maxLength(255),
+                Forms\Components\Select::make('fMf')
+                    ->options([
+                        'F' => 'F',
+                        'MF' => 'MF',
+                    ]),
             ]);
     }
 

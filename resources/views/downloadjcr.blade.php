@@ -71,12 +71,12 @@
         <tr>
             <td colspan="2" align="right">Indent No.:</td>
             <td colspan="1">
-                {{ $jcrs['indentNo'] }}
+                {{ $jcr['indentNo'] }}
             </td>
             <td colspan="1">&nbsp;</td>
             <td colspan="1" align="right">Job No.:</td>
             <td colspan="1">
-                {{ $jcrs['jobNo'] }}
+                {{ $jcr['jobNo'] }}
             </td>
             <td colspan="3">&nbsp;</td>
             <td colspan="3">&nbsp;</td>
@@ -84,12 +84,12 @@
                 <table>
                     <tr>
                         <td colspan="3"><span>Job Status:</span><span>
-                                {{ $jcrs['jobStatus'] }}
+                                {{ $jcr['jobStatus'] }}
                             </span></td>
                     </tr>
                     <tr>
                         <td colspan="3"><span>Logging Type:</span><span>
-                                {{ $jcrs['loggingType'] }}
+                                {{ $jcr['loggingType'] }}
                             </span></td>
                     </tr>
                 </table>
@@ -104,27 +104,27 @@
             <tr>
                 <td colspan="2" align="right" style="border: 1px solid #333;">W/O Date:</td>
                 <td colspan="1" align="left" style="border: 1px solid #333;">
-                    {{ date("d-m-Y", strtotime($jcrs['workOrderDate'])) }}
+                    {{ date("d-m-Y", strtotime($jcr['workOrderDate'])) }}
                 </td>
                 <td colspan="1" align="right" style="border: 1px solid #333;">Well No./Code:</td>
                 <td colspan="2" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['wellNo'] }}
+                    {{ $jcr['wellNo'] }}
                 </td>
                 <td colspan="1" align="right" style="border: 1px solid #333;">Rig No.:</td>
                 <td colspan="1" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['rigNo'] }}
+                    {{ $jcr['rigNo'] }}
                 </td>
                 <td colspan="1" align="right" style="border: 1px solid #333;">Unit No.:</td>
                 <td colspan="2" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['unitNo'] }}
+                    {{ $jcr['unitNo'] }}
                 </td>
                 <td colspan="2" align="right" style="border: 1px solid #333;">Mast/Van No.:</td>
                 <td colspan="3" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['mastVanNo'] }}
+                    {{ $jcr['mastVanNo'] }}
                 </td>
                 <td colspan="2" align="right" style="border: 1px solid #333;">Well Type:</td>
                 <td colspan="1" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['wellType'] }}
+                    {{ $jcr['wellType'] }}
                 </td>
                 <td colspan="3" rowspan="2" align="center" style="background-color: #333; color: white; border-top: 1px solid #333; border-right: 1px solid #333;">SIDE
                     WALL CORE (SWC)
@@ -133,30 +133,30 @@
             <tr>
                 <td colspan="2" align="right" style="border: 1px solid #333;">Date of Job:</td>
                 <td colspan="1" align="left" style="border: 1px solid #333;">
-                    {{ date("d-m-Y", strtotime($jcrs['jobDate'])) }}
+                    {{ date("d-m-Y", strtotime($jcr['jobDate'])) }}
                 </td>
                 <td colspan="1" align="right" style="border: 1px solid #333;">Field/Area:</td>
                 <td colspan="2" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['fieldName'] }}
+                    {{ $jcr['fieldName'] }}
                 </td>
                 <td colspan="1" align="center" style="border: 1px solid #333;">KB:
-                    {{ $jcrs['kb'] ? $jcrs['kb'].'m' : '---' }}
+                    {{ $jcr['kb'] ? $jcr['kb'].'m' : '---' }}
                 </td>
                 <td colspan="1" align="center" style="border: 1px solid #333;">GL:
-                    {{ $jcrs['gl'] ? $jcrs['gl'].' m' : '---' }}
+                    {{ $jcr['gl'] ? $jcr['gl'].' m' : '---' }}
                 </td>
                 <td colspan="1" align="center" style="border: 1px solid #333;">
-                    {{ $jcrs['logType'] }}
+                    {{ $jcr['logType'] }}
                 </td>
                 <td colspan="2" align="center" style="border: 1px solid #333;">Well Owner:
-                    {{ $jcrs['wellOwner'] }}
+                    {{ $jcr['wellOwner'] }}
                 </td>
                 <td colspan="2" align="right" style="border: 1px solid #333;">LV No.:</td>
                 <td colspan="3" align="left" style="border: 1px solid #333;">
-                    {{ $jcrs['lvNo'] }}
+                    {{ $jcr['lvNo'] }}
                 </td>
                 <td colspan="3" align="center" style="border: 1px solid #333;">Rig Type:
-                    {{ $jcrs['rigType'] }}
+                    {{ $jcr['rigType'] }}
                 </td>
             </tr>
             <tr rowspan="14">
@@ -170,103 +170,103 @@
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Assembled:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['assembled_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['assembled_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['assembled_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['assembled_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Departure office:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['depOffice_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['depOffice_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['depOffice_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['depOffice_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Arrival Site:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['arrivalSite_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['arrivalSite_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['arrivalSite_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['arrivalSite_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Indented:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['indented_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['indented_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['indented_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['indented_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Well Readiness:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['wellReadiness_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['wellReadiness_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['wellReadiness_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['wellReadiness_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Well Taken:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['wellTaken_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['wellTaken_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['wellTaken_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['wellTaken_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Rig Up:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['rigUP_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['rigUP_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['rigUP_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['rigUP_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Well Hand Over:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['wellHandOver_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['wellHandOver_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['wellHandOver_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['wellHandOver_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Departure Site:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['depSite_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['depSite_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['depSite_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['depSite_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Arrival Office:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("H:i", strtotime($jcrs['arrivalOffice_time'])) }}
+                                    {{ date("H:i", strtotime($jcr['arrivalOffice_time'])) }}
                                 </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ date("d-m-Y", strtotime($jcrs['arrivalOffice_date'])) }}
+                                    {{ date("d-m-Y", strtotime($jcr['arrivalOffice_date'])) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Preparation Time:</td>
                                 <td colspan="4" style="border: 1px solid #333;">
-                                    {{ $jcrs['preparationTime'] ? $jcrs['preparationTime'].' HRS.' : '---' }}
+                                    {{ $jcr['preparationTime'] ? $jcr['preparationTime'].' HRS.' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="border: 1px solid #333;">Post Proce. Time:</td>
                                 <td colspan="4" style="border: 1px solid #333;">
-                                    {{ $jcrs['postProceTime'] ? $jcrs['postProceTime'].' HRS.' : '---' }}
+                                    {{ $jcr['postProceTime'] ? $jcr['postProceTime'].' HRS.' : '---' }}
                                 </td>
                             </tr>
                         </tbody>
@@ -288,73 +288,73 @@
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Depth Logger:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['depthLogger'] ? $jcrs['depthLogger'].' m' : '---' }}
+                                    {{ $jcr['depthLogger'] ? $jcr['depthLogger'].' m' : '---' }}
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Casing Size(inch):</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['casingSize'] ? $jcrs['casingSize'].' m' : '---' }}
+                                    {{ $jcr['casingSize'] ? $jcr['casingSize'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">C/Shoe Driller:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['casingShoeDriller'] ? $jcrs['casingShoeDriller'].' m' : '---' }}
+                                    {{ $jcr['casingShoeDriller'] ? $jcr['casingShoeDriller'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">C/Shoe Logger:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['casingShoeLogger'] ? $jcrs['casingShoeLogger'].' m' : '---' }}
+                                    {{ $jcr['casingShoeLogger'] ? $jcr['casingShoeLogger'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Float Collar:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['floatCollar'] ? $jcrs['floatCollar'].' m' : '---' }}
+                                    {{ $jcr['floatCollar'] ? $jcr['floatCollar'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Bit Size(inch):</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['bitSize'] ? $jcrs['bitSize'].' m' : '---' }}
+                                    {{ $jcr['bitSize'] ? $jcr['bitSize'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Tubing Size(inch):</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['tubingSize'] ? $jcrs['tubingSize'].' m' : '---' }}
+                                    {{ $jcr['tubingSize'] ? $jcr['tubingSize'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">T/Shoe/Packer:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['t_shoe_packer'] ? $jcrs['t_shoe_packer'].' m' : '---' }}
+                                    {{ $jcr['t_shoe_packer'] ? $jcr['t_shoe_packer'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">S/Nipple Top Exp.:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['s_nippletopexp'] ? $jcrs['s_nippletopexp'].' m' : '---' }}
+                                    {{ $jcr['s_nippletopexp'] ? $jcr['s_nippletopexp'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">THP</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['THP'] ? $jcrs['THP'].' m' : '---' }}
+                                    {{ $jcr['THP'] ? $jcr['THP'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Max Dev at:</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcrs['maxDevAt'] ? $jcrs['maxDevAt'].' m' : '---' }}
+                                    {{ $jcr['maxDevAt'] ? $jcr['maxDevAt'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border-top: 1px solid #333; border-right: 1px solid #333; border-left: 1px solid #333;">
                                     Dist(To&Fro)(Kms):</td>
                                 <td colspan="1" style="border-top: 1px solid #333; border-right: 1px solid #333; border-left: 1px solid #333;">
-                                    {{ $jcrs['distTo_FroKms'] ? $jcrs['distTo_FroKms'].' m' : '---' }}
+                                    {{ $jcr['distTo_FroKms'] ? $jcr['distTo_FroKms'].' m' : '---' }}
                                 </td>
                             </tr>
                         </tbody>
@@ -372,10 +372,10 @@
                                 <td colspan="1" style="border: 1px solid #333;">Rm: </td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     <span>
-                                        {{ $jcrs['rm'] ? $jcrs['rm'] : '---' }}
+                                        {{ $jcr['rm'] ? $jcr['rm'] : '---' }}
                                         <span>Ohm m at</span>
                                         <span>
-                                            {{ $jcrs['rmTemp'] ? $jcrs['rmTemp'].' F' : '---' }}
+                                            {{ $jcr['rmtemp'] ? $jcr['rmtemp'].' F' : '---' }}
                                         </span>
                                 </td>
                             </tr>
@@ -383,10 +383,10 @@
                                 <td colspan="1" style="border: 1px solid #333;">Rmf: </td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     <span>
-                                        {{ $jcrs['rmf'] ? $jcrs['rmf'] : '---' }}
+                                        {{ $jcr['rmf'] ? $jcr['rmf'] : '---' }}
                                         <span>Ohm m at</span>
                                         <span>
-                                            {{ $jcrs['rmfTemp'] ? $jcrs['rmfTemp'].' F' : '---' }}
+                                            {{ $jcr['rmftemp'] ? $jcr['rmftemp'].' F' : '---' }}
                                         </span>
                                 </td>
                             </tr>
@@ -394,10 +394,10 @@
                                 <td colspan="1" style="border: 1px solid #333;">Rmc: </td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     <span>
-                                        {{ $jcrs['rmc'] ? $jcrs['rmc'] : '---' }}
+                                        {{ $jcr['rmc'] ? $jcr['rmc'] : '---' }}
                                         <span>Ohm m at</span>
                                         <span>
-                                            {{ $jcrs['rmcTemp'] ? $jcrs['rmcTemp'].' F' : '---' }}
+                                            {{ $jcr['rmctemp'] ? $jcr['rmctemp'].' F' : '---' }}
                                         </span>
                                 </td>
                             </tr>
@@ -405,67 +405,67 @@
                                 <td colspan="1" style="border: 1px solid #333;">BHT: </td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     <span>
-                                        {{ $jcrs['bht'] ? $jcrs['bht'] : '---' }}
+                                        {{ $jcr['bht'] ? $jcr['bht'] : '---' }}
                                     </span>
                                     <span>F at</span>
                                     <span>
-                                        {{ $jcrs['bhtDepth'] ? $jcrs['bhtDepth'].' m' : '---' }}
+                                        {{ $jcr['bhtDepth'] ? $jcr['bhtDepth'].' m' : '---' }}
                                     </span>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">Specific Gravity: </td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['spgr'] ? $jcrs['spgr'].' gm/cc' : '---' }}
+                                    {{ $jcr['spgr'] ? $jcr['spgr'].' gm/cc' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">Viscosity:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['viscosity'] ? $jcrs['viscosity'].' CP' : '---' }}
+                                    {{ $jcr['viscosity'] ? $jcr['viscosity'].' CP' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">Mud Type:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['mudType'] ? $jcrs['mudType'] : '---' }}
+                                    {{ $jcr['mudType'] ? $jcr['mudType'] : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">Water Loss:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['waterloss'] ? $jcrs['waterloss'].' cc' : '---' }}
+                                    {{ $jcr['waterloss'] ? $jcr['waterloss'].' cc' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">PH:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['ph'] ? $jcrs['ph'].' m' : '---' }}
+                                    {{ $jcr['ph'] ? $jcr['ph'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">OIL%:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['oilpercnt'] ? $jcrs['oilpercnt'].'%' : '---' }}
+                                    {{ $jcr['oilpercnt'] ? $jcr['oilpercnt'].'%' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">KCL/Barytes</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['kcl_barytes'] ? $jcrs['kcl_barytes'].' m' : '---' }}
+                                    {{ $jcr['kcl_barytes'] ? $jcr['kcl_barytes'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">Salinity</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['salinity'] ? $jcrs['salinity'].' gpl' : '---' }}
+                                    {{ $jcr['salinity'] ? $jcr['salinity'].' gpl' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1" style="border-top: 1px solid #333; border-right: 1px solid #333; border-left: 1px solid #333;">Last
                                     Circulation</td>
                                 <td colspan="2" style="border-top: 1px solid #333; border-right: 1px solid #333; border-left: 1px solid #333;">
-                                    {{ $jcrs['lastcirc'] ? $jcrs['lastcirc'] : '---' }}
+                                    {{ $jcr['lastcirc'] ? $jcr['lastcirc'] : '---' }}
                                 </td>
                             </tr>
                         </tbody>
@@ -482,43 +482,43 @@
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">SIZE(inch):</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['cableSize'] }}
+                                    {{ $jcr['cableSize'] }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Insulation:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['insulation'] }}
+                                    {{ $jcr['insulation'] }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Shoe Date:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['shoeDate'] ? date("d-m-Y", strtotime($jcrs['shoeDate'])) : '---' }}
+                                    {{ $jcr['shoeDate'] ? date("d-m-Y", strtotime($jcr['shoeDate'])) : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Weak Point:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['weakPoint'] }}
+                                    {{ $jcr['weakPoint'] }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Cable Head Size:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['cableHeadSize'] }}
+                                    {{ $jcr['cableHeadSize'] }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Cable Length (m):</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['cableLength'] ? $jcrs['cableLength'].' m' : '---' }}
+                                    {{ $jcr['cableLength'] ? $jcr['cableLength'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Initial Length (m):</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcrs['initialLength'] ? $jcrs['initialLength'].' m' : '---' }}
+                                    {{ $jcr['initialLength'] ? $jcr['initialLength'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -527,25 +527,25 @@
                             <tr>
                                 <td colspan="4">Surface Equipment:</td>
                                 <td colspan="1">
-                                    {{ $jcrs['surfaceEquipment'] ? $jcrs['surfaceEquipment'] : 'OK' }}
+                                    {{ $jcr['surfaceEquipment'] ? $jcr['surfaceEquipment'] : 'OK' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="4" style="border-right: 0">Auto:</td>
                                 <td colspan="1">
-                                    {{ $jcrs['automobile'] ? $jcrs['automobile'] : 'OK' }}
+                                    {{ $jcr['automobile'] ? $jcr['automobile'] : 'OK' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="4">Well Condition:</td>
                                 <td colspan="1">
-                                    {{ $jcrs['wellCondition'] ? $jcrs['wellCondition'] : 'OK' }}
+                                    {{ $jcr['wellCondition'] ? $jcr['wellCondition'] : 'OK' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="4">Time Loss:</td>
                                 <td colspan="1">
-                                    {{ $jcrs['timeLoss'] ? $jcrs['timeLoss'] : 'NO' }}
+                                    {{ $jcr['timeLoss'] ? $jcr['timeLoss'] : 'NO' }}
                                 </td>
                             </tr>
                         </tbody>
@@ -558,7 +558,7 @@
                                 PERSONNEL</th>
                         </thead>
                         <tbody>
-                            @foreach ($jcrs->users as $personnel)
+                            @foreach ($jcr->users as $personnel)
                                 <tr>
                                     <td>
                                     {{ $personnel->name }}; 
@@ -579,37 +579,37 @@
                         <tr rowspan="2">
                             <td colspan="1" style="border: 1px solid #333;">ATTEMPTED:</td>
                             <td colspan="1" style="border: 1px solid #333;">
-                                {{ $jcrs['attempted'] ? $jcrs['attempted'] : '---' }}
+                                {{ $jcr['attempted'] ? $jcr['attempted'] : '---' }}
                             </td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="1" style="border: 1px solid #333;">RECOVERED:</td>
                             <td colspan="1" style="border: 1px solid #333;">
-                                {{ $jcrs['recovered'] ? $jcrs['recovered'] : '---' }}
+                                {{ $jcr['recovered'] ? $jcr['recovered'] : '---' }}
                             </td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="1" style="border: 1px solid #333;">MISS FIRE:</td>
                             <td colspan="1" style="border: 1px solid #333;">
-                                {{ $jcrs['missFire'] ? $jcrs['missFire'] : '---' }}
+                                {{ $jcr['missFire'] ? $jcr['missFire'] : '---' }}
                             </td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="1" style="border: 1px solid #333;">BARREL LOST:</td>
                             <td colspan="1" style="border: 1px solid #333;">
-                                {{ $jcrs['barrelLost'] ? $jcrs['barrelLost'] : '---' }}
+                                {{ $jcr['barrelLost'] ? $jcr['barrelLost'] : '---' }}
                             </td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="1" style="border: 1px solid #333;">EMPTY BARREL:</td>
                             <td colspan="1" style="border: 1px solid #333;">
-                                {{ $jcrs['emptyBarrel'] ? $jcrs['emptyBarrel'] : '---' }}
+                                {{ $jcr['emptyBarrel'] ? $jcr['emptyBarrel'] : '---' }}
                             </td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="1" style="border: 1px solid #333;">CHARGE USED:</td>
                             <td colspan="1" style="border: 1px solid #333;">
-                                {{ $jcrs['chargeUsed'] ? $jcrs['chargeUsed'] : '---' }}
+                                {{ $jcr['chargeUsed'] ? $jcr['chargeUsed'] : '---' }}
                             </td>
                         </tr>
                     </table>
@@ -650,7 +650,7 @@
                 <td colspan="1" align="center" style="border: 1px solid #333;">Type</td>
                 <td colspan="1" align="center" style="border: 1px solid #333;">No.</td>
             </tr>
-            @if (empty($jcrs->logs))
+            @if (empty($jcr->logs))
                 <tr style="height: 10rem;">
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">---</td>
                 <td colspan="2" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">---</td>
@@ -670,7 +670,7 @@
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">---</td>
                 </tr>
             @else
-            @foreach ($jcrs->logs as $log)
+            @foreach ($jcr->logs as $log)
             <tr>
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['runNo'] }}</td>
             <td colspan="2" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['logRecorded'] }}</td>
@@ -716,7 +716,7 @@
             </tr>
             <tr>
                 <td colspan="05" rowspan="1" style="border: 1px solid #333; padding: 5px; word-wrap: break-sentence; justify-content: center;">
-                    {{ $jcrs['remarks'] }}
+                    {{ $jcr['remarks'] }}
                 </td>
                 <td colspan="06" valign="top" style="border: 1px solid #333; cellspacing:0; cellpadding:0; padding: 0;">
                     <table style="width: 100%; height: 100% border:0; cellspacing:0; cellpadding:0;">
@@ -726,8 +726,8 @@
                             <th colspan="01" align="center" style="border: 1px solid #333;">USED</th>
                             <th colspan="01" align="center" style="border: 1px solid #333;">BALANCE</th>
                         </thead>
-                        @if (count($jcrs->explosives) >= 6)
-                            @foreach ($jcrs->explosives as $explosive)
+                        @if (count($jcr->explosives) >= 6)
+                            @foreach ($jcr->explosives as $explosive)
                             <tr>
                       <td colspan="03" style="border: 1px solid #333;">{{ $explosive['explosive'] }}</td>
                       <td colspan="01" style="border: 1px solid #333;">{{ $explosive['issued'] }}</td>
@@ -736,7 +736,7 @@
                     </tr>
                     @endforeach
                     @else
-                    @foreach ($jcrs->explosives as $explosive)
+                    @foreach ($jcr->explosives as $explosive)
                     <tr>
                         <td colspan="03" style="border: 1px solid #333;">{{ $explosive['explosive'] }}</td>
                         <td colspan="01" style="border: 1px solid #333;">{{ $explosive['issued'] }}</td>
@@ -744,7 +744,7 @@
                         <td colspan="01" style="border: 1px solid #333;">{{ $explosive['returned'] }}</td>
                     </tr>
                     @endforeach
-                    @for ($i = count($jcrs->explosives); $i < 6; ++$i)
+                    @for ($i = count($jcr->explosives); $i < 6; ++$i)
                     <tr>
                   <td colspan="03" style="border: 1px solid #333;">---</td>
                   <td colspan="01" style="border: 1px solid #333;">---</td>
@@ -762,7 +762,7 @@
                         </tr>
                         <tr>
                             <td rowspan="3" colspan="05">
-                                {{ $jcrs['objective'] }}
+                                {{ $jcr['objective'] }}
                             </td>
                         </tr>
                         <tr>
@@ -776,7 +776,7 @@
                         </tr>
                         <tr>
                             <td rowspan="3" colspan="05">
-                                {{ $jcrs['observations'] }}
+                                {{ $jcr['observations'] }}
                             </td>
                         </tr>
                         <tr>
@@ -792,43 +792,43 @@
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">1) Permit Type</td>
                             <td colspan="05" style="border: 1px solid #333;">
-                                {{ $jcrs['permitType'] }}
+                                {{ $jcr['permitType'] }}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">2) Permit No.</td>
                             <td colspan="03" style="border: 1px solid #333;">
-                                {{ $jcrs['permitNo'] }}
+                                {{ $jcr['permitNo'] }}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">3) Form of Permit to Work</td>
                             <td colspan="03" style="border: 1px solid #333;">
-                                {{ $jcrs['permitWork']==1 ? 'Yes' : 'No' }}
+                                {{ $jcr['permitWork']==1 ? 'Yes' : 'No' }}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">4) Electrical Lockout</td>
                             <td colspan="03" style="border: 1px solid #333;">
-                                {{ $jcrs['elecLockout']==1 ? 'Yes' : 'No' }}
+                                {{ $jcr['elecLockout']==1 ? 'Yes' : 'No' }}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">5) Safety meeting conducted</td>
                             <td colspan="03" style="border: 1px solid #333;">
-                                {{ $jcrs['safetyMeeting']==1 ? 'Yes' : 'No' }}
+                                {{ $jcr['safetyMeeting']==1 ? 'Yes' : 'No' }}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">6) Job Closeup Meeting</td>
                             <td colspan="03" style="border: 1px solid #333;">
-                                {{ $jcrs['jobCloseMeeting']==1 ? 'Yes' : 'No' }}
+                                {{ $jcr['jobCloseMeeting']==1 ? 'Yes' : 'No' }}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="03" style="border: 1px solid #333;">7) Near Miss</td>
                             <td colspan="03" style="border: 1px solid #333;">
-                                {{ $jcrs['nearMiss']==1 ? 'Yes' : 'No' }}
+                                {{ $jcr['nearMiss']==1 ? 'Yes' : 'No' }}
                             </td>
                         </tr>
                     </table>
@@ -843,21 +843,21 @@
             </tr>
             <tr>
                 <td colspan="03" style="border-bottom: 1px solid #333; border-left: 1px solid #333;">Date:
-                    {{ $jcrs['created_at'] }}
+                    {{ $jcr['creator_signed_at'] }}
                 </td>
                 <td colspan="03" style="border-bottom: 1px solid #333;">Sign:
-                    {{ $jcrs['created_by'] }}
+                    {{ $jcr['creator_signature'] }}
                 </td>
-                <td colspan="02" style="border-bottom: 1px solid #333; border-left: 1px solid #333;">Date:</td>
-                <td colspan="03" style="border-bottom: 1px solid #333;">Group Head Name</td>
+                <td colspan="02" style="border-bottom: 1px solid #333; border-left: 1px solid #333;">Date: {{ $jcr['party_chief_signed_at'] }}</td>
+                <td colspan="03" style="border-bottom: 1px solid #333;">Group Head Name: {{ $jcr['party_chief_signature'] }}</td>
                 <td colspan="02" style="border-bottom: 1px solid #333; border-left: 1px solid #333;">Date:
-                    {{ $jcrs['final_submitted_at'] }}
+                    {{ $jcr['final_submitted_at'] }}
                 </td>
                 <td colspan="03" style="border-bottom: 1px solid #333;">I/C-Ops. Name:
-                    {{ $jcrs['final_submitted_by'] }}
+                    {{ $jcr['final_submitted_by'] }}
                 </td>
                 <td colspan="05" rowspan="1" style="border-bottom: 1px solid #333; border-left: 1px solid #333; border-right: 1px solid #333;">
-                    {{ $jcrs['nearMiss'] ? $jcrs['nearMissDesc'] : 'N/A' }}
+                    {{ $jcr['nearMiss'] ? $jcr['nearMissDesc'] : 'N/A' }}
                 </td>
             </tr>
 
@@ -866,7 +866,7 @@
     <pdf:nextpage name="contingents" />
     <h2 style="font-family:Verdana, Geneva, sans-serif; font-weight:600; font-size:25px;">Contingents</h2>
     <p>
-        {{ $jcrs['contingents'] }}
+        {{ $jcr['contingents'] }}
     </p>
 
 </body>

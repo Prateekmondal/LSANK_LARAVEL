@@ -42,6 +42,8 @@ class LogTypeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('logType')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('loggingUnits.loggingUnit')
+                    ->sortable(),
             ])
             ->filters([
                 //

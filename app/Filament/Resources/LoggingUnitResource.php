@@ -17,7 +17,7 @@ class LoggingUnitResource extends Resource
 {
     protected static ?string $model = LoggingUnit::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
 
     public static function form(Form $form): Form
     {
@@ -34,7 +34,7 @@ class LoggingUnitResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('loggingUnit')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('logType')
+                Tables\Columns\TextColumn::make('logTypes.logType')
                     ->sortable(),
             ])
             ->filters([

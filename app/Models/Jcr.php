@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasPermissions;
 
+use App\Traits\Auditable;
+
 class Jcr extends Model
 {
-    use HasPermissions;
+    use HasPermissions, Auditable;
     public $timestamps = false;
 
     protected $table = 'jcr';
@@ -134,9 +136,17 @@ class Jcr extends Model
         'created_at',
         'last_edited_by',
         'last_edited_at',
-        'final_submitted',
-        'final_submitted_by',
-        'final_submitted_at',
+        'final_submit',
+        'creator_id',
+        'creator_signature',
+        'creator_signed_at',
+        'party_chief_id',
+        'party_chief_signature',
+        'party_chief_signed_at',
+        'operation_incharge_id',
+        'operation_incharge_signature',
+        'operation_incharge_signed_at',
+        'status'
     ];
 
     /**
@@ -145,8 +155,8 @@ class Jcr extends Model
      * @var array
      */
     protected $casts = [
-        'jobDate' =>  'datetime:Y-m-d',
-        'workOrderDate' =>  'datetime:Y-m-d',
+        'jobDate' => 'datetime:Y-m-d',
+        'workOrderDate' => 'datetime:Y-m-d',
         'assembled_date' => 'datetime:Y-m-d',
         'assembled_time' => 'datetime:h:m',
         'depOffice_date' => 'datetime:Y-m-d',
@@ -167,7 +177,7 @@ class Jcr extends Model
         'depSite_time' => 'datetime:h:m',
         'arrivalOffice_date' => 'datetime:Y-m-d',
         'arrivalOffice_time' => 'datetime:h:m',
-        'shoeDate' =>  'datetime:Y-m-d',
+        'shoeDate' => 'datetime:Y-m-d',
         'lastcirc_from' => 'datetime:Y-m-d h:m',
         'lastcirc_to' => 'datetime:Y-m-d h:m',
     ];
@@ -184,5 +194,89 @@ class Jcr extends Model
     public function explosives()
     {
         return $this->hasMany(explosiveUsed::class);
+    }
+
+    // Status constants
+    const STATUS_DRAFT = 'draft';
+    const STATUS_PENDING_CREATOR = 'pending_creator';
+    const STATUS_PENDING_PARTY_CHIEF = 'pending_party_chief';
+    const STATUS_PENDING_OPERATION_INCHARGE = 'pending_operation_incharge';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+
+    public function getStatusAttribute($value)
+    {
+        return $value ?? self::STATUS_DRAFT;
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function partyChief()
+    {
+        return $this->belongsTo(User::class, 'party_chief_id');
+    }
+
+    public function operationIncharge()
+    {
+        return $this->belongsTo(User::class, 'operation_incharge_id');
+    }
+
+    // Helper methods for status checking
+    public function isDraft()
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
+    public function isPendingCreator()
+    {
+        return $this->status === self::STATUS_PENDING_CREATOR;
+    }
+
+    public function isPendingPartyChief()
+    {
+        return $this->status === self::STATUS_PENDING_PARTY_CHIEF;
+    }
+
+    public function isPendingOperationIncharge()
+    {
+        return $this->status === self::STATUS_PENDING_OPERATION_INCHARGE;
+    }
+
+    public function isApproved()
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isRejected()
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function getStatusBadgeColorAttribute()
+    {
+        switch ($this->status) {
+            case self::STATUS_APPROVED:
+                return 'success';
+            case self::STATUS_REJECTED:
+                return 'danger';
+            case self::STATUS_DRAFT:
+                return 'secondary';
+            case self::STATUS_PENDING_CREATOR:
+                return 'warning';
+            case self::STATUS_PENDING_PARTY_CHIEF:
+                return 'info';
+            case self::STATUS_PENDING_OPERATION_INCHARGE:
+                return 'primary';
+            default:
+                return 'secondary';
+        }
+    }
+
+    public function checklists()
+    {
+        return $this->hasMany(ExplosiveChecklist::class);
     }
 }

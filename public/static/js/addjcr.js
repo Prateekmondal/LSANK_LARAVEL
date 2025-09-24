@@ -393,9 +393,13 @@ $(document).ready(function () {
     });
 
     $('#div-explosive, .logmodel_set-logRecorded-other').hide();
+    var selectedOption = $(this).find('option:selected');
+    if (selectedOption.closest('optgroup').attr('id') === 'explosive-logs') {
+        $('.explosive-job').removeClass('d-none');
+        $('#div-explosive').show();
+    }
     $('.logs-wrapper').on('change', '.logsRecorded', function () {
         var selectedOption = $(this).find('option:selected');
-        console.log(selectedOption);
         if (selectedOption.closest('optgroup').attr('id') === 'explosive-logs') {
             $('.explosive-job').removeClass('d-none');
             $('#div-explosive').show();
@@ -471,8 +475,7 @@ $(document).ready(function () {
             success: function (cabledata) {
                 if (Object.keys(cabledata).length > 0) {
                     //Perform actions with the response data from the view
-                    const date = new Date(cabledata.shoeDate); // Or your desired Date object
-                    console.log(date);
+                    var date = new Date(cabledata.shoeDate); // Or your desired Date object
                     let day = date.getDate();
                     let month = date.getMonth() + 1; // getMonth() returns 0-indexed month
                     let year = date.getFullYear();

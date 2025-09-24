@@ -14,9 +14,9 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         // create permissions
-        Permission::create(['name' => 'add JCR']);
-        Permission::create(['name' => 'view JCR']);
-        Permission::create(['name' => 'edit JCR']);
-        Permission::create(['name' => 'delete JCR']);
+        Permission::create(['name' => 'add jcr']);
+        Permission::create(['name' => 'view jcr']);
+        Permission::create(['name' => 'edit jcr']);
+        Permission::create(['name' => 'delete jcr']);
     }
 }

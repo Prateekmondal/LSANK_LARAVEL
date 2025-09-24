@@ -114,13 +114,6 @@ return new class extends Migration
             $table->text('objective')->nullable();
             $table->text('observations')->nullable();
             $table->text('contingents')->nullable();
-            $table->string('created_by')->nullable();
-            $table->timestamp('created_at')->default(now());
-            $table->string('last_edited_by')->nullable();
-            $table->timestamp('last_edited_at')->nullable();
-            $table->binary('final_submitted')->nullable();
-            $table->string('final_submitted_by')->nullable();
-            $table->timestamp('final_submitted_at')->nullable();
         });
     }
 
