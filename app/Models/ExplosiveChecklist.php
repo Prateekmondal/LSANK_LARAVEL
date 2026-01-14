@@ -27,9 +27,10 @@ class ExplosiveChecklist extends Model
         'perf_interval',
         'date',
         'checklist_data',
-        'sign_status',
         'status',
         'creator_id',
+        'sign_status',
+        'external_sign_status',
     ];
 
     public function creator()

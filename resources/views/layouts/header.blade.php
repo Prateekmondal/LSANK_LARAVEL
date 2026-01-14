@@ -29,8 +29,8 @@
     <link rel="stylesheet" href="/static/css/tempusdominus-bootstrap-4.min.css"
         integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" />
 
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/static/css/jquery-ui.css">
+    <script src="/static/js/jquery-ui.js"></script>
 
     <link rel="stylesheet" href="/static/css/main.css">
     @stack('css')

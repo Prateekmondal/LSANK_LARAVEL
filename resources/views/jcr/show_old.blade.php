@@ -4,7 +4,7 @@
     <div class="container">
         <div class="card w-100">
             <div class="card-body">
-                @include('jcr._preview_content')
+                <!-- @include('jcr._preview_content') -->
 
                 <!-- Signature Status -->
                 <hr>

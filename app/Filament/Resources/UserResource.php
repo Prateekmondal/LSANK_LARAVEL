@@ -106,7 +106,8 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\UserResource\RelationManagers\TimeRegistersRelationManager::class,
+            \App\Filament\Resources\UserResource\RelationManagers\JcrsRelationManager::class,
         ];
     }
 

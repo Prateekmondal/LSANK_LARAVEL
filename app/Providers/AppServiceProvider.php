@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 use App\Models\Jcr;
+use App\Models\ExplosiveChecklist;
+use App\Models\TimeRegister;
 use App\Policies\JcrPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 // use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         Jcr::class => JcrPolicy::class,
         ExplosiveChecklist::class => \App\Policies\ChecklistPolicy::class,
+        TimeRegister::class => \App\Policies\TimeRegisterPolicy::class,
     ];
 
     /**
@@ -42,6 +47,33 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('sign_as_party_chief', [JcrPolicy::class, 'signAsPartyChief']);
         Gate::define('sign_as_operation_incharge', [JcrPolicy::class, 'signAsOperationIncharge']);
         Gate::define('approve jcr', [JcrPolicy::class, 'approve']);
+
+        // Dynamic sitemap links for footer
+        view()->composer('layouts.footer', function ($view) {
+            $routes = collect(Route::getRoutes())->filter(function ($route) {
+                $methods = $route->methods();
+                if (!in_array('GET', $methods) && !in_array('HEAD', $methods)) {
+                    return false;
+                }
+                $uri = $route->uri();
+                if (Str::contains($uri, '{') || Str::startsWith($uri, '_')) {
+                    return false;
+                }
+                if (Str::startsWith($uri, 'api') || Str::startsWith($uri, 'sanctum')) {
+                    return false;
+                }
+                $middleware = $route->gatherMiddleware();
+                if (in_array('auth', $middleware) || in_array(\App\Http\Middleware\Authenticate::class, $middleware)) {
+                    return auth()->check();
+                }
+                return true;
+            })->map(function ($r) {
+                $label = $r->getName() ? Str::title(str_replace(['-','_','.'], ' ', $r->getName())) : Str::title(str_replace(['-','_','.','/'], ' ', $r->uri()));
+                return ['label' => $label, 'url' => url($r->uri())];
+            })->unique('url')->sortBy('label')->values();
+
+            $view->with('sitemapLinks', $routes);
+        });
     }
 
 }

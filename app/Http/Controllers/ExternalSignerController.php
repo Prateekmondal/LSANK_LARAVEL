@@ -50,6 +50,7 @@ class ExternalSignerController extends Controller
         // Update checklist status
         $checklist->update([
             'external_sign_status' => 'completed',
+            'sign_status' => 'fully_signed',
             'status' => $checklist->isFullySigned() ? 'signed' : 'completed',
         ]);
 

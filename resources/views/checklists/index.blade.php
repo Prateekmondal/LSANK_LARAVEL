@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="card w-75">
+    <div class="card w-100">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -46,6 +46,11 @@
                                     </span>
                                 </td>
                                 <td>
+                                    @if ($checklist->status === 'draft')
+                                        <a href="{{ route('checklists.edit', ['checklist' => $checklist->id, 'type' => $checklist->type]) }}" class="btn btn-sm btn-outline-warning">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a>
+                                    @endif
                                     <a href="{{ route('checklists.show', $checklist->id) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> View
                                     </a>
@@ -60,8 +65,8 @@
                 </table>
             </div>
             
-            <div class="d-flex justify-content-center">
-                {{ $checklists->links() }}
+            <div class="d-flex justify-content-end">
+                {{ $checklists->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

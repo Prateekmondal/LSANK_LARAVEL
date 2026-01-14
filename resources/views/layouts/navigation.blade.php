@@ -11,7 +11,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('jcr.create') }}">Add JCR</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            JCR
+                        </a>
+                    <ul class="dropdown-menu">
+                        @can('create', App\Models\Jcr::class)
+                            <li><a class="dropdown-item" href="{{ route('jcr.create') }}">Add JCR</a></li>
+                        @endcan
+                        <li><a class="dropdown-item" href="{{ route('jcr.index') }}">View JCR</a></li>
+                    </ul>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
@@ -19,13 +29,23 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/checklists">View Checklists</a></li>
-                            <li><a class="dropdown-item" href="/checklists/create/a">Checklist-A</a></li>
-                            <li><a class="dropdown-item" href="/checklists/create/b">Checklist-B</a></li>
-                            <li><a class="dropdown-item" href="/checklists/create/c">Checklist-C</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Source Checklist</a></li>
+                            @can('create', App\Models\ExplosiveChecklist::class)
+                                <li><a class="dropdown-item" href="/checklists/create/a">Checklist-A</a></li>
+                                <li><a class="dropdown-item" href="/checklists/create/b">Checklist-B</a></li>
+                                <li><a class="dropdown-item" href="/checklists/create/c">Checklist-C</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Time Register
+                        </a>
+                        <ul class="dropdown-menu">
+                            @can('create', App\Models\TimeRegister::class)
+                                <li><a class="dropdown-item" href="{{ route('time-registers.create') }}">Create Time Register</a></li>
+                            @endcan
+                            <li><a class="dropdown-item" href="{{ route('time-registers.index') }}">View Time Registers</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -48,7 +68,9 @@
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
                                     @forelse(auth()->user()->unreadNotifications as $notification)
                                         <li>
-                                            <a class="dropdown-item" href="{{ $notification->data['link'] }}">
+                                            @if(!empty($notification->data['link']))
+                                                <a class="dropdown-item" href="{{ route('notifications.read', $notification->id) }}">
+                                            @endif
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-2">
                                                         <i class="bi bi-clipboard-check fs-4 text-primary"></i>
@@ -85,7 +107,7 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    @if (auth()->user()->hasRole('super-admin'))
+                                    @if (auth()->user()->hasAnyRole(['super-admin', 'Head_Logging_Services', 'Location Manager']))
                                         <li><a class="dropdown-item" target="_blank"
                                                 href="{{ route('filament.admin.pages.dashboard') }}">Admin</a></li>
                                         <li>
@@ -93,8 +115,7 @@
                                         </li>
                                     @endif
                                     <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('profile.index') }}">Account</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('jcr.index') }}">View JCR</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Account</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>

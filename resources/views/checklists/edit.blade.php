@@ -12,8 +12,20 @@
             <form action="{{ route('checklists.update', $checklist->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <h6 class="mb-1">Please fix the following errors:</h6>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="row mb-3">
-                    @include('checklists.partials.header-type-' . $type)
+                    @include('checklists.partials.header-type-' . $checklist->type)
                 </div>
 
                 <div class="checklist-items mb-4">
@@ -62,3 +74,61 @@
     </div>
 </div>
 @endsection
+@push('js')
+<script>
+    // Generic initializers: use classes so any date/time input can be turned into pickers
+    $('.datepicker').each(function () {
+        $(this).datetimepicker({
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true,
+            showClear: true,
+            icons: {
+                time: 'fa fa-clock',
+                date: 'fa fa-calendar',
+                up: 'fa fa-arrow-up',
+                down: 'fa fa-arrow-down',
+                previous: 'fa fa-arrow-left',
+                next: 'fa fa-arrow-right',
+                today: 'fa fa-calendar-check',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+    });
+
+    $('.timepicker').each(function () {
+        $(this).datetimepicker({
+            format: 'HH:mm',
+            useCurrent: false,
+            showTodayButton: true,
+            showClear: true,
+            icons: {
+                time: 'fa fa-clock',
+                date: 'fa fa-calendar',
+                up: 'fa fa-arrow-up',
+                down: 'fa fa-arrow-down',
+                previous: 'fa fa-arrow-left',
+                next: 'fa fa-arrow-right',
+                today: 'fa fa-calendar-check',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+    });
+
+    // Auto-open picker when input receives focus or is clicked
+    $('.datepicker, .timepicker').on('focus click', function (e) {
+        // Use the plugin API to show the widget
+        try {
+            $(this).datetimepicker('show');
+        } catch (err) {
+            // Fallback for Tempus Dominus or different API
+            var dp = $(this).data('DateTimePicker') || $(this).data('datetimepicker');
+            if (dp) {
+                if (typeof dp.show === 'function') dp.show();
+            }
+        }
+    });
+</script>
+@endpush

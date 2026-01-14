@@ -34,7 +34,7 @@ class ChecklistController extends Controller
                 });
         })
             ->with(['creator', 'signatures.user', 'externalSignature'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('date', 'desc')
             ->paginate(10);
 
         return view('checklists.index', compact('checklists'));
@@ -42,6 +42,8 @@ class ChecklistController extends Controller
 
     public function create($type, Request $request)
     {
+        $this->authorize('create', ExplosiveChecklist::class);
+
         $types = ['a' => 'Pre-Departure', 'b' => 'On-Site', 'c' => 'Upon-Arrival'];
 
         if (!array_key_exists($type, $types)) {
@@ -58,6 +60,8 @@ class ChecklistController extends Controller
 
     public function store(Request $request, $type)
     {
+        $this->authorize('create', ExplosiveChecklist::class);
+
         // dd($request->all());
         $validated = $request->validate([
             'jcr_id' => 'nullable',
@@ -65,16 +69,11 @@ class ChecklistController extends Controller
             'date' => 'required|date',
             'logging_unit_no' => 'required|string',
             'job_type' => 'nullable|string',
-            'perforation_interval' => 'nullable|string',
+            'perf_interval' => 'nullable|string',
             'rig' => 'nullable|string',
             'checklist_data' => 'required|array',
         ]);
-
-        // dd($validated + [
-        //         'type' => $type,
-        //         'creator_id' => auth()->id(),
-        //         'status' => 'draft',
-        //     ]);
+        
         $checklist = ExplosiveChecklist::create(
             $validated + [
                 'type' => $type,
@@ -92,15 +91,9 @@ class ChecklistController extends Controller
         return view('checklists.show', compact('checklist'));
     }
 
-    public function edit(ExplosiveChecklist $checklist)
+    public function edit(ExplosiveChecklist $checklist, $type)
     {
-        // Check if user can edit (creator or has admin role)
-        if (
-            !(auth()->user()->id === $checklist->creator_id ||
-                auth()->user()->hasAnyRole(['super-admin', 'head-logging-service']))
-        ) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('update', $checklist);
 
         // Check if checklist is editable (draft status)
         if ($checklist->status !== 'draft') {
@@ -116,33 +109,36 @@ class ChecklistController extends Controller
 
     public function update(Request $request, ExplosiveChecklist $checklist)
     {
-        // Check if user can edit (creator or has admin role)
-        if (
-            !(auth()->user()->id === $checklist->creator_id ||
-                auth()->user()->hasAnyRole(['super-admin', 'head-logging-service']))
-        ) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('update', $checklist);
 
         // Check if checklist is editable (draft status)
         if ($checklist->status !== 'draft') {
             return redirect()->route('checklists.show', $checklist->id)
-                ->with('error', 'Only draft checklists can be edited.');
+            ->with('error', 'Only draft checklists can be edited.');
         }
-
+        
         $validated = $request->validate([
             'well_no' => 'required|string',
             'date' => 'required|date',
-            'logging_unit_no' => 'nullable|string',
-            'job_type' => 'required|string',
+            'logging_unit_no' => 'required|string',
+            'job_type' => 'nullable|string',
+            'perf_interval' => 'nullable|string',
+            'rig' => 'nullable|string',
             'items' => 'required|array',
         ]);
-
+        if (!$checklist['job_type'] && !$checklist['perf_interval'] && !$checklist['rig']) {
+            $validated['job_type'] = NULL;
+            $validated['perf_interval'] = NULL;
+            $validated['rig'] = NULL;
+        }
+        // dd($validated);
         $checklist->update([
             'well_no' => $validated['well_no'],
             'date' => $validated['date'],
             'logging_unit_no' => $validated['logging_unit_no'],
             'job_type' => $validated['job_type'],
+            'perf_interval' => $validated['perf_interval'],
+            'rig' => $validated['rig'],
             'checklist_data' => $validated['items'],
         ]);
 
@@ -152,13 +148,7 @@ class ChecklistController extends Controller
 
     public function destroy(ExplosiveChecklist $checklist)
     {
-        // Check if user can delete (creator or has admin role)
-        if (
-            !(auth()->user()->id === $checklist->creator_id ||
-                auth()->user()->hasAnyRole(['super-admin', 'head-logging-service']))
-        ) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('delete', $checklist);
 
         // Check if checklist is deletable (draft status)
         if ($checklist->status !== 'draft') {
@@ -174,20 +164,14 @@ class ChecklistController extends Controller
 
     public function forceEdit(ExplosiveChecklist $checklist)
     {
-        // Only allow super-admin and head-logging-service roles
-        if (!auth()->user()->hasAnyRole(['super-admin', 'head-logging-service'])) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('forceEdit', ExplosiveChecklist::class);
 
         return view('checklists.force-edit', compact('checklist'));
     }
 
     public function forceUpdate(Request $request, ExplosiveChecklist $checklist)
     {
-        // Only allow super-admin and head-logging-service roles
-        if (!auth()->user()->hasAnyRole(['super-admin', 'head-logging-service'])) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('forceEdit', ExplosiveChecklist::class);
 
         $validated = $request->validate([
             'well_no' => 'required|string',
@@ -214,6 +198,10 @@ class ChecklistController extends Controller
     {
         $users = User::orderBy('seniority')->where('status', '=', 1)->where('id', '!=', auth()->id())->get();
         // dd($checklist);
+        if ($checklist->status !== 'draft') {
+            return redirect()->route('checklists.show', $checklist->id)
+                ->with('error', 'Only draft checklists can be previewed.');
+        }
         return view('checklists.preview', compact('checklist', 'users'));
     }
 
@@ -245,6 +233,7 @@ class ChecklistController extends Controller
         $checklist->update([
             'sign_status' => 'partially_signed',
             'status' => 'completed',
+            'external_sign_status' => 'pending',
         ]);
 
         if ($checklist->type === 'b') {
@@ -277,7 +266,7 @@ class ChecklistController extends Controller
 
         if (empty($missing)) {
             // All checklists present, redirect to JCR creation
-            return redirect()->route('jcr.add');
+            return redirect()->route('jcr.create');
         }
 
         // Otherwise, redirect to checklist index or show message
@@ -315,6 +304,7 @@ class ChecklistController extends Controller
             $checklist->update([
                 'sign_status' => 'fully_signed',
                 'status' => 'signed',
+                'external_sign_status' => 'completed',
             ]);
 
             return redirect()->route('checklists.show', $checklist->id)
@@ -325,47 +315,12 @@ class ChecklistController extends Controller
             ->with('error', 'Checklist already has approver signature');
     }
 
-    public function forward(ExplosiveChecklist $checklist)
-    {
-        $users = User::orderBy('seniority')->where('status', '=', 1)->where('id', '!=', auth()->id())->get();
-
-        return view('checklists.forward', compact('checklist', 'users'));
-    }
-
-    public function sendForward(Request $request, ExplosiveChecklist $checklist)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'message' => 'required|string',
-            'purpose' => 'required|in:review,approval',
-        ]);
-
-        $forward = $checklist->forwards()->create([
-            'from_user_id' => auth()->id(),
-            'to_user_id' => $validated['user_id'],
-            'message' => $validated['message'],
-            'purpose' => $validated['purpose'],
-        ]);
-
-        // Send notification
-        $forward->toUser->notify(new ChecklistForwardedNotification($forward));
-
-        return redirect()->route('checklists.show', $checklist->id)
-            ->with('success', 'Checklist forwarded successfully!');
-    }
-
 
     public function linkToJcr(Request $request, ExplosiveChecklist $checklist)
     {
         $request->validate(['jcr_id' => 'required|exists:job_completion_reports,id']);
 
-        // Only allow creator or admin
-        if (
-            !(auth()->user()->id === $checklist->creator_id ||
-                auth()->user()->hasAnyRole(['super-admin', 'head-logging-service']))
-        ) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('update', $checklist);
 
         // Prevent linking if already linked
         if ($checklist->jcr_id) {
@@ -388,7 +343,6 @@ class ChecklistController extends Controller
         $types = ['a', 'b', 'c'];
         $existing = ExplosiveChecklist::where('well_no', $wellName)
             ->where('date', $jobDate)
-            ->where('creator_id', $creatorId)
             ->pluck('type')
             ->toArray();
 
@@ -420,6 +374,6 @@ class ChecklistController extends Controller
         ]);
         // dd($validated);
 
-        return back()->with('success', 'Checklist has been sent to external signer');
+        return back()->with('success', 'Checklist has been sent to external signer '.$validated['external_email'].'.');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 use App\Traits\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, Auditable;
@@ -89,7 +89,7 @@ class User extends Authenticatable
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return $this->hasRole('super-admin'); // Replace with your role/permission check
+            return $this->hasAnyRole(['super-admin', 'Head_Logging_Services', 'Location Manager']); // Replace with your role/permission check
         }
 
         return true; // Default: allow access to other panels if not admin
@@ -109,5 +109,40 @@ class User extends Authenticatable
     public function receivesBroadcastNotificationsOn()
     {
         return 'users.'.$this->id;
+    }
+
+    /**
+     * Determine if the user is a super admin.
+     *
+     * @return bool
+     */
+    public function isSuperAdmin(): bool
+    {
+        // Example: Assuming you have a 'role' column in your users table
+        // and 'super_admin' is a specific role value.
+        return $this->role === 'super-admin';
+
+        // Or, if you have a dedicated 'is_super_admin' boolean column
+        // return (bool) $this->is_super_admin;
+
+        // Or, if using a package like Spatie Laravel-Permission
+        // return $this->hasRole('super_admin');
+    }
+
+        // Relationship with TimeRegisters as logging chief
+    public function timeRegistersAsChief()
+    {
+        return $this->hasMany(TimeRegister::class, 'logging_chief_id');
+    }
+
+    // Relationship with TimeRegisters as creator
+    public function createdTimeRegisters()
+    {
+        return $this->hasMany(TimeRegister::class, 'created_by');
+    }
+    // Relationship with TimeRegisters
+    public function timeRegisters()
+    {
+        return $this->hasMany(TimeRegister::class, 'created_by');
     }
 }

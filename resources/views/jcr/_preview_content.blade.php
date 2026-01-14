@@ -1,71 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>
-        {{ $title ?? 'JCR' }}
-    </title>
-    <link rel="icon" href="/static/favicon.ico">
-
-    <style>
-        @page {
-            size: a4 landscape;
-            margin: 0.5cm;
-        }
-
-        @page contingents {
-            size: a4 landscape;
-            margin: 2cm;
-        }
-
-        table,
-        th,
-        td {
-            border-collapse: collapse;
-        }
-
-        th,
-        tr,
-        td,
-        tbody,
-        thead {
-            padding-top: 4px;
-            padding-left: 4px;
-            padding-right: 4px;
-        }
-
-        td,
-        p {
-            font-family: Verdana, Geneva, sans-serif;
-            font-size: 8px;
-            word-wrap: break-word;
-        }
-
-        [colspan] {
-            width: 4.5rem;
-        }
-
-        [rowspan] {
-            height: 2.12rem;
-        }
-    </style>
-</head>
-
-<body>
-    <table style="width: 100%; border:0; cellspacing:0; cellpadding:0;">
-        <tr>
-            <td colspan="1" align="center" style="font-family:Verdana, Geneva, sans-serif; font-weight:600; font-size:15px;">
-                <img src="/static/images/ongc.png" width="80" />
+<div class="table-responsive">
+<table class="table">
+    <tbody>
+        <tr class="text-sm text-md">
+            <td class="w-25">
+                <img class="img-fluid" src="/static/images/ongc.png" style="max-width: 80px;"/>
             </td>
-            <td colspan="2" align="left" style="font-family:Verdana, Geneva, sans-serif; font-weight:600; font-size:20px;">
+            <td class="fw-semibold w-25">
                 Well Logging Services<br>ONGC, Ankleshwar</td>
-            <td colspan="2" align="center" style="font-family:Verdana, Geneva, sans-serif; font-weight:600; font-size:25px;">
+            <td class="fw-bold w-25">
                 JOB COMPLETION REPORT</td>
-            <td colspan="3" style="min-width: 9rem;">&nbsp;</td>
+            <td class="w-25">&nbsp;</td>
         </tr>
+        </tbody>
     </table>
     <table style="width: 100%; border:0; cellspacing:0; cellpadding:0;">
         <tr>
@@ -282,7 +228,7 @@
                         <tbody>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Depth Driller:</td>
-                                <td colspan="1" style="border: 1px solid #333;">1234 m
+                                <td colspan="1" style="border: 1px solid #333;">{{ $jcr['depthDriller'] ? $jcr['depthDriller'].' m' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -293,7 +239,7 @@
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Casing Size(inch):</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcr['casingSize'] ? $jcr['casingSize'].' m' : '---' }}
+                                    {{ $jcr['casingSize'] ? $jcr['casingSize'].'"' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -317,13 +263,13 @@
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Bit Size(inch):</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcr['bitSize'] ? $jcr['bitSize'].' m' : '---' }}
+                                    {{ $jcr['bitSize'] ? $jcr['bitSize'].' "' : '---' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">Tubing Size(inch):</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcr['tubingSize'] ? $jcr['tubingSize'].' m' : '---' }}
+                                    {{ $jcr['tubingSize'] ? $jcr['tubingSize'].' "' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -341,7 +287,7 @@
                             <tr>
                                 <td colspan="3" style="border: 1px solid #333;">THP</td>
                                 <td colspan="1" style="border: 1px solid #333;">
-                                    {{ $jcr['THP'] ? $jcr['THP'].' m' : '---' }}
+                                    {{ $jcr['THP'] ? $jcr['THP'].' PSI' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -409,7 +355,7 @@
                                     </span>
                                     <span>F at</span>
                                     <span>
-                                        {{ $jcr['bhtDepth'] ? $jcr['bhtDepth'].' m' : '---' }}
+                                        {{ $jcr['bhtdepth'] ? $jcr['bhtdepth'].' m' : '---' }}
                                     </span>
                                 </td>
                             </tr>
@@ -440,7 +386,7 @@
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">PH:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcr['ph'] ? $jcr['ph'].' m' : '---' }}
+                                    {{ $jcr['ph'] ? $jcr['ph'].'' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -452,7 +398,7 @@
                             <tr>
                                 <td colspan="1" style="border: 1px solid #333;">KCL/Barytes</td>
                                 <td colspan="2" style="border: 1px solid #333;">
-                                    {{ $jcr['kcl_barytes'] ? $jcr['kcl_barytes'].' m' : '---' }}
+                                    {{ $jcr['kcl_barytes'] ? $jcr['kcl_barytes'].' %' : '---' }}
                                 </td>
                             </tr>
                             <tr>
@@ -465,7 +411,8 @@
                                 <td colspan="1" style="border-top: 1px solid #333; border-right: 1px solid #333; border-left: 1px solid #333;">Last
                                     Circulation</td>
                                 <td colspan="2" style="border-top: 1px solid #333; border-right: 1px solid #333; border-left: 1px solid #333;">
-                                    {{ $jcr['lastcirc'] ? $jcr['lastcirc'] : '---' }}
+                                    {{ $jcr['lastcirc_from'] ? date("d-m-Y H:i", strtotime($jcr['lastcirc_from'])) : '---' }} to
+                                    {{ $jcr['lastcirc_to'] ? date("d-m-Y H:i", strtotime($jcr['lastcirc_to'])) : '---' }}
                                 </td>
                             </tr>
                         </tbody>
@@ -868,7 +815,4 @@
     <p>
         {{ $jcr['contingents'] }}
     </p>
-
-</body>
-
-</html>
+</div>

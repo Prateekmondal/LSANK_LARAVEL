@@ -4,48 +4,12 @@
 
 @section('content')
     <div class="container">
-        <div class="card mb-4" style="width: 95%;">
+        <div class="card mb-4">
             <div class="card-header">
                 <h2>{{ $checklist->type_name }} Checklist Preview</h2>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>Well Name:</strong> {{ $checklist->well_no }}</div>
-                    <div class="col-md-3"><strong>Rig:</strong> {{ $checklist->rig }}</div>
-                    <div class="col-md-3"><strong>Logging Unit:</strong> {{ $checklist->logging_unit_no }}</div>
-                    <div class="col-md-3"><strong>Job Type:</strong> {{ $checklist->job_type }}</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>Perforation Interval:</strong> {{ $checklist->perf_interval }}</div>
-                    <div class="col-md-3"><strong>Date:</strong> {{ $checklist->date->format('d/m/Y') }}</div>
-                    <div class="col-md-3"><strong>Status:</strong> {{ ucfirst($checklist->status) }}</div>
-                    <div class="col-md-3"><strong>Created By:</strong> {{ ucfirst($checklist->creator->name) }}</div>
-                </div>
-
-                <div class="table-responsive mb-4">
-                    <table class="table table-bordered">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Item</th>
-                                <th>Status</th>
-                                <th>Comments</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($checklist->checklist_data as $item)
-                                <tr>
-                                    <td>{{ $item['name'] }}</td>
-                                    <td>
-                                        <span class="badge bg-{{ $item['status'] ? 'success' : 'danger' }}">
-                                            {{ $item['status'] ? 'Yes' : 'No' }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $item['comments'] ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                @include('checklists.partials._preview_content')
             </div>
         </div>
 
@@ -67,7 +31,7 @@
                                     checklist</small>
                             </div>
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('checklists.edit', $checklist->id) }}" class="btn btn-warning">
+                            <a href="{{ route('checklists.edit', ['checklist' => $checklist->id, 'type' => $checklist->type]) }}" class="btn btn-warning">
                                 <i class="bi bi-arrow-left"></i> Back to Edit
                             </a>
                             <button type="submit" class="btn btn-success">
@@ -131,7 +95,7 @@
                                 <option value="">-- Select Approver --</option>
                                 @foreach($users as $user)
                                     @if($user->id !== auth()->id())
-                                        <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                                        <option value="{{ $user->id }}">{{ Str::title($user->name) }} ({{ strtolower($user->email) }})</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -143,7 +107,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('checklists.edit', $checklist->id) }}" class="btn btn-warning">
+                            <a href="{{ route('checklists.edit', ['checklist' => $checklist->id, 'type' => $checklist->type]) }}" class="btn btn-warning">
                                 <i class="bi bi-arrow-left"></i> Back to Edit
                             </a>
                             <button type="submit" class="btn btn-success">

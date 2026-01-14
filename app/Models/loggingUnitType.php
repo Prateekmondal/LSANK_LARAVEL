@@ -13,8 +13,13 @@ class loggingUnitType extends Model
     protected $table = 'loggingUnitType';
     protected $fillable = ['loggingUnit_id', 'logType_id',];
 
-    public function loggingUnitType()
-        {
-            return $this->belongsToMany(loggingUnitType::class, 'loggingUnitType');
-        }
+    public function loggingUnit()
+    {
+        return $this->belongsTo(loggingUnit::class, 'loggingUnit_id');
+    }
+
+    public function logType()
+    {
+        return $this->belongsTo(logType::class, 'logType_id');
+    }
 }

@@ -16,7 +16,7 @@
                     <label class="form-label">Checklist Details</label>
                     <div class="border p-3 rounded">
                         <div><strong>Type:</strong> {{ $checklist->type_name }}</div>
-                        <div><strong>Well Name:</strong> {{ $checklist->well_name }}</div>
+                        <div><strong>Well Name:</strong> {{ $checklist->well_no }}</div>
                         <div><strong>Date:</strong> {{ $checklist->date->format('d/m/Y') }}</div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                     <select class="form-select" id="user_id" name="user_id" required>
                         <option value="">-- Select User --</option>
                         @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                            <option value="{{ $user->id }}">{{ Str::title($user->name) }} ({{ $user->email }})</option>
                         @endforeach
                     </select>
                 </div>

@@ -15,6 +15,6 @@ class loggingUnit extends Model
 
     public function logTypes()
         {
-            return $this->belongsToMany(logType::class, 'loggingUnitType', 'logType_id', 'loggingUnit_id');
+            return $this->belongsToMany(logType::class, 'loggingUnitType', 'loggingUnit_id', 'logType_id');
         }
 }

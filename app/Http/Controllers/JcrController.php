@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Jcr;
 use App\Models\User;
 use App\Models\ExplosiveChecklist;
-use Carbon\Carbon;
+use App\Models\timeRegister;
+use App\Notifications\JcrAssignedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -19,11 +20,53 @@ class JcrController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jcrs = Jcr::with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
-            ->orderBy('arrivalOffice_time', 'desc')->paginate(10);
-        return view('jcr.index', compact('jcrs'));
+        $user = Auth::user();
+
+        // Base query depends on permission
+        if ($user->can('view_any_jcr')) {
+            $query = Jcr::with(['users', 'logs', 'explosives']);
+        } else {
+            $query = $user->jcrs()->with(['users', 'logs', 'explosives']);
+        }
+
+        // Month filter (expects format YYYY-MM)
+        $monthParam = trim((string) $request->input('month', ''));
+        if ($monthParam !== '') {
+            try {
+                $selectedMonth = \Carbon\Carbon::createFromFormat('Y-m', $monthParam);
+                $start = $selectedMonth->copy()->startOfMonth()->format('Y-m-d');
+                $end = $selectedMonth->copy()->endOfMonth()->format('Y-m-d');
+                $query = $query->whereBetween('arrivalOffice_date', [$start, $end]);
+            } catch (\Exception $e) {
+                // ignore invalid month format
+            }
+        }
+
+        // User-based filter for certain roles
+        $allowedRoles = ['party_chief', 'operation_incharge', 'super-admin', 'Head_Logging_Services', 'Location Manager'];
+        $userFilter = $request->input('user_id');
+        if ($user->hasAnyRole($allowedRoles) && !empty($userFilter)) {
+            // Filter by users associated with the JCR (many-to-many relation)
+            $query = $query->whereHas('users', function ($q) use ($userFilter) {
+                $q->where('users.id', $userFilter);
+            });
+        }
+
+        // Finalize query
+        $jcrs = $query->orderBy('arrivalOffice_date', 'desc')
+            ->orderBy('arrivalOffice_time', 'desc')
+            ->paginate(50)
+            ->appends($request->only('month', 'user_id'));
+
+        // Provide users list to the view if the current user can filter by users
+        $filterUsers = collect();
+        if ($user->hasAnyRole($allowedRoles)) {
+            $filterUsers = User::where('status', 1)->orderBy('seniority')->get();
+        }
+
+        return view('jcr.index', compact('jcrs', 'filterUsers'));
     }
 
     /**
@@ -31,22 +74,26 @@ class JcrController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Jcr::class);
+
         $users = User::orderBy('seniority')->get()->where('status', 1);
         $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
             ->where('creator_id', auth()->id())
             ->get();
-        return view('jcr.create', compact('users', 'unlinkedChecklists'));
-    }
-    //
-    public function index_old()
-    {
-        $users = User::orderBy('seniority')->get()->where('status', 1);
-        $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
-            ->where('creator_id', auth()->id())
-            ->get();
+
+        // Group unlinked checklists by type for the view
+        $groupedUnlinkedChecklists = [
+            'a' => $unlinkedChecklists->where('type', 'a')->values(),
+            'b' => $unlinkedChecklists->where('type', 'b')->values(),
+            'c' => $unlinkedChecklists->where('type', 'c')->values(),
+        ];
+
+        // Get available time registers for linking (exclude those whose job already has all three checklist types linked)
+        $availableTimeRegisters = TimeRegister::availableForLinking()->withoutFullyLinkedChecklists()->get();
         // dd($unlinkedChecklists);
-        return view("jcrs.create", compact(['users', 'unlinkedChecklists']));
+        return view('jcr.create', compact('users', 'groupedUnlinkedChecklists', 'availableTimeRegisters'));
     }
+    
     public function view()
     {
         $user = Auth::user();
@@ -54,24 +101,162 @@ class JcrController extends Controller
             $jcrs = Jcr::with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
                 ->orderBy('arrivalOffice_time', 'desc')->paginate(50);
         } else {
-            # code...
             $jcrs = $user->jcrs()->with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
                 ->orderBy('arrivalOffice_time', 'desc')->paginate(50);
         }
         // dd($jcrs);
         return view("viewjcr", ['jcrs' => $jcrs]);
     }
-    public function dashboardView()
+    public function dashboardView(Request $request)
     {
         $user = Auth::user();
-        $ch_count = $user->jcrs()->where('logType', 'CH')->count();
-        $oh_count = $user->jcrs()->where('logType', 'OH')->count();
-        $pl_count = $user->jcrs()->where('logType', 'PL')->count();
-        $total_count = $user->jcrs()->count();
-        $jcrs = $user->jcrs()->with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
-            ->orderBy('arrivalOffice_time', 'desc')->paginate(10);
-        // dd($jcrs);
-        return view("dashboard", ['jcrs' => $jcrs, 'user' => $user, 'ch' => $ch_count, 'oh' => $oh_count, 'pl' => $pl_count, 'total' => $total_count]);
+
+        // Determine selected month (format: Y-m) from query param. If none provided, show ALL jobs.
+        $monthParam = trim((string) $request->input('month', ''));
+        if ($monthParam !== '') {
+            try {
+                $selectedMonth = \Carbon\Carbon::createFromFormat('Y-m', $monthParam);
+            } catch (\Exception $e) {
+                $selectedMonth = null;
+            }
+        } else {
+            $selectedMonth = null;
+        }
+
+        if ($selectedMonth) {
+            $start = $selectedMonth->copy()->startOfMonth()->format('Y-m-d');
+            $end = $selectedMonth->copy()->endOfMonth()->format('Y-m-d');
+
+            // Counts limited to the selected month
+            $ch_count = $user->jcrs()->whereBetween('arrivalOffice_date', [$start, $end])->where('logType', 'CH')->count();
+            $oh_count = $user->jcrs()->whereBetween('arrivalOffice_date', [$start, $end])->where('logType', 'OH')->count();
+            $pl_count = $user->jcrs()->whereBetween('arrivalOffice_date', [$start, $end])->where('logType', 'PL')->count();
+            $total_count = $user->jcrs()->whereBetween('arrivalOffice_date', [$start, $end])->count();
+
+            // Paginate jobs for the selected month
+            $jcrs = $user->jcrs()->with(['users', 'logs', 'explosives'])
+                ->whereBetween('arrivalOffice_date', [$start, $end])
+                ->orderBy('arrivalOffice_date', 'desc')
+                ->orderBy('arrivalOffice_time', 'desc')
+                ->paginate(25)
+                ->appends($request->only('month'));
+
+            // Dates for calendar highlighting (Y-m-d format)
+            $jobDates = $user->jcrs()->whereBetween('arrivalOffice_date', [$start, $end])
+                ->pluck('arrivalOffice_date')
+                ->map(function ($d) {
+                    return \Carbon\Carbon::parse($d)->format('Y-m-d');
+                });
+        } else {
+            // No month selected: return all jobs and counts
+            $ch_count = $user->jcrs()->where('logType', 'CH')->count();
+            $oh_count = $user->jcrs()->where('logType', 'OH')->count();
+            $pl_count = $user->jcrs()->where('logType', 'PL')->count();
+            $total_count = $user->jcrs()->count();
+
+            $jcrs = $user->jcrs()->with(['users', 'logs', 'explosives'])
+                ->orderBy('arrivalOffice_date', 'desc')
+                ->orderBy('arrivalOffice_time', 'desc')
+                ->paginate(25);
+
+            $jobDates = $user->jcrs()->pluck('arrivalOffice_date')
+                ->map(function ($d) {
+                    return \Carbon\Carbon::parse($d)->format('Y-m-d');
+                });
+        }
+
+        // Prepare financial year statistics for charts (FY starting April - ending March)
+        $now = \Carbon\Carbon::now();
+
+        if ($now->month >= 4) {
+            $fyStart = \Carbon\Carbon::create($now->year, 4, 1);
+        } else {
+            $fyStart = \Carbon\Carbon::create($now->year - 1, 4, 1);
+        }
+        $fyEnd = $fyStart->copy()->addYear()->subDay();
+        $prevFyStart = $fyStart->copy()->subYear();
+        $prevFyEnd = $fyEnd->copy()->subYear();
+
+        // Labels (Apr -> Mar)
+        $labels = [];
+        for ($m = 0; $m < 12; $m++) {
+            $labels[] = $fyStart->copy()->addMonths($m)->format('M');
+        }
+
+        // Counts per month for current and previous financial years
+        $currentFyCounts = array_fill(0, 12, 0);
+        $previousFyCounts = array_fill(0, 12, 0);
+
+        for ($i = 0; $i < 12; $i++) {
+            $s = $fyStart->copy()->addMonths($i)->startOfMonth()->format('Y-m-d');
+            $e = $fyStart->copy()->addMonths($i)->endOfMonth()->format('Y-m-d');
+            $currentFyCounts[$i] = $user->jcrs()->whereBetween('arrivalOffice_date', [$s, $e])->count();
+
+            $ps = $prevFyStart->copy()->addMonths($i)->startOfMonth()->format('Y-m-d');
+            $pe = $prevFyStart->copy()->addMonths($i)->endOfMonth()->format('Y-m-d');
+            $previousFyCounts[$i] = $user->jcrs()->whereBetween('arrivalOffice_date', [$ps, $pe])->count();
+        }
+
+        // Current and previous calendar months
+        $currentMonth = $now->copy();
+        $previousMonth = $now->copy()->subMonth();
+
+        $currentFyCurrentMonthCount = 0;
+        $currentFyPreviousMonthCount = 0;
+        $prevFyCurrentMonthCount = 0;
+        $prevFyPreviousMonthCount = 0;
+
+        if ($currentMonth->between($fyStart, $fyEnd)) {
+            $idx = $currentMonth->diffInMonths($fyStart);
+            $currentFyCurrentMonthCount = $currentFyCounts[$idx] ?? 0;
+        }
+        if ($previousMonth->between($fyStart, $fyEnd)) {
+            $idx2 = $previousMonth->diffInMonths($fyStart);
+            $currentFyPreviousMonthCount = $currentFyCounts[$idx2] ?? 0;
+        }
+
+        if ($currentMonth->between($prevFyStart, $prevFyEnd)) {
+            $idx3 = $currentMonth->diffInMonths($prevFyStart);
+            $prevFyCurrentMonthCount = $previousFyCounts[$idx3] ?? 0;
+        }
+        if ($previousMonth->between($prevFyStart, $prevFyEnd)) {
+            $idx4 = $previousMonth->diffInMonths($prevFyStart);
+            $prevFyPreviousMonthCount = $previousFyCounts[$idx4] ?? 0;
+        }
+
+        $currentFySummary = [
+            'label' => $fyStart->format('Y').' - '.$fyEnd->format('Y'),
+            'total' => array_sum($currentFyCounts),
+            'current_month_label' => $currentMonth->format('F Y'),
+            'current_month_count' => $currentFyCurrentMonthCount,
+            'previous_month_label' => $previousMonth->format('F Y'),
+            'previous_month_count' => $currentFyPreviousMonthCount,
+        ];
+
+        $previousFySummary = [
+            'label' => $prevFyStart->format('Y').' - '.$prevFyEnd->format('Y'),
+            'total' => array_sum($previousFyCounts),
+            'current_month_label' => $currentMonth->format('F Y'),
+            'current_month_count' => $prevFyCurrentMonthCount,
+            'previous_month_label' => $previousMonth->format('F Y'),
+            'previous_month_count' => $prevFyPreviousMonthCount,
+        ];
+
+        return view("dashboard", [
+            'jcrs' => $jcrs,
+            'user' => $user,
+            'ch' => $ch_count,
+            'oh' => $oh_count,
+            'pl' => $pl_count,
+            'total' => $total_count,
+            'selectedMonth' => $selectedMonth,
+            'jobDates' => $jobDates,
+            'chartLabels' => $labels,
+            'currentFyCounts' => $currentFyCounts,
+            'previousFyCounts' => $previousFyCounts,
+            'currentFySummary' => $currentFySummary,
+            'previousFySummary' => $previousFySummary,
+        ]);
     }
 
 
@@ -80,6 +265,8 @@ class JcrController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Jcr::class);
+
         $validated = $this->validateRequest($request);
 
         $action = $request->input('action');
@@ -87,13 +274,28 @@ class JcrController extends Controller
 
         DB::beginTransaction();
         try {
-            // dd($validated);
+            // dd($validated['explosive']);
             // $jcrData = $validated['jcr'];
-            $jcrData = array_diff_key($validated, array_flip(['personnel', 'logrecorded', 'explosives']));
+            $jcrData = array_diff_key($validated, array_flip(['personnel', 'logrecorded', 'explosive']));
             $jcrData['creator_id'] = Auth::id();
-            $jcrData['final_submit'] = !$isDraft;
-            $jcrData['status'] = $isDraft ? Jcr::STATUS_DRAFT : Jcr::STATUS_PENDING_PARTY_CHIEF;
+            $jcrData['final_submit'] = $isDraft;
+            $jcrData['status'] = Jcr::STATUS_DRAFT;
 
+            // Ensure role edit flags exist for newly created records
+            $jcrData['party_chief_edited'] = false;
+            $jcrData['operation_incharge_edited'] = false;
+
+            // Check if time register is available for linking
+            $timeRegister = TimeRegister::findOrFail($validated['time_register_id']);
+            
+            if (!$timeRegister->isAvailableForLinking()) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Selected Time Register is not available for linking.');
+            }
+
+            // Create JCR with linked time register
+            $jcrData['time_register_linked'] = true;
 
             $jcr = Jcr::create($jcrData);
 
@@ -109,8 +311,15 @@ class JcrController extends Controller
             }
 
             // Create explosives
-            if (isset($validated['explosives'])) {
-                $jcr->explosives()->createMany($validated['explosives']);
+            if (isset($validated['explosive'])) {
+                $jcr->explosives()->createMany($validated['explosive']);
+            }
+
+            // Attach selected checklists (only those owned by the creator and currently unlinked)
+            if (isset($validated['checklist_ids']) && is_array($validated['checklist_ids'])) {
+                ExplosiveChecklist::whereIn('id', $validated['checklist_ids'])
+                    ->whereNull('jcr_id')
+                    ->update(['jcr_id' => $jcr->id]);
             }
 
             DB::commit();
@@ -133,34 +342,96 @@ class JcrController extends Controller
      */
     public function update(Request $request, Jcr $jcr)
     {
-        $validated = $this->validateRequest($request, $jcr);
+        $user = Auth::user();
 
+        // Delegate authorization to the policy
+        $this->authorize('update', $jcr);
+
+        // Determine if current edit should set the one-time flags
+        $canPartyChiefEdit = $user->hasRole('party_chief') && !$jcr->party_chief_edited && $jcr->party_chief_id == $user->id;
+        $canOperationInchargeEdit = $user->hasRole('operation_incharge') && !$jcr->operation_incharge_edited && $jcr->operation_incharge_id == $user->id;
+
+        $validated = $this->validateRequest($request, $jcr);
+        
         $action = $request->input('action');
         $isDraft = $action === 'save_draft';
+        
         DB::beginTransaction();
         try {
-            $jcrData = array_diff_key($validated, array_flip(['personnel', 'logrecorded', 'explosives']));
-            $jcrData['final_submit'] = !$isDraft;
-            // dd($validated);
+            $jcrData = array_diff_key($validated, array_flip(['personnel', 'logrecorded', 'explosive']));
+            $jcrData['final_submit'] = $isDraft;
 
+            if ($isDraft) {
+                // If saving as draft, reset signatures and assigned party chief
+                $jcrData['status'] = Jcr::STATUS_DRAFT;
+                $jcrData['creator_signature'] = null;
+                $jcrData['creator_signed_at'] = null;
+                
+                $jcrData['party_chief_signature'] = null;
+                $jcrData['party_chief_signed_at'] = null;
+                $jcrData['party_chief_id'] = null;
+                $jcrData['operation_incharge_signature'] = null;
+                $jcrData['operation_incharge_signed_at'] = null;
+                $jcrData['operation_incharge_id'] = null;
+                
+                // Reset edit flags
+                $jcrData['party_chief_edited'] = false;
+                $jcrData['operation_incharge_edited'] = false;
+            }
+            
+            // Mark edit flag for role
+            if ($canPartyChiefEdit) {
+                $jcrData['party_chief_edited'] = true;
+            }
+            if ($canOperationInchargeEdit) {
+                $jcrData['operation_incharge_edited'] = true;
+            }
+            
             $jcr->update($jcrData);
-
-            // Sync personnel
-            if (isset($validated['personnel'])) {
-                $personnelIds = collect($validated['personnel'])->pluck('user_id')->toArray();
-                $jcr->users()->sync($personnelIds);
+            
+            // Sync personnel (allow removing all personnel by syncing an empty array when none submitted)
+            $personnelIds = [];
+            if (isset($validated['personnel']) && is_array($validated['personnel'])) {
+                $personnelIds = collect($validated['personnel'])
+                    ->pluck('user_id')
+                    ->filter()
+                    ->unique()
+                    ->toArray();
             }
 
+            $jcr->users()->sync($personnelIds);
+            
             // Update or create logs
             if (isset($validated['logrecorded'])) {
                 $jcr->logs()->delete();
                 $jcr->logs()->createMany($validated['logrecorded']);
             }
-
+            
             // Update or create explosives
-            if (isset($validated['explosives'])) {
+            if (isset($validated['explosive'])) {
                 $jcr->explosives()->delete();
-                $jcr->explosives()->createMany($validated['explosives']);
+                $jcr->explosives()->createMany($validated['explosive']);
+            }
+            
+            // Sync checklists: detach previously linked checklists and attach selected ones
+            if (isset($validated['checklist_ids']) && is_array($validated['checklist_ids'])) {
+                // detach any checklists currently linked to this JCR
+                ExplosiveChecklist::where('jcr_id', $jcr->id)->update(['jcr_id' => null]);
+                
+                // attach provided checklists (limit to creator-owned ones)
+                ExplosiveChecklist::whereIn('id', $validated['checklist_ids'])
+                ->where('creator_id', Auth::id())
+                ->update(['jcr_id' => $jcr->id]);
+            }
+            
+            // Check if time register is available for linking (excluding current one)
+            $timeRegister = TimeRegister::findOrFail($validated['time_register_id']);
+            
+            if (!$timeRegister->isAvailableForLinking() && $timeRegister->id !== $jcr->time_register_id) {
+                dd($validated);
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Selected Time Register is not available for linking.');
             }
 
             DB::commit();
@@ -183,23 +454,66 @@ class JcrController extends Controller
      */
     public function preview(Jcr $jcr)
     {
-        if ($jcr->final_submit) {
+        if ($jcr->final_submit && $jcr->party_chief_id) {
             return redirect()->route('jcr.show', $jcr->id);
         }
 
-        $jcr->load(['users', 'logs', 'explosives']);
-        return view('jcr.preview', compact('jcr'));
+        $jcr->load(['users', 'logs', 'explosives', 'checklists']);
+
+        // If the current user is the creator, provide a list of available party chiefs
+        $partyChiefs = collect();
+        if (Auth::check()) {
+            // assumes Spatie role 'party_chief' exists
+            $partyChiefs = User::role('party_chief')->where('status', 1)->get();
+        }
+        // dd(compact('jcr', 'partyChiefs'));
+        return view('jcr.preview', compact('jcr', 'partyChiefs'));
     }
 
     /**
-     * Final submission
+     * Assign a party chief (only creator can assign) and notify them.
      */
-    public function submit(Jcr $jcr)
+    public function assignPartyChief(Request $request, Jcr $jcr)
     {
-        $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => Auth::user()->name, 'creator_signed_at' => now()]);
-        // dd($jcr);
-        return redirect()->route('jcr.show', $jcr->id)
-            ->with('success', 'JCR submitted successfully.');
+        $user = Auth::user();
+
+        // Only creator can assign
+        if (!$user) {
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('error', 'Only the creator can assign a Party Chief.');
+        }
+
+        $validated = $request->validate([
+            'party_chief_id' => ['required','integer','exists:users,id'],
+        ]);
+
+        $partyChief = User::find($validated['party_chief_id']);
+
+        // optional: ensure selected user has the party_chief role
+        if (!method_exists($partyChief, 'hasRole') || !$partyChief->hasRole('party_chief')) {
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('error', 'Selected user is not a Party Chief.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $jcr->update([
+                'party_chief_id' => $partyChief->id,
+                // ensure assigned party chief has not yet edited/sign
+                'party_chief_edited' => false,
+            ]);
+
+            // send notification
+            $partyChief->notify(new JcrAssignedNotification($jcr, $user));
+
+            DB::commit();
+
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('success', 'Party Chief assigned and notified.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to assign Party Chief: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -213,6 +527,12 @@ class JcrController extends Controller
                 ->with('error', 'You are not authorized to sign as Party Chief.');
         }
 
+        // Ensure only the assigned party chief can sign
+        if (!is_null($jcr->party_chief_id) && Auth::id() !== $jcr->party_chief_id) {
+            return redirect()->route('jcr.show', $jcr->id)
+                ->with('error', 'Only the assigned Party Chief can sign this JCR.');
+        }
+
         DB::beginTransaction();
         try {
             $jcr->update([
@@ -220,6 +540,7 @@ class JcrController extends Controller
                 'party_chief_signed_at' => now(),
                 'party_chief_id' => Auth::id(),
                 'status' => Jcr::STATUS_PENDING_OPERATION_INCHARGE,
+                'party_chief_edited' => true,
             ]);
 
             DB::commit();
@@ -230,6 +551,23 @@ class JcrController extends Controller
             DB::rollBack();
             return back()->with('error', 'Failed to add Party Chief signature: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Final submission
+     */
+    public function submit(Request $request, Jcr $jcr)
+    {
+        if (Auth::user()->hasAnyRole(['party_chief', 'operation_incharge', 'super-admin'])) {
+            $this->assignPartyChief($request, $jcr);
+            $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => User::find($jcr->creator_id)->name]);
+        }
+        else {
+            $this->assignPartyChief($request, $jcr);
+            $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => Auth::user()->name, 'creator_signed_at' => now()]);
+        }
+        // dd($jcr);
+        return redirect()->route('jcr.show', $jcr->id)->with('success', 'JCR submitted successfully.');
     }
 
     /**
@@ -260,6 +598,7 @@ class JcrController extends Controller
                     'party_chief_signed_at' => null,
                     'party_chief_id' => null,
                     'status' => Jcr::STATUS_PENDING_PARTY_CHIEF,
+                    'party_chief_edited' => false,
                 ]);
             } elseif ($status === Jcr::STATUS_APPROVED) {
                 // If approved, ensure party chief signature details are intact
@@ -273,15 +612,14 @@ class JcrController extends Controller
                         'operation_incharge_signed_at' => now(),
                         'operation_incharge_id' => Auth::id(),
                         'status' => $status,
+                        'operation_incharge_edited' => true,
                     ]);
                 }
             }
 
             DB::commit();
 
-            $message = $request->action === 'approve'
-                ? 'JCR approved successfully.'
-                : 'JCR rejected.';
+            $message = $request->action === 'approve' ? 'JCR approved successfully.' : 'JCR rejected.';
 
             return redirect()->route('jcr.show', ['jcr' => $jcr->id])
                 ->with('success', $message);
@@ -292,55 +630,74 @@ class JcrController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    // public function show(Jcr $jcr)
-    // {
-    //     $jcr->load(['users', 'logs', 'explosives']);
-    //     // dd($jcr);
-    //     return view('jcr.show', compact('jcr'));
-    // }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Jcr $jcr)
     {
+        // Use policy-based authorization
+        $this->authorize('update', $jcr);
+
         $users = User::all();
         $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
             ->where('creator_id', auth()->id())
             ->get();
-        $jcr->load(['users', 'logs', 'explosives']);
-        return view('jcr.edit', compact('jcr', 'users', 'unlinkedChecklists'));
+
+            // Group unlinked checklists by type for the edit view
+        $groupedUnlinkedChecklists = [
+            'a' => $unlinkedChecklists->where('type', 'a')->values(),
+            'b' => $unlinkedChecklists->where('type', 'b')->values(),
+            'c' => $unlinkedChecklists->where('type', 'c')->values(),
+        ];
+
+        // also get checklists already linked to this JCR and group them
+        $linkedChecklists = $jcr->checklists()->with('creator')->get();
+        $groupedLinkedChecklists = [
+            'a' => $linkedChecklists->where('type', 'a')->values(),
+            'b' => $linkedChecklists->where('type', 'b')->values(),
+            'c' => $linkedChecklists->where('type', 'c')->values(),
+        ];
+
+        $availableTimeRegisters = TimeRegister::availableForLinking()->get();
+
+        $jcr->load(['users', 'logs', 'explosives', 'checklists', 'timeRegister']);
+        return view('jcr.edit', compact('jcr', 'users', 'unlinkedChecklists', 'groupedUnlinkedChecklists', 'groupedLinkedChecklists', 'availableTimeRegisters'));
     }
 
     public function show(Jcr $jcr)
-{
-    $jcr->load(['users', 'logs', 'explosives']);
-    $checklists = $jcr->checklists()->with(['creator', 'signatures.user', 'externalSignature'])->get();
-    
-    // Group checklists by type
-    $groupedChecklists = [
-        'a' => $checklists->where('type', 'a')->first(),
-        'b' => $checklists->where('type', 'b')->first(),
-        'c' => $checklists->where('type', 'c')->first(),
-    ];
-    
-    return view('jcr.show', compact('jcr', 'groupedChecklists'));
-}
+    {
+        // dd($jcr);
+        $jcr->load(['users', 'logs', 'explosives', 'timeRegister.creator']);
+        $checklists = $jcr->checklists()->with(['creator', 'signatures.user', 'externalSignature'])->get();
 
-public function print(Jcr $jcr)
-{
-    $checklists = $jcr->checklists()->with(['creator', 'signatures.user', 'externalSignature'])->get();
-    
-    $groupedChecklists = [
-        'a' => $checklists->where('type', 'a')->first(),
-        'b' => $checklists->where('type', 'b')->first(),
-        'c' => $checklists->where('type', 'c')->first(),
-    ];
-    
-    return view('jcr.print', compact('jcr', 'groupedChecklists'));
-}
+        // Group checklists by type
+        $groupedChecklists = [
+            'a' => $checklists->where('type', 'a')->first(),
+            'b' => $checklists->where('type', 'b')->first(),
+            'c' => $checklists->where('type', 'c')->first(),
+        ];
+        // If the current user is the creator, provide a list of available party chiefs
+        $partyChiefs = collect();
+        if (Auth::check()) {
+            // assumes Spatie role 'party_chief' exists
+            $partyChiefs = User::role('party_chief')->where('status', 1)->get();
+        }
+        // dd($jcr);
+        return view('jcr.show', compact('jcr', 'groupedChecklists' , 'partyChiefs'));
+    }
+
+    public function print(Jcr $jcr)
+    {
+        $timeRegister = $jcr->timeRegister()->get()->first();
+        $checklists = $jcr->checklists()->with(['creator', 'signatures.user', 'externalSignature'])->get();
+
+        $groupedChecklists = [
+            'a' => $checklists->where('type', 'a')->first(),
+            'b' => $checklists->where('type', 'b')->first(),
+            'c' => $checklists->where('type', 'c')->first(),
+        ];
+
+        return view('jcr.print', compact('jcr', 'groupedChecklists', 'timeRegister'));
+    }
 
     /**
      * Display the specified resource.
@@ -385,52 +742,6 @@ public function print(Jcr $jcr)
         dd($jcrs);
         return view("downloadjcr", ['jcrs' => $jcrs, 'users' => $users]);
     }
-
-    // /**
-    //  * Update the specified resource in storage.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @param  \App\Models\Jcr  $jcr
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function update(Request $request): RedirectResponse
-    // {
-    //     $validatedData = $this->validateRequest($request);
-    //     $now = Carbon::now('Asia/Kolkata')->format('Y-m-d H:i:s');
-    //     $current_user = Auth()->user()->name;
-    //     $validatedData['last_edited_by'] = $current_user;
-    //     $validatedData['last_edited_at'] = $now;
-    //     $validatedData['final_submitted_by'] = $current_user;
-    //     $validatedData['final_submitted_at'] = $now;
-    //     // dd($validatedData);
-    //     try {
-    //         DB::beginTransaction();
-    //         $jcr = Jcr::find($validatedData['id']);
-    //         $jcr->update(Arr::except($validatedData, ['id', 'personnel', 'logrecorded', 'explosive']));
-
-    //         // Sync users if provided
-    //         if ($request->has('personnel')) {
-    //             $personnelIds = collect($request->input('personnel.*.user_id'))->flatten()->unique()->toArray();
-    //             $jcr->users()->sync($personnelIds);
-    //         }
-
-    //         // Update or create associated logs if provided
-    //         if ($request->has('logrecorded')) {
-    //             $this->syncLogs($jcr, $validatedData['logrecorded']);
-    //         }
-
-    //         // Update or create associated explosives if provided
-    //         if ($request->has('explosive')) {
-    //             // dd($jcr->explosives());
-    //             $this->syncExplosives($jcr, $validatedData['explosive']);
-    //         }
-    //         DB::commit();
-    //         return redirect()->route('jcr.view')->with('success', 'JCR updated successfully');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return back()->withInput()->with('error', 'Failed to update JCR: ' . $e->getMessage());
-    //     }
-    // }
 
     /**
      * Sync explosives for the JCR
@@ -519,11 +830,90 @@ public function print(Jcr $jcr)
         }
     }
 
+     // AJAX method to get time register details for modal
+    public function getTimeRegisterDetails($id)
+    {
+        // Fetch time register regardless of whether it is currently available for linking so
+        // existing selections continue to work when editing an existing JCR.
+        $timeRegister = TimeRegister::find($id);
+        
+        if (!$timeRegister) {
+            return response()->json(['error' => 'Time Register not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $timeRegister->id,
+            'logging_unit_no' => $timeRegister->logging_unit_no,
+            'well_no' => $timeRegister->well_no,
+            'rig_no' => $timeRegister->rig_no,
+            'job_carried_out' => $timeRegister->job_carried_out,
+            'well_indented_date' => $timeRegister->well_indented_date ? $timeRegister->well_indented_date->format('Y-m-d') : 'N/A',
+            'well_indented_time' => $timeRegister->well_indented_time ?? 'N/A',
+            'status' => $timeRegister->status,
+            'is_final_submitted' => $timeRegister->is_final_submitted,
+            'summary' => $timeRegister->getSelectionSummary(),
+            'logging_chief_name' => $timeRegister->logging_chief_name,
+            'logging_chief_designation' => $timeRegister->logging_chief_designation,
+        ]);
+    }
+
+    /**
+     * AJAX endpoint to fetch jobs (paginated) optionally filtered by month (format YYYY-MM).
+     */
+    public function dashboardJobs(Request $request)
+    {
+        $user = Auth::user();
+        $month = $request->query('month'); // expected 'YYYY-MM' or null
+        $query = $user->jcrs()->with(['users', 'logs', 'explosives'])
+            ->orderBy('arrivalOffice_date', 'desc')
+            ->orderBy('arrivalOffice_time', 'desc');
+
+        if ($month) {
+            try {
+                $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString();
+                $end = Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString();
+                $query->whereBetween('arrivalOffice_date', [$start, $end]);
+            } catch (\Exception $e) {
+                // ignore invalid month format -> return all
+            }
+        }
+
+        $jcrs = $query->paginate(25)->withQueryString();
+
+        $rowsHtml = view('dashboard._jcr_rows', compact('jcrs'))->render();
+        $paginationHtml = (string) $jcrs->links('pagination::bootstrap-5');
+
+        return response()->json([
+            'rows' => $rowsHtml,
+            'pagination' => $paginationHtml,
+        ]);
+    }
+
+    /**
+     * Export filtered jobs to XLSX. month query param optional (YYYY-MM).
+     */
+    public function exportJobs(Request $request)
+    {
+        $month = $request->query('month');
+        $filename = 'jcrs' . ($month ? "_{$month}" : '') . '_' . now()->format('Ymd_His') . '.xlsx';
+        return Excel::download(new JcrsExport(Auth::id(), $month), $filename);
+    }
+
     /**
      * Validate the request data.
      */
     protected function validateRequest(Request $request, Jcr $jcr = null)
     {
+        // Normalize checklist_ids when the form submits a comma-separated string
+        $checklistInput = $request->input('checklist_ids', null);
+        if (is_string($checklistInput)) {
+            $ids = array_filter(array_map('trim', explode(',', $checklistInput)), function ($v) {
+                return $v !== '';
+            });
+            // If no ids, set to null so 'nullable|array' passes
+            $request->merge(['checklist_ids' => count($ids) ? $ids : null]);
+        }
+
         $rules = [
             'id' => 'sometimes|numeric',
             'fieldName' => 'required|string',
@@ -677,8 +1067,15 @@ public function print(Jcr $jcr)
 
             // contingent worker
             'contingents' => 'nullable|string',
-            'final_submitted' => 'sometimes|nullable|integer',
 
+            // final submit
+            'final_submit' => 'sometimes|nullable|integer',
+
+            // checklists being attached
+            'checklist_ids' => 'nullable|array',
+            'checklist_ids.*' => 'integer|exists:explosive_checklists,id',
+
+            'time_register_id' => 'required|exists:time_registers,id',
         ];
         if ($jcr) {
             foreach ($rules as $field => $rule) {

@@ -1,20 +1,12 @@
 @extends('layouts.app')
 @push('pagejs')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('/static/js/chart.js') }}"></script>
 @endpush
 @push('css')
-    <link rel="stylesheet" type="text/css" href='/static/css/welcome.css'>
+    <link rel="preload" as="image" href="{{ asset('/static/images/logging-data-bg.png') }}">
+    <link rel="stylesheet" type="text/css" href='{{ asset("/static/css/welcome.css") }}'>
 @endpush
 @section('content')
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @elseif(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
     <!-- Logging Tool and Vertical Line -->
     <div class="logging-tool"></div>
 
@@ -118,13 +110,13 @@
                         <!-- In the Gallery Section, replace the image tags with these: -->
 
                         <div class="gallery-item">
-                            <img src="https://media.istockphoto.com/id/516140530/photo/oil-rig-site.jpg?s=1024x1024&w=is&k=20&c=LktN3VV_28vl7HevjFH_lXUgSAkbcbAqAthZ3RCU7Nw="
+                            <img src="{{ asset('/static/images/oil-well-drilling.avif') }}"
                                 alt="Oil Well Drilling" class="img-fluid rounded">
                             <div class="gallery-caption">Oil Well Drilling Site</div>
                         </div>
 
                         <div class="gallery-item">
-                            <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            <img src="{{ asset('/static/images/data-analysis.png') }}"
                                 alt="Data Analysis" class="img-fluid rounded">
                             <div class="gallery-caption">Data Analysis Team</div>
                         </div>
@@ -134,13 +126,13 @@
                 <div class="col-md-5 right-content">
                     <div class="content-reveal right">
                         <div class="gallery-item">
-                            <img src="https://www.google.com/imgres?q=well%20logging%20equipment%20stock%20photo&imgurl=https%3A%2F%2Fmedia.istockphoto.com%2Fid%2F1314791208%2Fphoto%2Fwireline-logging-downhole-tool-stack-in-container-box.jpg%3Fs%3D612x612%26w%3D0%26k%3D20%26c%3DsPaO2riiDWiV0AaRqtfowKvRhvhjEYXZhZqTOuHbrRo%3D&imgrefurl=https%3A%2F%2Fwww.istockphoto.com%2Fphotos%2Fwell-logging&docid=KzxNyPyIp9Q8qM&tbnid=kbTUI5QYyFQY2M&vet=12ahUKEwiX9vz86JmOAxV3Z_UHHWKaDsoQM3oECH8QAA..i&w=612&h=408&hcb=2&ved=2ahUKEwiX9vz86JmOAxV3Z_UHHWKaDsoQM3oECH8QAA"
+                            <img src="{{ asset('/static/images/field-equipment.png') }}"
                                 alt="Field Equipment" class="img-fluid rounded">
                             <div class="gallery-caption">Logging Equipment</div>
                         </div>
 
                         <div class="gallery-item">
-                            <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            <img src="{{ asset('/static/images/field-team.avif') }}"
                                 alt="Team at Work" class="img-fluid rounded">
                             <div class="gallery-caption">Field Team in Action</div>
                         </div>
@@ -236,19 +228,19 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-5 right-content">
                     <div class="content-reveal right">
-                        <form class="contact-form" action='{{ route('contact.us.store') }}' method='POST'>
+                        <form class="contact-form" action="{{ route('contact.us.store') }}" method='POST'>
                             @csrf
                             <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Your Name" required>
+                                <input type="text" class="form-control" name="name" placeholder="Your Name" required>
                             </div>
                             <div class="mb-3">
-                                <input type="email" class="form-control" placeholder="Your Email" required>
+                                <input type="email" class="form-control" name="email" placeholder="Your Email" required>
                             </div>
                             <div class="mb-3">
-                                <input type="tel" class="form-control" placeholder="Phone Number">
+                                <input type="tel" class="form-control" name="phone" placeholder="Phone Number">
                             </div>
                             <div class="mb-3">
-                                <textarea class="form-control" rows="5" placeholder="Your Message"></textarea>
+                                <textarea class="form-control" rows="5" name="message" placeholder="Your Message"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>

@@ -7,6 +7,8 @@ use App\Filament\Resources\JcrResource\RelationManagers;
 use App\Filament\Resources\JcrResource\RelationManagers\ExplosivesRelationManager;
 use App\Filament\Resources\JcrResource\RelationManagers\LogsRelationManager;
 use App\Filament\Resources\JcrResource\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\JcrResource\RelationManagers\ChecklistsRelationManager;
+use App\Filament\Resources\JcrResource\RelationManagers\TimeRegisterRelationManager;
 use App\Models\Jcr;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -192,8 +194,8 @@ class JcrResource extends Resource
                                     Forms\Components\TextInput::make('maxDevAt'),
                                     Forms\Components\TextInput::make('distTo_FroKms'),
                                 ])
-                                ->columnspan('1'),
-                                Section::make('Well Info')
+                                ->columnSpan(1),
+                                Section::make('Mud Info')
                                 ->columns(2)
                                 ->schema([
                                     Forms\Components\TextInput::make('rm')->numeric(),
@@ -215,76 +217,116 @@ class JcrResource extends Resource
                                     Forms\Components\TextInput::make('lastcirc_from'),
                                     Forms\Components\TextInput::make('lastcirc_to'),
                                 ])
-                                ->columnspan('1'),
-                        Forms\Components\TextInput::make('cableSize')
-                        ->required(),
-                    Forms\Components\TextInput::make('insulation')
-                        ->required(),
-                    Forms\Components\DatePicker::make('shoeDate')
-                        ->required(),
-                    Forms\Components\TextInput::make('weakPoint')
-                        ->required(),
-                    Forms\Components\TextInput::make('cableHeadSize')
-                        ->required(),
-                    Forms\Components\TextInput::make('cableLength')
-                        ->numeric()
-                        ->required(),
-                    Forms\Components\TextInput::make('initialLength')
-                        ->numeric()
-                        ->required(),
-                    Forms\Components\TextInput::make('surfaceEquipment')
-                        ->required(),
-                    Forms\Components\TextInput::make('automobile')
-                        ->required(),
-                    Forms\Components\TextInput::make('wellCondition')
-                        ->required(),
-                    Forms\Components\TextInput::make('timeLoss')
-                        ->required(),
-                    Forms\Components\TextInput::make('attempted')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('recovered')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('missFire')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('barrelLost')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('emptyBarrel')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('chargeUsed')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('permitType')
-                        ->required(),
-                    Forms\Components\TextInput::make('permitNo')
-                        ->required(),
-                    Forms\Components\TextInput::make('permitWork')
-                        ->required()
-                        ->numeric(),
-                    Forms\Components\TextInput::make('elecLockout')
-                        ->numeric(),
-                    Forms\Components\TextInput::make('elecLockoutNo'),
-                    Forms\Components\TextInput::make('safetyMeeting')
-                        ->required()
-                        ->numeric(),
-                    Forms\Components\TextInput::make('jobCloseMeeting')
-                        ->required()
-                        ->numeric(),
-                    Forms\Components\TextInput::make('nearMiss')
-                        ->required()
-                        ->numeric(),
-                    Forms\Components\TextInput::make('nearMissDesc'),
-                    Forms\Components\TextInput::make('jobStatus')
-                        ->required(),
-                    Forms\Components\TextInput::make('remarks')
-                        ->required(),
-                    Forms\Components\TextInput::make('objective'),
-                    Forms\Components\TextInput::make('observations'),
-                    Forms\Components\TextInput::make('contingents')
-                        ->required(),
-                    Forms\Components\TextInput::make('final_submit')
-                        ->numeric(),
+                                ->columnSpan(1),
+                    ]),
+                    Wizard\Step::make('Cable Details')
+                        ->columns(2)
+                        ->schema([
+                            Section::make('Cable Details')
+                                ->columns(1)
+                                ->schema([
+                                    Forms\Components\TextInput::make('cableSize')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('insulation')
+                                        ->required(),
+                                    Forms\Components\DatePicker::make('shoeDate')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('weakPoint')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('cableHeadSize')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('cableLength')
+                                        ->numeric()
+                                        ->required(),
+                                    Forms\Components\TextInput::make('initialLength')
+                                        ->numeric()
+                                        ->required(),
+                                ])
+                                ->columnSpan(1),
+                            Section::make('Equipment Details')
+                                ->columns(1)
+                                ->schema([
+                                    Forms\Components\TextInput::make('surfaceEquipment')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('automobile')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('wellCondition')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('timeLoss')
+                                        ->required(),
+                                ])
+                                ->columnSpan(1),
+                    ]),
+                    Wizard\Step::make('SWC')
+                        ->columns(1)
+                        ->schema([
+                            Forms\Components\TextInput::make('attempted')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('recovered')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('missFire')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('barrelLost')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('emptyBarrel')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('chargeUsed')
+                                ->numeric(),
+                    ]),
+                    Wizard\Step::make('Safety Info')
+                        ->columns(1)
+                        ->schema([
+                            Forms\Components\TextInput::make('permitType')
+                                ->required(),
+                            Forms\Components\TextInput::make('permitNo')
+                                ->required(),
+                            Forms\Components\TextInput::make('permitWork')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\TextInput::make('elecLockout')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('elecLockoutNo'),
+                            Forms\Components\TextInput::make('safetyMeeting')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\TextInput::make('jobCloseMeeting')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\TextInput::make('nearMiss')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\TextInput::make('nearMissDesc'),
+                        ]),
+                    Wizard\Step::make('Final Info')
+                        ->columns(1)
+                        ->schema([
+                            Forms\Components\TextInput::make('jobStatus')
+                                ->required(),
+                            Forms\Components\TextInput::make('remarks')
+                                ->required(),
+                            Forms\Components\TextInput::make('objective'),
+                            Forms\Components\TextInput::make('observations'),
+                            Forms\Components\TextInput::make('contingents')
+                                ->required(),
+                            Forms\Components\TextInput::make('final_submit')
+                                ->numeric(),
+                            Forms\Components\TextInput::make('created_at'),
+                            Forms\Components\TextInput::make('final_submit'),
+                            Forms\Components\TextInput::make('creator_id'),
+                            Forms\Components\TextInput::make('creator_signature'),
+                            Forms\Components\TextInput::make('creator_signed_at'),
+                            Forms\Components\TextInput::make('party_chief_edited'),
+                            Forms\Components\TextInput::make('party_chief_id'),
+                            Forms\Components\TextInput::make('party_chief_signature'),
+                            Forms\Components\TextInput::make('party_chief_signed_at'),
+                            Forms\Components\TextInput::make('operation_incharge_edited'),
+                            Forms\Components\TextInput::make('operation_incharge_id'),
+                            Forms\Components\TextInput::make('operation_incharge_signature'),
+                            Forms\Components\TextInput::make('operation_incharge_signed_at'),
+                            Forms\Components\TextInput::make('status'),
                     ]),
                 ])
-                ->columnspan('full')
+                ->columnSpan('full')
             ]);
     }
 
@@ -349,7 +391,14 @@ class JcrResource extends Resource
             UsersRelationManager::class,
             ExplosivesRelationManager::class,
             LogsRelationManager::class,
+            ChecklistsRelationManager::class,
+            TimeRegisterRelationManager::class,
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['users', 'logs', 'explosives', 'creator', 'timeRegister']);
     }
 
     public static function getPages(): array

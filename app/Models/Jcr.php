@@ -132,21 +132,22 @@ class Jcr extends Model
         'objective',
         'observations',
         'contingents',
-        'created_by',
         'created_at',
-        'last_edited_by',
-        'last_edited_at',
         'final_submit',
         'creator_id',
         'creator_signature',
         'creator_signed_at',
+        'party_chief_edited',
         'party_chief_id',
         'party_chief_signature',
         'party_chief_signed_at',
+        'operation_incharge_edited',
         'operation_incharge_id',
         'operation_incharge_signature',
         'operation_incharge_signed_at',
-        'status'
+        'status',
+        'time_register_id',
+        'time_register_linked',
     ];
 
     /**
@@ -180,6 +181,7 @@ class Jcr extends Model
         'shoeDate' => 'datetime:Y-m-d',
         'lastcirc_from' => 'datetime:Y-m-d h:m',
         'lastcirc_to' => 'datetime:Y-m-d h:m',
+        'time_register_linked' => 'boolean',
     ];
 
     public function users()
@@ -235,14 +237,30 @@ class Jcr extends Model
         return $this->status === self::STATUS_PENDING_CREATOR;
     }
 
+    public function isCreatorSigned()
+
+    {
+        return $this->creator_signature !== null && $this->creator_signed_at !== null;
+    }
+
     public function isPendingPartyChief()
     {
         return $this->status === self::STATUS_PENDING_PARTY_CHIEF;
     }
 
+    public function isPartyChiefEdited()
+    {
+        return $this->party_chief_edited === 1;
+    }
+
     public function isPendingOperationIncharge()
     {
         return $this->status === self::STATUS_PENDING_OPERATION_INCHARGE;
+    }
+
+    public function isOperationInchargeEdited()
+    {
+        return $this->operation_incharge_edited === 1;
     }
 
     public function isApproved()
@@ -278,5 +296,45 @@ class Jcr extends Model
     public function checklists()
     {
         return $this->hasMany(ExplosiveChecklist::class);
+    }
+
+    // Backwards-compatible alias: some code expects `explosiveChecklists()`
+    public function explosiveChecklists()
+    {
+        return $this->checklists();
+    }
+
+    // Relationship with TimeRegister
+    public function timeRegister()
+    {
+        return $this->belongsTo(TimeRegister::class, 'time_register_id');
+    }
+
+    // Check if JCR requires time register linking
+    public function requiresTimeRegisterLinking()
+    {
+        return !$this->time_register_linked || !$this->timeRegister;
+    }
+
+    // Get available time registers for linking
+    public static function getAvailableTimeRegisters()
+    {
+        return TimeRegister::whereDoesntHave('jcr')
+            ->where('is_final_submitted', true)
+            ->orWhere('status', 'completed')
+            ->get();
+    }
+
+    // Scope for JCRs without time register
+    public function scopeWithoutTimeRegister($query)
+    {
+        return $query->where('time_register_linked', false)
+                    ->orWhereNull('time_register_id');
+    }
+
+    // Fix: This method was missing
+    public function requiresTimeRegister()
+    {
+        return !$this->time_register_linked;
     }
 }

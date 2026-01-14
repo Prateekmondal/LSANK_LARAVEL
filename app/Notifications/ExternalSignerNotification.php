@@ -22,16 +22,16 @@ class ExternalSignerNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Request for Signature: Checklist B - ' . $this->checklist->well_name)
+            ->subject('Request for Signature: Checklist B - ' . $this->checklist->well_no)
             ->greeting('Dear Sir/Madam,')
             ->line('You have been requested to sign off on Checklist B for the following operation:')
-            ->line('**Well Name:** ' . $this->checklist->well_name)
+            ->line('**Well Name:** ' . $this->checklist->well_no)
             ->line('**Job Type:** ' . $this->checklist->job_type)
             ->line('**Date:** ' . $this->checklist->date->format('Y-m-d'))
             ->line('Please click the button below to provide your signature and details:')

@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+
 class ExplosiveChecklistResource extends Resource
 {
     protected static ?string $model = ExplosiveChecklist::class;
@@ -23,14 +25,13 @@ class ExplosiveChecklistResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('jcr_id')
-                    ->numeric()
-                    ->default(null),
+                Forms\Components\Select::make('jcr_id')
+                    ->relationship('jcr', 'wellNo')
+                    ->searchable()
+                    ->preload()
+                    ->nullable(),
                 Forms\Components\TextInput::make('type')
                     ->required(),
-                Forms\Components\TextInput::make('well_name')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
                 Forms\Components\TextInput::make('logging_unit_no')
@@ -44,9 +45,10 @@ class ExplosiveChecklistResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('status')
                     ->required(),
-                Forms\Components\TextInput::make('creator_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('creator_id')
+                    ->relationship('creator', 'name')
+                    ->searchable()
+                    ->required(),
                 Forms\Components\TextInput::make('sign_status')
                     ->required(),
                 Forms\Components\TextInput::make('external_sign_status')
@@ -61,8 +63,7 @@ class ExplosiveChecklistResource extends Resource
                 Tables\Columns\TextColumn::make('jcr_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\TextColumn::make('well_name')
+                Tables\Columns\TextColumn::make('type')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
@@ -103,8 +104,16 @@ class ExplosiveChecklistResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\ExplosiveChecklistResource\RelationManagers\SignaturesRelationManager::class,
+            \App\Filament\Resources\ExplosiveChecklistResource\RelationManagers\ForwardsRelationManager::class,
+            \App\Filament\Resources\ExplosiveChecklistResource\RelationManagers\ExternalSignatureRelationManager::class,
+            \App\Filament\Resources\ExplosiveChecklistResource\RelationManagers\JcrRelationManager::class,
         ];
+    }
+
+    public static function getEloquentQuery(): EloquentBuilder
+    {
+        return parent::getEloquentQuery()->with(['creator', 'jcr', 'externalSignature']);
     }
 
     public static function getPages(): array

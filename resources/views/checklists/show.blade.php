@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <div class="card mb-4 w-75">
+    <div class="card mb-4 w-100">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2>{{ $checklist->type_name }} Checklist</h2>
             <div class="btn-group">
@@ -30,11 +30,7 @@
         </div>
         
         <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Well Name:</strong> {{ $checklist->well_no }}</div>
-                <div class="col-md-4"><strong>Date:</strong> {{ $checklist->date->format('d/m/Y') }}</div>
-                <div class="col-md-4"><strong>Job Type:</strong> {{ $checklist->job_type }}</div>
-            </div>
+            @include('checklists.partials.show-header-type-' . $checklist->type)
             
             <div class="row mb-3">
                 <div class="col-md-4"><strong>Status:</strong> 
@@ -61,7 +57,7 @@
                             <td>{{ $item['name'] }}</td>
                             <td>
                                 <span class="badge bg-{{ $item['status'] ? 'success' : 'danger' }}">
-                                    {{ $item['status'] ? 'Completed' : 'Not Completed' }}
+                                    {{ $item['status'] ? 'Yes' : 'No' }}
                                 </span>
                             </td>
                             <td>{{ $item['comments'] ?? 'N/A' }}</td>
@@ -118,11 +114,11 @@
                         <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
                     </div>
                     <a href="{{ route('checklists.approve', $checklist->id) }}" class="btn btn-success">
-                        <i class="bi bi-arrow-right"></i> Preview & Confirm
+                        <i class="bi bi-arrow-right me-2"></i>Confirm
                     </a>
                 @endif
                     
-                    @if($checklist->approverSignature)
+                @if($checklist->approverSignature)
                     <div class="signature mb-3 p-3 border rounded">
                         <h5>Approver Signature</h5>
                         <div class="d-flex align-items-center">
@@ -150,14 +146,10 @@
                     <a href="{{ route('checklists.preview', $checklist->id) }}" class="btn btn-primary">
                         <i class="bi bi-eye"></i> Preview & Confirm
                     </a>
-                    <a href="{{ route('checklists.forward', $checklist->id) }}" class="btn btn-secondary">
-                        <i class="bi bi-send"></i> Forward Checklist
-                    </a>
                 </div>
             </div>
         </div>
-    @endif
-    @if($checklist->type === 'b')
+    @elseif($checklist->type === 'b')
     <div class="card mt-4 w-75">
         <div class="card-header">
             <h4>Rig Incharge Signature</h4>

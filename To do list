@@ -1,0 +1,14 @@
+Features to do
+1. Party chief sign------------------------>Done
+2. Operation I/C sign---------------------->Done
+3. Show checklist B to external signer----->Done
+
+Bugs removal to do
+1. logrecorded must be string
+2. Checklist is not attaching with jcr------->Done
+
+Features upgradation
+1. Explosive group in OHL i.e. SWC in log type----------------------->Done
+2. Packer setting in explosve group to be added---------------------->Done
+3. Temperature log in PL group to be added--------------------------->Done
+4. Explosive and Non-explosve type to be added in Other log type----->Done

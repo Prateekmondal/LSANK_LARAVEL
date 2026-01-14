@@ -17,10 +17,11 @@ class ContactController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // dd($request->all());
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|digits:10|numeric',
+            'phone' => 'required|numeric',
             'message' => 'required'
         ]);
         try {

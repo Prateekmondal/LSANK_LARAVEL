@@ -14,4 +14,14 @@ class jcruser extends Model
     public $timestamps = false;
 
     protected $fillable = ['jcr_id', 'user_id'];
+
+    public function jcr()
+    {
+        return $this->belongsTo(Jcr::class, 'jcr_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -170,6 +170,7 @@
                     if (!data.all_present) {
                         // Uncheck the box if group is incomplete
                         if (checkbox) checkbox.checked = false;
+                        if (typeof updateSelectedChecklistPreview === 'function') updateSelectedChecklistPreview();
                         showMissingChecklistModal(data.missing, wellName, jobDate);
                     }
                 });
