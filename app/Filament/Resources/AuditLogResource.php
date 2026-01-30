@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Repeater;
 
 class AuditLogResource extends Resource
 {
@@ -32,6 +33,15 @@ class AuditLogResource extends Resource
                 Forms\Components\TextInput::make('auditable_id')
                     ->required()
                     ->numeric(),
+                Forms\Components\Repeater::make('old_values')
+                    ->schema([
+                        Forms\Components\TextInput::make('old_value_key')
+                            ->maxLength(100),
+                        Forms\Components\TextInput::make('old_value_value')
+                            ->maxLength(100),
+                    ])
+                    ->columnSpanFull()
+                    ->default([]),
                 Forms\Components\Textarea::make('old_values')
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('new_values')

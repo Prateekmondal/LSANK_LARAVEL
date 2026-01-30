@@ -12,5 +12,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
         Role::findOrCreate('Field_Officer', 'web');
+        Role::findOrCreate('field_officer', 'web');
     }
 }

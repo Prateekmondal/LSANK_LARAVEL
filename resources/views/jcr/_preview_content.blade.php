@@ -6,9 +6,9 @@
                 <img class="img-fluid" src="/static/images/ongc.png" style="max-width: 80px;"/>
             </td>
             <td class="fw-semibold w-25">
-                Well Logging Services<br>ONGC, Ankleshwar</td>
+                <h2>Well Logging Services<br>ONGC, Ankleshwar</h2></td>
             <td class="fw-bold w-25">
-                JOB COMPLETION REPORT</td>
+                <h1>JOB COMPLETION REPORT</h1></td>
             <td class="w-25">&nbsp;</td>
         </tr>
         </tbody>
@@ -114,7 +114,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Assembled:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Assembled:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['assembled_time'])) }}
                                 </td>
@@ -123,7 +123,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Departure office:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Departure office:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['depOffice_time'])) }}
                                 </td>
@@ -132,7 +132,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Arrival Site:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Arrival Site:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['arrivalSite_time'])) }}
                                 </td>
@@ -141,7 +141,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Indented:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Indented:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['indented_time'])) }}
                                 </td>
@@ -150,7 +150,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Well Readiness:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Well Readiness:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['wellReadiness_time'])) }}
                                 </td>
@@ -159,7 +159,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Well Taken:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Well Taken:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['wellTaken_time'])) }}
                                 </td>
@@ -168,7 +168,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Rig Up:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Rig Up:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['rigUP_time'])) }}
                                 </td>
@@ -177,7 +177,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Well Hand Over:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Well Hand Over:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['wellHandOver_time'])) }}
                                 </td>
@@ -186,7 +186,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Departure Site:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Departure Site:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['depSite_time'])) }}
                                 </td>
@@ -195,7 +195,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Arrival Office:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Arrival Office:</td>
                                 <td colspan="2" style="border: 1px solid #333;">
                                     {{ date("H:i", strtotime($jcr['arrivalOffice_time'])) }}
                                 </td>
@@ -204,13 +204,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Preparation Time:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Preparation Time:</td>
                                 <td colspan="4" style="border: 1px solid #333;">
                                     {{ $jcr['preparationTime'] ? $jcr['preparationTime'].' HRS.' : '---' }}
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #333;">Post Proce. Time:</td>
+                                <td colspan="1" style="border: 1px solid #333;">Post Proce. Time:</td>
                                 <td colspan="4" style="border: 1px solid #333;">
                                     {{ $jcr['postProceTime'] ? $jcr['postProceTime'].' HRS.' : '---' }}
                                 </td>
@@ -625,7 +625,7 @@
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['topDepth'] }}</td>
             <td colspan="3" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['toolNo'] }}</td>
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['logQuality'] }}</td>
-            @if (str_contains(strtoupper($log['logRecorded']), 'PERFORATION') | str_contains(strtoupper($log['logRecorded']), 'TTP') | str_contains(strtoupper($log['logRecorded']), 'BP') | str_contains(strtoupper($log['logRecorded']), 'BRIDGE PLUG'))
+            @if (str_contains(strtoupper($log['logRecorded']), 'PERFORATION') | str_contains(strtoupper($log['logRecorded']), 'TTP') | str_contains(strtoupper($log['logRecorded']), 'BP') | str_contains(strtoupper($log['logRecorded']), 'BRIDGE PLUG') | str_contains(strtoupper($log['logRecorded']), 'TUBING PUNCTURE'))
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['runNo'] }}</td>
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['bottomShotDepth'] }}</td>
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['topShotDepth'] }}</td>
@@ -810,7 +810,7 @@
 
         </tbody>
     </table>
-    <pdf:nextpage name="contingents" />
+    <div style="page-break-after: always;"></div>
     <h2 style="font-family:Verdana, Geneva, sans-serif; font-weight:600; font-size:25px;">Contractual Crew</h2>
     <p>
         {{ $jcr['contingents'] }}

@@ -8,6 +8,7 @@ use App\Models\User;
 
 class ProfileControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function test_profile_index_requires_authentication()
     {

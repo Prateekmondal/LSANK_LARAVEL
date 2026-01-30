@@ -64,16 +64,16 @@
                     @elseif($checklist->external_sign_status === 'sent')
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            Request sent to external signer, waiting for response
+                            Request sent to external signer on {{ $checklist->externalSignature->email }}, waiting for response
                         </div>
                     @else
-                        <!-- <form method="POST" action="{{ route('checklists.send-external', $checklist->id) }}">
+                        <form method="POST" action="{{ route('checklists.send-external', $checklist->id) }}">
                             @csrf
                             
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-paper-plane"></i> Send for Signature
                             </button>
-                        </form> -->
+                        </form>
                     @endif
                 </div>
             </div>

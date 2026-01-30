@@ -11,6 +11,7 @@ use Tests\TestCase;
 
 class JcrPolicyTest extends TestCase
 {
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -158,7 +159,7 @@ class JcrPolicyTest extends TestCase
     public function test_field_officer_can_create_jcr()
     {
         $user = User::factory()->create();
-        $user->assignRole('Field_Officer');
+        $user->assignRole('field_officer');
 
         $this->assertTrue($user->can('create', Jcr::class));
     }

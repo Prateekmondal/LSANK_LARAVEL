@@ -330,15 +330,27 @@ $(document).ready(function () {
     });
 
 
-    let explosivelists = ['23 GM TAG', '25 GM TAG', '39 GM TAG', '8 GM TTP', 'BP POWER CHARGE', 'CASING CUTTER', 'TUBING CUTTER', 'RTG CHARGE', 'SWC CHARGE', 'SPLIT SHOT CHARGE'];
+    let explosivelists = ['23gm TAG', '23gm TAG(BH)', '25gm TAG', '39gm TAG', '8gm TTP', 'BP Power Charge', 'Casing Cutter Charge', 'Tubing Cutter Charge', 'RTG Charge', 'SWC Charge', 'SPLIT Shot Charge'];
     let primachordlists = ['T-150', 'T-190', 'PT-185', 'PT-150', 'BP SECONDARY IGNITOR'];
-    let detonatorlists = ['26FDE', '1015E', 'BP PRIMARY IGNITOR', 'CUTTER DETO 432'];
+    let detonatorlists = ['15FDE', '26FDE', '1015E', 'BP PRIMARY IGNITOR', 'CUTTER DETO 432'];
 
     $('#add_more_logs').click(function (event) {
         event.preventDefault();
         var lastid = $(".log-form:last").attr("id");
         var split_id = lastid.split("_");
         var nextindex = Number(split_id[1]) + 1;
+        var explosiveoption= "";
+        var primachordoption= "";
+        var detonatoroption= "";
+        for (let i = 0; i < explosivelists.length; i++) {
+            explosiveoption += "<option value='" + explosivelists[i] + "'>" + explosivelists[i] + "</option>";
+        }
+        for (let i = 0; i < primachordlists.length; i++) {
+            primachordoption += "<option value='" + primachordlists[i] + "'>" + primachordlists[i] + "</option>";
+        }
+        for (let i = 0; i < detonatorlists.length; i++) {
+            detonatoroption += "<option value='" + detonatorlists[i] + "'>" + detonatorlists[i] + "</option>";
+        }
         // Adding new div container after last occurance of element class
         $(".log-form:last").after("<div class='log-form' id='id-log-form_" + nextindex + "'><hr class='my-3' style='color:#000000; border-top:5px solid; opacity:0.5;'><h2 class='my-2'>Run - " + nextindex + "</h2></div>");
         // Adding element to <div>
@@ -358,11 +370,11 @@ $(document).ready(function () {
             // Explosive fields (hidden by default)
             "<div id='div_logmodel_set-" + nextindex + "-bottomShotDepth' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-bottomShotDepth' class='form-label'>Bottom Shot Depth(m)</label> <input type='number' name='logrecorded[" + (nextindex - 1) + "][bottomShotDepth]' step='any'class='numberinput form-control' id='id_logmodel_set-" + nextindex + "-bottomShotDepth'></div>" +
             "<div id='div_logmodel_set-" + nextindex + "-topShotDepth' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-topShotDepth' class='form-label'>Top Shot Depth(m)</label> <input type='number' name='logrecorded[" + (nextindex - 1) + "][topShotDepth]' step='any'class='numberinput form-control' id='id_logmodel_set-" + nextindex + "-topShotDepth'></div>" +
-            "<div id='div_logmodel_set-" + nextindex + "-charge' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-charge' class='form-label'>Charge Type</label><select type='text' name='logrecorded[" + (nextindex - 1) + "][charge]' maxlength='20'class='textinput textInput form-control' id='id_logmodel_set-" + nextindex + "-charge'><option value='' >--- Select Charge type ---</option><option value='25gm TAG'>25gm TAG</option><option value='23gm TAG'>23gm TAG</option><option value='8gm TTP'>8gm TTP</option><option value='BP Power Charge'>BP Power Charge</option><option value='Casing Cutter Charge'>Casing Cutter Charge</option><option value='Tubing Cutter Charge'>Tubing Cutter Charge</option><option value='RTG Charge'>RTG Charge</option><option value='SWC Charge'>SWC Charge</option><option value='NA'>NA</option></select></div>" +
+            "<div id='div_logmodel_set-" + nextindex + "-charge' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-charge' class='form-label'>Charge Type</label><select type='text' name='logrecorded[" + (nextindex - 1) + "][charge]' maxlength='20'class='textinput textInput form-control' id='id_logmodel_set-" + nextindex + "-charge'><option value='' >--- Select Charge type ---</option>" + explosiveoption + "<option value='NA'>NA</option></select></div>" +
             "<div id='div_logmodel_set-" + nextindex + "-chargeNo' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-chargeNo' class='form-label'>Charge Qty.(Nos.)</label> <input type='number' name='logrecorded[" + (nextindex - 1) + "][chargeNo]' class='numberinput form-control'id='id_logmodel_set-" + nextindex + "-chargeNo'></div>" +
-            "<div id='div_logmodel_set-" + nextindex + "-primaChord' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-primaChord' class='form-label'>Prima Chord Type</label> <select type='text' name='logrecorded[" + (nextindex - 1) + "][primaChord]' maxlength='20'class='textinput textInput form-control' id='id_logmodel_set-" + nextindex + "-primaChord'><option value=''>--- Select Prima Chord type ---</option><option value='T-150'>T-150</option><option value='T-190'>T-190</option><option value='PT-150'>PT-150</option><option value='NA'>NA</option></select></div>" +
+            "<div id='div_logmodel_set-" + nextindex + "-primaChord' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-primaChord' class='form-label'>Prima Chord Type</label> <select type='text' name='logrecorded[" + (nextindex - 1) + "][primaChord]' maxlength='20'class='textinput textInput form-control' id='id_logmodel_set-" + nextindex + "-primaChord'><option value=''>--- Select Prima Chord type ---</option>" + primachordoption + "<option value='NA'>NA</option></select></div>" +
             "<div id='div_logmodel_set-" + nextindex + "-primaChordQty' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-primaChordQty' class='form-label'>P/C Length (m)</label> <input type='number' name='logrecorded[" + (nextindex - 1) + "][primaChordQty]' step='any'class='numberinput form-control' id='id_logmodel_set-" + nextindex + "-primaChordQty'></div>" +
-            "<div id='div_logmodel_set-" + nextindex + "-fuse' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-fuse' class='form-label'>Fuse Type</label> <select type='text' name='logrecorded[" + (nextindex - 1) + "][fuse]' maxlength='20'class='textinput textInput form-control' id='id_logmodel_set-" + nextindex + "-fuse'><option value=''>--- Select Detonator type ---</option><option value='26FDE'>26FDE</option><option value='15FDE'>15FDE</option><option value='1015-E'>1015-E</option><option value='Z480'>Z480</option><option value='BP Detonator'>BP Detonator</option><option value='Cutter Ignitor'>Cutter Ignitor</option><option value='BP Ignitor'>BP Ignitor</option><option value='NA'>NA</option></select></div>" +
+            "<div id='div_logmodel_set-" + nextindex + "-fuse' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-fuse' class='form-label'>Fuse Type</label> <select type='text' name='logrecorded[" + (nextindex - 1) + "][fuse]' maxlength='20'class='textinput textInput form-control' id='id_logmodel_set-" + nextindex + "-fuse'><option value=''>--- Select Detonator type ---</option>" + detonatoroption + "<option value='NA'>NA</option></select></div>" +
             "<div id='div_logmodel_set-" + nextindex + "-fuseNo' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-fuseNo' class='form-label'>Fuse Qty. (Nos.)</label> <input type='number' name='logrecorded[" + (nextindex - 1) + "][fuseNo]' class='numberinput form-control'id='id_logmodel_set-" + nextindex + "-fuseNo'></div>" +
             "<div id='div_logmodel_set-" + nextindex + "-fMf' class='mb-3 explosive-job d-none'><label for='id_logmodel_set-" + nextindex + "-fMf' class='form-label'>F/MF</label><select name='logrecorded[" + (nextindex - 1) + "][fMf]' class='select form-select' id='id_logmodel_set-" + nextindex + "-fMf'><option value='' >---------</option><option value='F'>F</option><option value='MF'>MF</option></select></div>" +
             // Remove button
@@ -375,82 +387,65 @@ $(document).ready(function () {
         var lastid = $(".explosive-form:last").attr("id");
         var split_id = lastid.split("_");
         var nextindex = Number(split_id[1]) + 1;
+        var explosiveoption= "";
+        var primachordoption= "";
+        var detonatoroption= "";
+        for (let i = 0; i < explosivelists.length; i++) {
+            explosiveoption += "<option value='" + explosivelists[i] + "'>" + explosivelists[i] + "</option>";
+        }
+        for (let i = 0; i < primachordlists.length; i++) {
+            primachordoption += "<option value='" + primachordlists[i] + "'>" + primachordlists[i] + "</option>";
+        }
+        for (let i = 0; i < detonatorlists.length; i++) {
+            detonatoroption += "<option value='" + detonatorlists[i] + "'>" + detonatorlists[i] + "</option>";
+        }
+        var explosivesoption= explosiveoption + primachordoption + detonatoroption;
+
         // Adding new div container after last occurance of element class
         $(".explosive-form:last").after("<div class='explosive-form' id='id-explosive-form_" + nextindex + "'><hr class='my-3' style='color:#000000; border-top:5px solid; opacity:0.5;'><h2 class='my-3'>Explosive - " + nextindex + "</h2></div>");
         // Adding element to <div>
-        $("#id-explosive-form_" + nextindex).append("<div id='div_id_explosive_set-" + nextindex + "-explosives' class='mb-3'><label for='id_explosive_set-" + nextindex + "-explosives' class='form-label'>Charges</label><select name='explosive[" + (nextindex - 1) + "][explosive]' type='text' placeholder='--- Select Charge type ---' class='select form-select' id='id_explosive_set-" + nextindex + "-explosives'><option value=''  >--- Select Charge type ---</option><option value='25gm TAG' >25gm TAG</option><option value='23gm TAG' >23gm TAG</option><option value='8gm TTP' >8gm TTP</option><option value='BP Power Charge' >BP Power Charge</option><option value='Casing Cutter Charge' >Casing Cutter Charge</option><option value='Tubing Cutter Charge' >Tubing Cutter Charge</option><option value='RTG Charge' >RTG Charge</option><option value='T-150'>T-150</option><option value='T-190'>T-190</option><option value='PT-150'>PT-150</option><option value='26FDE' >26FDE</option><option value='15FDE' >15FDE</option><option value='1015-E' >1015-E</option><option value='Z480' >Z480</option><option value='BP Detonator' >BP Detonator</option><option value='Cutter Ignitor' >Cutter Ignitor</option><option value='BP Ignitor' >BP Ignitor</option><option value='NA' >NA</option></select></div><div id='div_id_explosive_set-" + nextindex + "-issued' class='mb-3'><label for='id_explosive_set-" + nextindex + "-issued' class='form-label'> Charge Issued</label><input type='text' name='explosive[" + (nextindex - 1) + "][issued]' placeholder='Issued' class='textinput textInput form-control' id='id_explosive_set-" + nextindex + "-issued' ></div><div id='div_id_explosive_set-" + nextindex + "-used' class='mb-3'><label for='id_explosive_set-" + nextindex + "-used' class='form-label'>Charge Used</label><input type='text' name='explosive[" + (nextindex - 1) + "][used]' placeholder='Used' class='textinput textInput form-control' id='id_explosive_set-" + nextindex + "-used'></div><div id='div_id_explosive_set-" + nextindex + "-returned' class='mb-3'><label for='id_explosive_set-" + nextindex + "-returned' class='form-label'>Charge Returned</label><input type='text' name='explosive[" + (nextindex - 1) + "][returned]' placeholder='Returned' class='textinput textInput form-control' id='id_explosive_set-" + nextindex + "-returned'></div><button class='btn btn-danger btn-sm remove my-3' id='remove_explosives_" + nextindex + "'type='button'><i class='fa fa-minus-circle'></i></button>");
+        $("#id-explosive-form_" + nextindex).append("<div id='div_id_explosive_set-" + nextindex + "-explosives' class='mb-3'><label for='id_explosive_set-" + nextindex + "-explosives' class='form-label'>Charges</label><select name='explosive[" + (nextindex - 1) + "][explosive]' type='text' placeholder='--- Select Charge type ---' class='select form-select' id='id_explosive_set-" + nextindex + "-explosives'><option value=''  >--- Select Charge type ---</option>" + explosivesoption + "<option value='NA' >NA</option></select></div><div id='div_id_explosive_set-" + nextindex + "-issued' class='mb-3'><label for='id_explosive_set-" + nextindex + "-issued' class='form-label'> Charge Issued</label><input type='text' name='explosive[" + (nextindex - 1) + "][issued]' placeholder='Issued' class='textinput textInput form-control' id='id_explosive_set-" + nextindex + "-issued' ></div><div id='div_id_explosive_set-" + nextindex + "-used' class='mb-3'><label for='id_explosive_set-" + nextindex + "-used' class='form-label'>Charge Used</label><input type='text' name='explosive[" + (nextindex - 1) + "][used]' placeholder='Used' class='textinput textInput form-control' id='id_explosive_set-" + nextindex + "-used'></div><div id='div_id_explosive_set-" + nextindex + "-returned' class='mb-3'><label for='id_explosive_set-" + nextindex + "-returned' class='form-label'>Charge Returned</label><input type='text' name='explosive[" + (nextindex - 1) + "][returned]' placeholder='Returned' class='textinput textInput form-control' id='id_explosive_set-" + nextindex + "-returned'></div><button class='btn btn-danger btn-sm remove my-3' id='remove_explosives_" + nextindex + "'type='button'><i class='fa fa-minus-circle'></i></button>");
     });
 
     $('.logs-wrapper').on('click', '.remove', function () {
-        var id = this.id;
-        var split_id = id.split("_");
-        var deleteindex = split_id[2];
-        // // Remove <div> with id
+        const deleteindex = this.id.split("_")[2];
         $("#id-log-form_" + deleteindex).remove();
-        // After removal, check if any explosive-job fields are visible
-        var $explosiveInfo = $('#div-explosive');
-        if ($('.explosive-job:visible').length === 0) {
-            $explosiveInfo.hide();
-            $explosiveInfo.find('input, select, textarea').each(function() {
-                if ($(this).is('select')) {
-                    $(this).prop('selectedIndex', 0);
-                } else {
-                    $(this).val('');
-                }
-            });
-        }
+
+        updateGlobalExplosiveSection();
+        toggleSWCSection();
     });
 
-    $('#div-explosive').hide();
+
+    $('#div-explosive').addClass('d-none');
     var selectedOption = $(this).find('option:selected');
     if (selectedOption.closest('optgroup').attr('id') == 'explosive-logs') {
         $('.explosive-job').removeClass('d-none');
-        $('#div-explosive').show();
+        $('#div-explosive').removeClass('d-none');
     }
+
     $('.logs-wrapper').on('change', '.logsRecorded', function () {
-        var id = this.id;
-        var split_id = id.split("-")[1];
-        var selectedOption = $(this).find('option:selected');
-        var $logForm = $(this).closest('.log-form');
-        var $explosiveFields = $logForm.find('.explosive-job');
-        var $explosiveInfo = $('#div-explosive');
-        const $otherlogInput = '<label class="logmodel_set-logRecorded-other" for="id_logmodel_set-'+split_id+'-logRecorded-other">Please specify:</label><input type="text" name="logrecorded['+(Number(split_id)-1)+'][logRecorded]" maxlength="255" class="textinput textInput form-control logmodel_set-logRecorded-other" id="id_logmodel_set-'+split_id+'-logRecorded-other">';
-        
-        
-        if (selectedOption.closest('optgroup').attr('id') == 'explosive-logs') {
+        const $run = $(this).closest('.log-form');
+        const $explosiveFields = $run.find('.explosive-job');
+        const selectedOption = $(this).find('option:selected');
+
+        const isExplosive =
+            selectedOption.closest('optgroup').attr('id') === 'explosive-logs' ||
+            selectedOption.closest('optgroup').attr('id') === 'oh-explosive-logs' ||
+            selectedOption.text() === 'Other Explosive Logs';
+
+        if (isExplosive) {
+            // ✅ show ONLY this run’s explosive fields
             $explosiveFields.removeClass('d-none');
-            $explosiveInfo.show();
-        } else if (selectedOption.closest('optgroup').attr('id') == 'oh-explosive-logs') {
-            console.log(selectedOption.attr('value'));
-            $explosiveFields.removeClass('d-none');
-            $('#div-swc').show();
-            $explosiveInfo.show();
         } else {
+            // ✅ hide ONLY this run’s explosive fields
             $explosiveFields.addClass('d-none');
-            // Only hide and reset explosive info if no other log-form has explosive fields visible
-            if ($('.explosive-job:visible').length === 0) {
-                $explosiveInfo.hide();
-                $('#div-swc').hide();
-                // Reset all inputs/selects inside global explosive info
-                $explosiveInfo.find('input, select, textarea').each(function() {
-                    if ($(this).is('select')) {
-                        $(this).prop('selectedIndex', 0);
-                    } else {
-                        $(this).val('');
-                    }
-                });
-            }
         }
-        if (selectedOption.text() === 'Other Non-Explosive Logs' && !$logForm.find('.logmodel_set-logRecorded-other').length) {
-            $logForm.find('#div_logmodel_set-'+split_id+'-logRecorded').append($otherlogInput);
-        } else if(selectedOption.text() === 'Other Explosive Logs' && !$logForm.find('.logmodel_set-logRecorded-other').length) {
-            $logForm.find('#div_logmodel_set-'+split_id+'-logRecorded').append($otherlogInput);
-            $explosiveFields.removeClass('d-none');
-            $explosiveInfo.show();
-        } else {
-            $logForm.find('.logmodel_set-logRecorded-other').remove();
-        }
+
+        // 🔑 After fixing this run, re-check global state
+        updateGlobalExplosiveSection();
+        toggleSWCSection();
     });
+
 
     $('.explosive-wrapper').on('click', '.remove', function () {
         var id = this.id;
@@ -552,27 +547,14 @@ $(document).ready(function () {
     });
 
     $("#thirdstep").click(function () {
-        if ($("#id_logType").val() === "OH") {
-            $('#div-swc').show();
-        }
-        else if ($("#id_logType").val() === "PL") {
-            $('#div-explosive').hide();
-        }
-        else {
-            $('#div-swc').hide();
+        if ($("#id_logType").val() === "PL") {
+            $('#div-explosive').addClass('d-none');
         }
     }
     );
     $("#second-step").click(function () {
-        if ($("#id_logType").val() === "OH") {
-            $('#div-swc').show();
-        }
-        else if ($("#id_logType").val() === "PL") {
-            $('#div-explosive').hide();
-            $('#div-swc').hide();
-        }
-        else {
-            $('#div-swc').hide();
+        if ($("#id_logType").val() === "PL") {
+            $('#div-explosive').addClass('d-none');
         }
     }
     );
@@ -631,5 +613,57 @@ $(document).ready(function () {
             $('#div_id_objective, #div_id_observations').hide();
         }
     });
+
+    function updateGlobalExplosiveSection() {
+        let hasExplosiveRun = false;
+
+        $('.logsRecorded').each(function () {
+            const selectedOption = $(this).find('option:selected');
+
+            if (
+                selectedOption.closest('optgroup').attr('id') === 'explosive-logs' ||
+                selectedOption.closest('optgroup').attr('id') === 'oh-explosive-logs' ||
+                selectedOption.text() === 'Other Explosive Logs'
+            ) {
+                hasExplosiveRun = true;
+                return false; // break loop
+            }
+        });
+
+        if (hasExplosiveRun) {
+            $('#div-explosive').removeClass('d-none');
+        } else {
+            $('#div-explosive').addClass('d-none');
+        }
+    }
+
+    function toggleSWCSection() {
+        const logType = $('#id_logType').val();
+        let hasSWC = false;
+
+        $('.logsRecorded').each(function () {
+            if ($(this).val() === 'SWC') {
+                hasSWC = true;
+                return false; // break loop
+            }
+        });
+
+        if (logType === 'OH' && hasSWC) {
+            $('#div-swc').show();
+        } else {
+            $('#div-swc').hide();
+        }
+    }
+
+    $('#id_logType').on('change', function () {
+        toggleSWCSection();
+    });
+
+    $('.logsRecorded').each(function () {
+        $(this).trigger('change');
+    });
+
+    toggleSWCSection();
+
 });
 

@@ -9,77 +9,53 @@
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <link href="/static/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <style>
-        @page {
-            size: A4;
-            margin: 15mm;
+    /* Default: Portrait */
+    @page {
+        size: A4 portrait;
+        margin: 15mm;
+    }
+
+    /* Landscape page for JCR */
+    @page jcr-landscape {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
+    /* Assign named page */
+    .page-portrait {
+        page: portrait;
+    }
+
+
+
+    @media print {
+        .page-break {
+            page-break-after: always;
         }
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
+        /* Reduce font size for landscape (JCR) page only */
+        .page-landscape {
+            font-size: 9px;   /* default is usually ~14px */
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
+
+        .page-landscape h1 { font-size: 16px; }
+        .page-landscape h2 { font-size: 15px; }
+        .page-landscape h3 { font-size: 14px; }
+        .page-landscape h4 { font-size: 13px; }
+
+        .page-landscape table th,
+        .page-landscape table td {
+            font-size: 9px;
+            padding: 2px 4px;
         }
-        .checklist-container {
-            margin-bottom: 30px;
-            page-break-inside: avoid;
+
+        .page-landscape .form-control,
+        .page-landscape input,
+        .page-landscape textarea {
+            font-size: 9px;
         }
-        .checklist-header {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border: 1px solid #ddd;
-            font-weight: bold;
-        }
-        .checklist-body {
-            border: 1px solid #ddd;
-            border-top: none;
-            padding: 15px;
-        }
-        .signature-section {
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px dashed #333;
-        }
-        .signature-box {
-            display: inline-block;
-            width: 200px;
-            margin-right: 50px;
-            margin-top: 50px;
-        }
-        .signature-line {
-            border-top: 1px solid #333;
-            width: 100%;
-            margin-bottom: 5px;
-        }
-        .checklist-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .checklist-container table, th, td {
-            border: 1px solid #ddd;
-        }
-        .checklist-container th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        .checklist-container th {
-            background-color: #f5f5f5;
-        }
-        .no-print {
-            display: none;
-        }
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            .page-break {
-                page-break-after: always;
-            }
-        }
-    </style>
+    }
+</style>
+
 </head>
 <body>
     <div class="text-center mb-3">
@@ -101,21 +77,20 @@
             </div>
         </div>
     </div>
+    <div class="page-break"></div>
     @endif
     <!-- JCR Details -->
-    <div class="row mb-4">
-        <div class="col-md-12 mx-auto">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Job Completion Report (JCR) Details</h4>
-                </div>
-                <div class="card-body">
-                    @include('jcr._preview_content')
+    <div class="page-landscape" style="page: jcr-landscape;">
+        <div class="row mb-4">
+            <div class="col-md-12 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        @include('jcr._preview_content')
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Checklist A -->
     @if($groupedChecklists['a'])
     <div class="row mb-4">
@@ -184,6 +159,7 @@
 
     <!-- Checklist B -->
     @if($groupedChecklists['b'])
+    <div class="page-break"></div>
     <div class="row mb-4">
         <div class="col-md-11 mx-auto">
             <div class="card">
@@ -247,6 +223,7 @@
 
     <!-- Checklist C -->
     @if($groupedChecklists['c'])
+    <div class="page-break"></div>
     <div class="row mb-4">
         <div class="col-md-11 mx-auto">
             <div class="card">

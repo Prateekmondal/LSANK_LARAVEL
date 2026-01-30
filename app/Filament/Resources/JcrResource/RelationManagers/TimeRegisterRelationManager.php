@@ -17,8 +17,18 @@ class TimeRegisterRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('logging_unit_no')->required(),
+                Forms\Components\TextInput::make('logging_unit_no')->required(),
                 Forms\Components\TextInput::make('well_no')->required(),
                 Forms\Components\TextInput::make('rig_no')->required(),
+                Forms\Components\TextInput::make('well_indented_date')->required(),
+                Forms\Components\TextInput::make('well_indented_time')->required(),
+                Forms\Components\TextInput::make('well_taken_up_date')->required(),
+                Forms\Components\TextInput::make('well_taken_up_time')->required(),
+                Forms\Components\TextInput::make('well_handed_over_date')->required(),
+                Forms\Components\TextInput::make('well_handed_over_time')->required(),
+                Forms\Components\TextInput::make('job_carried_out')->required(),
+                Forms\Components\TextInput::make('observations_by_logging_chief')->required(),
+                Forms\Components\TextInput::make('rig_representative_observations')->required(),
                 Forms\Components\Toggle::make('is_final_submitted'),
                 Forms\Components\TextInput::make('rig_representative_email')->email(),
             ]);
@@ -39,11 +49,13 @@ class TimeRegisterRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                Tables\Actions\AttachAction::make()->preloadRecordSelect(),
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

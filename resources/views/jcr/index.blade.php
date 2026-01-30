@@ -15,7 +15,7 @@
                     <input type="text" id="month" name="month" value="{{ request('month') }}" class="form-control date-picker" placeholder="Select month" autocomplete="off">
                 </div>
 
-                @if(auth()->user()->hasAnyRole(['party_chief','operation_incharge','super-admin','Head_Logging_Services','Location Manager']))
+                @if(auth()->user()->hasAnyRole(['Technical_Support_Group', 'party_chief','operation_incharge','super-admin','Head_Logging_Services','Location Manager']))
                     <div class="col-auto">
                         <label for="user_id" class="form-label">User</label>
                         <select name="user_id" id="user_id" class="form-select">
@@ -51,7 +51,7 @@
                 <tbody>
                     @foreach ($jcrs as $index=>$jcr)
                         <tr>
-                            <td class="text-center">{{ $jcr->jobDate->format('Y-m-d') }}</td>
+                            <td class="text-center">{{ $jcr->jobDate->format('Y-m-d') }}<br>{{ $jcr->jobDate->format('l') }}</td>
                             <td class="text-center">{{ $jcr->indentNo }}</td>
                             <td class="text-center">{{ $jcr->wellNo }}</td>
                             <td class="text-center"><span>{{ $jcr->assembled_date->format('Y-m-d') }}</span> <span>{{ $jcr->assembled_time->format('H:i') }}</span> - <span>{{ $jcr->arrivalOffice_date->format('Y-m-d') }}</span> <span>{{ $jcr->arrivalOffice_time->format('H:i') }}</span></td>

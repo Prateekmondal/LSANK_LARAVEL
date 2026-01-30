@@ -45,7 +45,7 @@ class JcrController extends Controller
         }
 
         // User-based filter for certain roles
-        $allowedRoles = ['party_chief', 'operation_incharge', 'super-admin', 'Head_Logging_Services', 'Location Manager'];
+        $allowedRoles = ['Technical_Support_Group', 'party_chief', 'operation_incharge', 'super-admin', 'Head_Logging_Services', 'Location Manager'];
         $userFilter = $request->input('user_id');
         if ($user->hasAnyRole($allowedRoles) && !empty($userFilter)) {
             // Filter by users associated with the JCR (many-to-many relation)
@@ -560,7 +560,11 @@ class JcrController extends Controller
     {
         if (Auth::user()->hasAnyRole(['party_chief', 'operation_incharge', 'super-admin'])) {
             $this->assignPartyChief($request, $jcr);
-            $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => User::find($jcr->creator_id)->name]);
+            if ($jcr->creator_id != Auth::id()) {
+                $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => User::find($jcr->creator_id)->name]);
+            } else {
+                $jcr->update(['final_submit' => true, 'status' => Jcr::STATUS_PENDING_PARTY_CHIEF, 'creator_signature' => Auth::user()->name, 'creator_signed_at' => now()]);
+            }
         }
         else {
             $this->assignPartyChief($request, $jcr);
@@ -695,7 +699,7 @@ class JcrController extends Controller
             'b' => $checklists->where('type', 'b')->first(),
             'c' => $checklists->where('type', 'c')->first(),
         ];
-
+        // Pdf::view('jcr.print', compact('jcr', 'groupedChecklists', 'timeRegister'))->save(storage_path('public/jcr_'.$jcr->id.'.pdf'));
         return view('jcr.print', compact('jcr', 'groupedChecklists', 'timeRegister'));
     }
 

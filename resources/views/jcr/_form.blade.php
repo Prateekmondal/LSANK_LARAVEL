@@ -7,9 +7,9 @@
     $rigTypes = ['DRILLING', 'WORKOVER', 'RIGLESS'];
     $cableSizes = ['5/16', '7/32', '15/32', 'Others'];
     $cableHeadSizes = ['1 7/16', '3 3/8', 'Others'];
-    $explosivelists = ['23 GM TAG', '25 GM TAG', '39 GM TAG', '8 GM TTP', 'BP POWER CHARGE', 'CASING CUTTER', 'TUBING CUTTER', 'RTG CHARGE', 'SWC CHARGE', 'SPLIT SHOT CHARGE'];
+    $explosivelists = ['23gm TAG', '23gm TAG(BH)', '25gm TAG', '39gm TAG', '8gm TTP', 'BP Power Charge', 'Casing Cutter Charge', 'Tubing Cutter Charge', 'RTG Charge', 'SWC Charge', 'SPLIT Shot Charge'];
     $primachordlists = ['T-150', 'T-190', 'PT-185', 'PT-150', 'BP SECONDARY IGNITOR'];
-    $detonatorlists = ['26FDE', '1015E', 'BP PRIMARY IGNITOR', 'CUTTER DETO 432'];
+    $detonatorlists = ['15FDE', '26FDE', '1015E', 'BP PRIMARY IGNITOR', 'CUTTER DETO 432'];
 @endphp
 @if ($errors->any())
     <div class="container text-center">
@@ -1217,7 +1217,7 @@
                                                 <small class='error'>{{ $message }}</small>
                                             @enderror
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-bottomShotDepth' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-bottomShotDepth' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-bottomShotDepth' class='form-label'>
                                                 Bottom Shot Depth(m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][bottomShotDepth]'
@@ -1225,14 +1225,14 @@
                                                 id='id_logmodel_set-{{ $index + 1 }}-bottomShotDepth'
                                                 value='{{ $old_logrecorded['bottomShotDepth'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-topShotDepth' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-topShotDepth' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-topShotDepth' class='form-label'>
                                                 Top Shot Depth(m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][topShotDepth]' step='any'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-topShotDepth'
                                                 value='{{ $old_logrecorded['topShotDepth'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-charge' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-charge' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-charge' class='form-label'>Charge
                                                 Type</label>
                                             <select name='logrecorded[{{ $index }}][charge]'
@@ -1247,14 +1247,14 @@
                                                 <option value='NA' {{ $old_logrecorded['charge'] == 'NA' ? 'selected' : '' }}>NA</option>
                                             </select>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-chargeNo' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-chargeNo' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-chargeNo' class='form-label'>
                                                 Charge Qty.(Nos.)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][chargeNo]'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-chargeNo'
                                                 value='{{ $old_logrecorded['chargeNo'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChord' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChord' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-primaChord' class='form-label'>Prima Chord
                                                 Type</label>
                                             <select name='logrecorded[{{ $index }}][primaChord]'
@@ -1268,14 +1268,14 @@
                                                 <option value='NA' {{ $old_logrecorded['primaChord'] == 'NA' ? 'selected' : '' }}>NA</option>
                                             </select>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChordQty' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChordQty' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-primaChordQty' class='form-label'>
                                                 P/C Length (m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][primaChordQty]' step='any'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-primaChordQty'
                                                 value='{{ $old_logrecorded['primaChordQty'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuse' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuse' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fuse' class='form-label'>Fuse Type</label>
                                             <select name='logrecorded[{{ $index }}][fuse]' maxlength='20'
                                                 class='textinput textInput form-control' id='id_logmodel_set-{{ $index + 1 }}-fuse'>
@@ -1287,14 +1287,14 @@
                                                 <option value='NA' {{ $old_logrecorded['fuse'] == 'NA' ? 'selected' : '' }}>NA</option>
                                             </select>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuseNo' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuseNo' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fuseNo' class='form-label'>
                                                 Fuse Qty. (Nos.)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][fuseNo]'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-fuseNo'
                                                 value='{{ $old_logrecorded['fuseNo'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-fMf' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-fMf' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fMf' class='form-label'>F/MF</label>
                                             <select name='logrecorded[{{ $index }}][fMf]' class='select form-select'
                                                 id='id_logmodel_set-{{ $index + 1 }}-fMf'>
@@ -1356,6 +1356,7 @@
                                                 </optgroup>
                                                 <optgroup label="Production Logs" id="PL">
                                                     <option value="Production Log" {{ $logsrecorded['logRecorded'] == 'Production Log' ? 'selected' : '' }}>Production Log</option>
+                                                    <option value="Temperature Log" {{ $logsrecorded['logRecorded'] == 'Temperature Log' ? 'selected' : '' }}>Temperature Log</option>
                                                 </optgroup>
                                                 <optgroup label="Open Hole Logs" id="OHL">
                                                     <option value="HDIL-ORIT-SP-GR" {{ $logsrecorded['logRecorded'] == 'HDIL-ORIT-SP-GR' ? 'selected' : '' }}>
@@ -1411,7 +1412,7 @@
                                                 <small class='error'>{{ $message }}</small>
                                             @enderror
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-bottomShotDepth' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-bottomShotDepth' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-bottomShotDepth' class='form-label'>
                                                 Bottom Shot Depth(m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][bottomShotDepth]'
@@ -1419,14 +1420,14 @@
                                                 id='id_logmodel_set-{{ $index + 1 }}-bottomShotDepth'
                                                 value='{{ $logsrecorded->bottomShotDepth }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-topShotDepth' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-topShotDepth' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-topShotDepth' class='form-label'>
                                                 Top Shot Depth(m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][topShotDepth]' step='any'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-topShotDepth'
                                                 value='{{ $logsrecorded->topShotDepth }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-charge' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-charge' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-charge' class='form-label'>Charge
                                                 Type</label>
                                             <select name='logrecorded[{{ $index }}][charge]'
@@ -1440,14 +1441,14 @@
                                                 <option value='NA' {{ $logsrecorded['charge'] == 'NA' ? 'selected' : '' }}>NA</option>
                                             </select>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-chargeNo' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-chargeNo' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-chargeNo' class='form-label'>
                                                 Charge Qty.(Nos.)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][chargeNo]'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-chargeNo'
                                                 value='{{ $logsrecorded['chargeNo'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChord' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChord' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-primaChord' class='form-label'>Prima Chord
                                                 Type</label>
                                             <select name='logrecorded[{{ $index }}][primaChord]'
@@ -1460,14 +1461,14 @@
                                                 <option value='NA' {{ $logsrecorded['primaChord'] == 'NA' ? 'selected' : '' }}>NA</option>
                                             </select>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChordQty' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-primaChordQty' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-primaChordQty' class='form-label'>
                                                 P/C Length (m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][primaChordQty]' step='any'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-primaChordQty'
                                                 value='{{ $logsrecorded['primaChordQty'] }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuse' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuse' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fuse' class='form-label'>Fuse Type</label>
                                             <select name='logrecorded[{{ $index }}][fuse]' maxlength='20'
                                                 class='textinput textInput form-control' id='id_logmodel_set-{{ $index + 1 }}-fuse'>
@@ -1478,14 +1479,14 @@
                                                 <option value='NA' {{ $logsrecorded['fuse'] == 'NA' ? 'selected' : '' }}>NA</option>
                                             </select>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuseNo' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-fuseNo' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fuseNo' class='form-label'>
                                                 Fuse Qty. (Nos.)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][fuseNo]'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-fuseNo'
                                                 value='{{ $logsrecorded->fuseNo }}'>
                                         </div>
-                                        <div id='div_logmodel_set-{{ $index + 1 }}-fMf' class='mb-3'>
+                                        <div id='div_logmodel_set-{{ $index + 1 }}-fMf' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fMf' class='form-label'>F/MF</label>
                                             <select name='logrecorded[{{ $index }}][fMf]' class='select form-select'
                                                 id='id_logmodel_set-{{ $index + 1 }}-fMf'>
@@ -1549,19 +1550,19 @@
                                             <small class='error'>{{ $message }}</small>
                                         @enderror
                                     </div>
-                                    <div id='div_logmodel_set-1-bottomShotDepth' class='mb-3'>
+                                    <div id='div_logmodel_set-1-bottomShotDepth' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-bottomShotDepth' class='form-label'>
                                             Bottom Shot Depth(m)
                                         </label> <input type='number' name='logrecorded[0][bottomShotDepth]' step='any'
                                             class='numberinput form-control' id='id_logmodel_set-1-bottomShotDepth' value=''>
                                     </div>
-                                    <div id='div_logmodel_set-1-topShotDepth' class='mb-3'>
+                                    <div id='div_logmodel_set-1-topShotDepth' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-topShotDepth' class='form-label'>
                                             Top Shot Depth(m)
                                         </label> <input type='number' name='logrecorded[0][topShotDepth]' step='any'
                                             class='numberinput form-control' id='id_logmodel_set-1-topShotDepth' value=''>
                                     </div>
-                                    <div id='div_logmodel_set-1-charge' class='mb-3'>
+                                    <div id='div_logmodel_set-1-charge' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-charge' class='form-label'>Charge Type</label>
                                         <select name='logrecorded[0][charge]' maxlength='20'
                                             class='textinput textInput form-control' id='id_logmodel_set-1-charge'>
@@ -1572,14 +1573,14 @@
                                             <option value='NA'>NA</option>
                                         </select>
                                     </div>
-                                    <div id='div_logmodel_set-1-chargeNo' class='mb-3'>
+                                    <div id='div_logmodel_set-1-chargeNo' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-chargeNo' class='form-label'>
                                             Charge Qty.(Nos.)
                                         </label> <input type='number' name='logrecorded[0][chargeNo]'
                                             class='numberinput form-control' id='id_logmodel_set-1-chargeNo'
                                             value='{{ old('chargeNo') }}'>
                                     </div>
-                                    <div id='div_logmodel_set-1-primaChord' class='mb-3'>
+                                    <div id='div_logmodel_set-1-primaChord' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-primaChord' class='form-label'>Prima Chord Type</label>
                                         <select name='logrecorded[0][primaChord]' maxlength='20'
                                             class='textinput textInput form-control' id='id_logmodel_set-1-primaChord'>
@@ -1590,14 +1591,14 @@
                                             <option value='NA'>NA</option>
                                         </select>
                                     </div>
-                                    <div id='div_logmodel_set-1-primaChordQty' class='mb-3'>
+                                    <div id='div_logmodel_set-1-primaChordQty' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-primaChordQty' class='form-label'>
                                             P/C Length (m)
                                         </label> <input type='number' name='logrecorded[0][primaChordQty]' step='any'
                                             class='numberinput form-control' id='id_logmodel_set-1-primaChordQty'
                                             value='{{ old('primaChordQty') }}'>
                                     </div>
-                                    <div id='div_logmodel_set-1-fuse' class='mb-3'>
+                                    <div id='div_logmodel_set-1-fuse' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-fuse' class='form-label'>Fuse Type</label>
                                         <select name='logrecorded[0][fuse]' maxlength='20'
                                             class='textinput textInput form-control' id='id_logmodel_set-1-fuse'>
@@ -1608,13 +1609,13 @@
                                             <option value='NA'>NA</option>
                                         </select>
                                     </div>
-                                    <div id='div_logmodel_set-1-fuseNo' class='mb-3'>
+                                    <div id='div_logmodel_set-1-fuseNo' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-fuseNo' class='form-label'>
                                             Fuse Qty. (Nos.)
                                         </label> <input type='number' name='logrecorded[0][fuseNo]'
                                             class='numberinput form-control' id='id_logmodel_set-1-fuseNo' value=''>
                                     </div>
-                                    <div id='div_logmodel_set-1-fMf' class='mb-3'>
+                                    <div id='div_logmodel_set-1-fMf' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-fMf' class='form-label'>F/MF</label>
                                         <select name='logrecorded[0][fMf]' class='select form-select'
                                             id='id_logmodel_set-1-fMf'>
@@ -3346,14 +3347,14 @@
                                             Bottom Shot Depth(m)
                                         </label> <input type='number' name='logrecorded[0][bottomShotDepth]' step='any'
                                             class='numberinput form-control' id='id_logmodel_set-1-bottomShotDepth'
-                                            value='{{ old('bottomShotDepth') }}'>
+                                            value="{{ old('bottomShotDepth') }}">
                                     </div>
                                     <div id='div_logmodel_set-1-topShotDepth' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-topShotDepth' class='form-label'>
                                             Top Shot Depth(m)
                                         </label> <input type='number' name='logrecorded[0][topShotDepth]' step='any'
                                             class='numberinput form-control' id='id_logmodel_set-1-topShotDepth'
-                                            value='{{ old('topShotDepth') }}'>
+                                            value="{{ old('topShotDepth') }}">
                                     </div>
                                     <div id='div_logmodel_set-1-charge' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-charge' class='form-label'>Charge Type</label>
@@ -3371,7 +3372,7 @@
                                             Charge Qty.(Nos.)
                                         </label> <input type='number' name='logrecorded[0][chargeNo]'
                                             class='numberinput form-control' id='id_logmodel_set-1-chargeNo'
-                                            value='{{ old('chargeNo') }}'>
+                                            value="{{ old('chargeNo') }}">
                                     </div>
                                     <div id='div_logmodel_set-1-primaChord' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-primaChord' class='form-label'>Prima Chord
@@ -3390,7 +3391,7 @@
                                             P/C Length (m)
                                         </label> <input type='number' name='logrecorded[0][primaChordQty]' step='any'
                                             class='numberinput form-control' id='id_logmodel_set-1-primaChordQty'
-                                            value='{{ old('primaChordQty') }}'>
+                                            value="{{ old('primaChordQty') }}">
                                     </div>
                                     <div id='div_logmodel_set-1-fuse' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-fuse' class='form-label'>Fuse Type</label>
@@ -3408,7 +3409,7 @@
                                             Fuse Qty. (Nos.)
                                         </label> <input type='number' name='logrecorded[0][fuseNo]'
                                             class='numberinput form-control' id='id_logmodel_set-1-fuseNo'
-                                            value='{{ old('fuseNo') }}'>
+                                            value="{{ old('fuseNo') }}">
                                     </div>
                                     <div id='div_logmodel_set-1-fMf' class='mb-3 explosive-job d-none'>
                                         <label for='id_logmodel_set-1-fMf' class='form-label'>F/MF</label>
@@ -3440,7 +3441,7 @@
                                 </label>
                                 <input type='text' name='attempted' placeholder='Attempted'
                                     class='textinput textInput form-control' id='id_attempted'
-                                    value='{{ old('attempted')  }}'>
+                                    value="{{ old('attempted')  }}">
                             </div>
                             <div id='div_id_recovered' class='mb-3'>
                                 <label for='id_recovered' class='form-label'>
@@ -3448,7 +3449,7 @@
                                 </label>
                                 <input type='text' name='recovered' placeholder='Recovered'
                                     class='textinput textInput form-control' id='id_recovered'
-                                    value='{{ old('recovered')  }}'>
+                                    value="{{ old('recovered')  }}">
                             </div>
                             <div id='div_id_missFire' class='mb-3'>
                                 <label for='id_missFire' class='form-label'>
@@ -3456,7 +3457,7 @@
                                 </label>
                                 <input type='text' name='missFire' placeholder='Miss Fire'
                                     class='textinput textInput form-control' id='id_missFire'
-                                    value='{{ old('missFire')  }}'>
+                                    value="{{ old('missFire') }}">
                             </div>
                             <div id='div_id_barrelLost' class='mb-3'>
                                 <label for='id_barrelLost' class='form-label'>
@@ -3464,7 +3465,7 @@
                                 </label>
                                 <input type='text' name='barrelLost' placeholder='Barrel Lost'
                                     class='textinput textInput form-control' id='id_barrelLost'
-                                    value='{{ old('barrelLost')  }}'>
+                                    value="{{ old('barrelLost')  }}">
                             </div>
                             <div id='div_id_emptyBarrel' class='mb-3'>
                                 <label for='id_emptyBarrel' class='form-label'>
@@ -3472,7 +3473,7 @@
                                 </label>
                                 <input type='text' name='emptyBarrel' placeholder='Empty Barrel'
                                     class='textinput textInput form-control' id='id_emptyBarrel'
-                                    value='{{ old('emptyBarrel')  }}'>
+                                    value="{{ old('emptyBarrel')  }}">
                             </div>
                             <div id='div_id_chargeUsed' class='mb-3'>
                                 <label for='id_chargeUsed' class='form-label'>
@@ -3480,7 +3481,7 @@
                                 </label>
                                 <input type='text' name='chargeUsed' placeholder='Charge Used'
                                     class='textinput textInput form-control' id='id_chargeUsed'
-                                    value='{{ old('chargeUsed')  }}'>
+                                    value="{{ old('chargeUsed')  }}">
                             </div>
                         </div>
                     </fieldset>

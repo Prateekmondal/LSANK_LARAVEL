@@ -8,6 +8,7 @@ use App\Models\User;
 
 class NotificationControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function test_notification_index_requires_authentication()
     {

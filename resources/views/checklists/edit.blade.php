@@ -49,6 +49,9 @@
                                             <select name="items[{{ $index }}][status]" class="form-select form-select-sm">
                                                 <option value="1" {{ $item['status'] ? 'selected' : '' }}>Yes</option>
                                                 <option value="0" {{ !$item['status'] ? 'selected' : '' }}>No</option>
+                                                @if($item['status'] == NULL)
+                                                    <option value="" selected>N/A</option>
+                                                @endif
                                             </select>
                                             <input type="hidden" name="items[{{ $index }}][name]" value="{{ $item['name'] }}">
                                         </td>

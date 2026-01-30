@@ -24,6 +24,7 @@ class JcrRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\DetachAction::make(),
             ]);
     }
 }

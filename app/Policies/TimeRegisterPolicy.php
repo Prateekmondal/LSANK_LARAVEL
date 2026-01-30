@@ -31,7 +31,7 @@ class TimeRegisterPolicy
 
     public function create(User $user)
     {
-        if ($user->hasRole('staff') || $user->hasRole('field_staff') || $user->hasRole('Technical_Support_Group') || $user->hasRole('technical_support_group')) {
+        if (!$user->can('create_time::register')) {
             return false;
         }
 
@@ -44,7 +44,7 @@ class TimeRegisterPolicy
             return true;
         }
 
-        if ($user->hasRole('staff') || $user->hasRole('field_staff') || $user->hasRole('Technical_Support_Group') || $user->hasRole('technical_support_group')) {
+        if (!$user->can('update_time::register')) {
             return false;
         }
 

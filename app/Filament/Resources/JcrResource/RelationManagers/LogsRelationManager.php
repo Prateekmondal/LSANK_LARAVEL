@@ -21,23 +21,9 @@ class LogsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('runNo')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('logRecorded')
+                Forms\Components\TextInput::make('logRecorded')
                     ->required()
-                    ->options([
-                        'Perforation(CCL)' => 'Perforation(CCL)',
-                        'TTP(CCL)' => 'TTP(CCL)',
-                        'Bridge Plug(CCL)' => 'Bridge Plug(CCL)',
-                        'Junk Basket(CCL)' => 'Junk Basket(CCL)',
-                        'GR-CCL' => 'GR-CCL',
-                        'GR-TCL' => 'GR-TCL',
-                        'SBT-GR-CCL' => 'SBT-GR-CCL',
-                        'RBT-GR-CCL' => 'RBT-GR-CCL',
-                        'Production Log' => 'Production Log',
-                        'HDIL-ORIT-SP-GR' => 'HDIL-ORIT-SP-GR',
-                        'ZDEN-CN-GR' => 'ZDEN-CN-GR',
-                        'STAR-ORIT-GR' => 'STAR-ORIT-GR',
-                        'XMAC-ORIT-GR' => 'XMAC-ORIT-GR',
-                    ]),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('bottomDepth')
                     ->required()
                     ->maxLength(255),

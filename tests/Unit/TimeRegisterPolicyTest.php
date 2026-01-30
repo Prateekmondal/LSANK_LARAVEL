@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 class TimeRegisterPolicyTest extends TestCase
 {
+    use RefreshDatabase;
 
     protected function setUp(): void
     {

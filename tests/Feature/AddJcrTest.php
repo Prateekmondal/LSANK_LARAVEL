@@ -9,6 +9,7 @@ use App\Models\User;
 
 class AddJcrTest extends TestCase
 {
+    use RefreshDatabase;
 
     /**
      * A basic feature test example.
@@ -16,10 +17,11 @@ class AddJcrTest extends TestCase
     public function test_addjcr_page_is_displayed(): void
     {
         $user = User::factory()->create();
+        $user->assignRole('field_officer');
 
         $response = $this
             ->actingAs($user)
-            ->get('/addjcr');
+            ->get('/jcr/create');
 
         $response->assertOk();
     }
@@ -27,10 +29,11 @@ class AddJcrTest extends TestCase
     public function test_users_can_add_new_jcr(): void
     {
         $user = User::factory()->create();
+        $user->assignRole('field_officer');
 
         $response = $this
             ->actingAs($user)
-            ->post('/addjcr', [
+            ->post('/jcr', [
             'fieldName' => 'Test fieldname',
             'wellNo' => 'Test well no',
             'jobDate' => date('d.m.Y', strtotime('01.01.2025')),
@@ -205,9 +208,6 @@ class AddJcrTest extends TestCase
             'final_submit' => 1,
         ]);
 
-        // $response->assertSuccessful();
-        // $response->assertSessionHasErrors();
-        $response->assertRedirect('dashboard');
-        // return $response;
+        $response->assertStatus(201);
     }
 }

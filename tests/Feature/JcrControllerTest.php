@@ -8,6 +8,7 @@ use App\Models\User;
 
 class JcrControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function test_jcr_index_requires_authentication()
     {

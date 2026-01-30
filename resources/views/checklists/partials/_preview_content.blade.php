@@ -15,8 +15,8 @@
     <tr>
         <td>{{ $item['name'] }}</td>
         <td>
-            <span class="badge bg-{{ $item['status'] ? 'success' : 'danger' }}">
-                {{ $item['status'] ? 'Yes' : 'No' }}
+            <span class="badge bg-{{ $item['status'] ? 'success' : ($item['status'] == null ? 'warning' : 'danger') }}">
+                {{ $item['status'] ? 'Yes' : ($item['status'] == null ? 'N/A' : 'No') }}
             </span>
         </td>
         <td>{{ $item['comments'] ?? 'N/A' }}</td>

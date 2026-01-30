@@ -14,7 +14,13 @@ class TimeRegisterController extends Controller
 {
     public function index()
     {
-        $timeRegisters = TimeRegister::latest()->paginate(5);
+        $user = Auth::user();
+        // Base query depends on permission
+        if ($user->can('view_any_time::register')) {
+            $timeRegisters = TimeRegister::latest()->paginate(10);
+        } else {
+            $timeRegisters = $user->timeRegisters()->latest()->paginate(10);
+        }
         return view('time-registers.index', compact('timeRegisters'));
     }
 

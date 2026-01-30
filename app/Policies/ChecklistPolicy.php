@@ -27,7 +27,7 @@ class ChecklistPolicy
 
     public function create(User $user)
     {
-        if ($user->hasRole('staff') || $user->hasRole('field_staff') || $user->hasRole('Technical_Support_Group') || $user->hasRole('technical_support_group')) {
+        if (!$user->can('create_explosive::checklist')) {
             return false;
         }
 
@@ -40,7 +40,7 @@ class ChecklistPolicy
             return true;
         }
 
-        if ($user->hasRole('staff') || $user->hasRole('field_staff') || $user->hasRole('Technical_Support_Group') || $user->hasRole('technical_support_group')) {
+        if (!$user->can('update_explosive::checklist')) {
             return false;
         }
 

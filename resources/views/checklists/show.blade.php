@@ -9,13 +9,8 @@
             <h2>{{ $checklist->type_name }} Checklist</h2>
             <div class="btn-group">
                 @can('update', $checklist)
-                    <a href="{{ route('checklists.edit', $checklist->id) }}" class="btn btn-warning">
+                    <a href="{{ route('checklists.edit', [$checklist->id, $checklist->type]) }}" class="btn btn-warning">
                         <i class="bi bi-pencil"></i> Edit
-                    </a>
-                @endcan
-                @can('forceEdit', $checklist)
-                    <a href="{{ route('checklists.force-edit', $checklist->id) }}" class="btn btn-outline-danger">
-                        <i class="bi bi-shield-lock"></i> Admin Edit
                     </a>
                 @endcan
                 @can('delete', $checklist)
@@ -56,8 +51,8 @@
                         <tr>
                             <td>{{ $item['name'] }}</td>
                             <td>
-                                <span class="badge bg-{{ $item['status'] ? 'success' : 'danger' }}">
-                                    {{ $item['status'] ? 'Yes' : 'No' }}
+                                <span class="badge bg-{{ $item['status'] ? 'success' : ($item['status'] == null ? 'warning' : 'danger') }}">
+                                    {{ $item['status'] ? 'Yes' : ($item['status'] == null ? 'N/A' : 'No') }}
                                 </span>
                             </td>
                             <td>{{ $item['comments'] ?? 'N/A' }}</td>

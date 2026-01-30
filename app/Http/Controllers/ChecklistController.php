@@ -21,21 +21,27 @@ class ChecklistController extends Controller
     {
         $user = Auth::user();
 
-        $checklists = ExplosiveChecklist::where(function ($query) use ($user) {
-            // Checklists created by user
-            $query->where('creator_id', $user->id)
-                // Checklists signed by user
-                ->orWhereHas('signatures', function ($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                })
-                // Checklists forwarded to user
-                ->orWhereHas('forwards', function ($q) use ($user) {
-                    $q->where('to_user_id', $user->id);
-                });
-        })
-            ->with(['creator', 'signatures.user', 'externalSignature'])
-            ->orderBy('date', 'desc')
-            ->paginate(10);
+        if ($user->can('view_any_explosive::checklist')) {
+            $checklists = ExplosiveChecklist::with(['creator', 'signatures.user', 'externalSignature'])
+                ->orderBy('date', 'desc')
+                ->paginate(10);
+        } else {
+            $checklists = ExplosiveChecklist::where(function ($query) use ($user) {
+                // Checklists created by user
+                $query->where('creator_id', $user->id)
+                    // Checklists signed by user
+                    ->orWhereHas('signatures', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    })
+                    // Checklists forwarded to user
+                    ->orWhereHas('forwards', function ($q) use ($user) {
+                        $q->where('to_user_id', $user->id);
+                    });
+            })
+                ->with(['creator', 'signatures.user', 'externalSignature'])
+                ->orderBy('date', 'desc')
+                ->paginate(10);
+        }
 
         return view('checklists.index', compact('checklists'));
     }
@@ -96,10 +102,10 @@ class ChecklistController extends Controller
         $this->authorize('update', $checklist);
 
         // Check if checklist is editable (draft status)
-        if ($checklist->status !== 'draft') {
-            return redirect()->route('checklists.show', $checklist->id)
-                ->with('error', 'Only draft checklists can be edited.');
-        }
+        // if ($checklist->status !== 'draft') {
+        //     return redirect()->route('checklists.show', $checklist->id)
+        //         ->with('error', 'Only draft checklists can be edited.');
+        // }
 
         return view('checklists.edit', [
             'checklist' => $checklist,
@@ -112,10 +118,10 @@ class ChecklistController extends Controller
         $this->authorize('update', $checklist);
 
         // Check if checklist is editable (draft status)
-        if ($checklist->status !== 'draft') {
-            return redirect()->route('checklists.show', $checklist->id)
-            ->with('error', 'Only draft checklists can be edited.');
-        }
+        // if ($checklist->status !== 'draft') {
+        //     return redirect()->route('checklists.show', $checklist->id)
+        //     ->with('error', 'Only draft checklists can be edited.');
+        // }
         
         $validated = $request->validate([
             'well_no' => 'required|string',

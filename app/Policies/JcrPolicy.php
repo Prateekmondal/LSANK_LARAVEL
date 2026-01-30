@@ -30,7 +30,7 @@ class JcrPolicy
     public function create(User $user): bool
     {
         // Staff and Technical Support Group cannot create
-        if ($user->hasRole('staff') || $user->hasRole('field_staff') || $user->hasRole('Technical_Support_Group') || $user->hasRole('technical_support_group')) {
+        if (!$user->can('create_jcr')) {
             return false;
         }
 

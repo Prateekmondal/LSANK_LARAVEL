@@ -8,6 +8,7 @@ use App\Models\User;
 
 class ChecklistControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function test_index_requires_authentication()
     {

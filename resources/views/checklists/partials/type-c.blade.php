@@ -41,8 +41,22 @@
                     <td>{{ $item }}</td>
                     <td>
                         <select name="checklist_data[{{ $index }}][status]" class="form-select form-select-sm">
-                            <option value="1" selected>Yes</option>
-                            <option value="0">No</option>
+                            @switch($index + 1)
+                                @case(22)
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                    <option value="" selected>N/A</option>
+                                    @break
+                                @case(23)
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                    <option value="" selected>N/A</option>
+                                    @break
+                                @case(13)
+                            @default
+                                <option value="1" selected>Yes</option>
+                                <option value="0">No</option>
+                            @endswitch
                         </select>
                         <input type="hidden" name="checklist_data[{{ $index }}][name]" value="{{ $item }}">
                     </td>
