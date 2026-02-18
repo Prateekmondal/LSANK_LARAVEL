@@ -1,5 +1,4 @@
 <?php
-// app/Models/TimeRegister.php
 
 namespace App\Models;
 
@@ -8,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-class TimeRegister extends Model
+class timeRegister extends Model
 {
     use HasFactory;
 

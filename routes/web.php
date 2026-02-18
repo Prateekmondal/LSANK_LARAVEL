@@ -64,6 +64,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['can:sign_as_operation_incharge'])->group(function () {
         Route::post('jcr/{jcr}/operation-incharge-sign', [JcrController::class, 'operationInchargeSign'])->name('jcr.operation-incharge.sign');
     });
+
+    // SAP Push Route (requires Technical_Support_Group role)
+    Route::post('jcr/{jcr}/push-to-sap', [JcrController::class, 'pushToSap'])
+        ->name('jcr.push-to-sap')
+        ->middleware('can:push_jcr_to_sap');
+
     Route::get('/dashboard', [JcrController::class, 'dashboardView'])->name('dashboard');
     Route::get('jcr/download', [JcrController::class, 'download'])->name('jcr.download');
     Route::get('/jcr/{jcr}/print', [JcrController::class, 'print'])->name('jcr.print');

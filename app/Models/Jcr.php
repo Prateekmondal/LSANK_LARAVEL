@@ -148,6 +148,9 @@ class Jcr extends Model
         'status',
         'time_register_id',
         'time_register_linked',
+        'sap_document_number',
+        'sap_pushed_at',
+        'sap_status',
     ];
 
     /**
@@ -182,6 +185,7 @@ class Jcr extends Model
         'lastcirc_from' => 'datetime:Y-m-d h:m',
         'lastcirc_to' => 'datetime:Y-m-d h:m',
         'time_register_linked' => 'boolean',
+        'sap_pushed_at' => 'datetime',
     ];
 
     public function users()
@@ -336,5 +340,28 @@ class Jcr extends Model
     public function requiresTimeRegister()
     {
         return !$this->time_register_linked;
+    }
+
+    // Check if JCR is approved and fully signed (can be pushed to SAP)
+    public function canPushToSap()
+    {
+        return $this->isApproved() && 
+               $this->operation_incharge_signature !== null &&
+               $this->sap_document_number === null;
+    }
+
+    // Check if already pushed to SAP
+    public function isPushedToSap()
+    {
+        return !is_null($this->sap_document_number);
+    }
+
+    // Get SAP push timestamp formatted
+    public function getSapPushedAtFormatted()
+    {
+        if ($this->sap_pushed_at) {
+            return $this->sap_pushed_at->format('d-m-Y H:i:s');
+        }
+        return null;
     }
 }

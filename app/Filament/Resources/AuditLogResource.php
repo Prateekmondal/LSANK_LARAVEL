@@ -13,12 +13,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Section;
 
 class AuditLogResource extends Resource
 {
     protected static ?string $model = AuditLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-magnifying-glass';
 
     public static function form(Form $form): Form
     {
@@ -32,7 +34,8 @@ class AuditLogResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('auditable_id')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->columnSpanFull(),
                 Forms\Components\Repeater::make('old_values')
                     ->schema([
                         Forms\Components\TextInput::make('old_value_key')
@@ -40,12 +43,17 @@ class AuditLogResource extends Resource
                         Forms\Components\TextInput::make('old_value_value')
                             ->maxLength(100),
                     ])
-                    ->columnSpanFull()
+                    ->columnSpan(1)
                     ->default([]),
-                Forms\Components\Textarea::make('old_values')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('new_values')
-                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('new_values')
+                    ->schema([
+                        Forms\Components\TextInput::make('new_value_key')
+                            ->maxLength(100),
+                        Forms\Components\TextInput::make('new_value_value')
+                            ->maxLength(100),
+                    ])
+                    ->columnSpan(1)
+                    ->default([]),
                 Forms\Components\TextInput::make('url')
                     ->maxLength(255)
                     ->default(null),

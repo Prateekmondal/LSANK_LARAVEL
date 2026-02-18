@@ -11,6 +11,14 @@
                 <a href="{{ route('jcr.print', $jcr->id) }}" class="btn btn-primary">
                     <i class="fas fa-print"></i> Printable View
                 </a>
+                @if($jcr->canPushToSap() && Auth::user()->hasRole('Technical_Support_Group'))
+                    <form action="{{ route('jcr.push-to-sap', $jcr->id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to push this JCR to SAP?')">
+                            <i class="fas fa-arrow-up"></i> Push to SAP
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
         <div class="card-body">
@@ -120,6 +128,23 @@
                     </div>
                 </div>
             </div>
+            <!-- SAP Document Information -->
+            @if($jcr->isPushedToSap())
+                <hr>
+                <h4 class="text-primary">SAP Integration</h4>
+                <div class="alert alert-info">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>SAP Document Number:</strong>
+                            <span class="badge bg-success">{{ $jcr->sap_document_number }}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Pushed at:</strong>
+                            {{ $jcr->getSapPushedAtFormatted() }}
+                        </div>
+                    </div>
+                </div>
+            @endif
             <!-- Signature Forms for authorized users -->
             <div class="my-3">
                 <hr>

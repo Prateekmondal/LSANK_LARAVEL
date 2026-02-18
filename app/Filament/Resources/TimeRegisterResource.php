@@ -6,6 +6,10 @@ use App\Filament\Resources\TimeRegisterResource\Pages;
 use App\Models\TimeRegister;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,11 +32,42 @@ class TimeRegisterResource extends Resource
                 TextInput::make('indent_no'),
                 TextInput::make('well_no')->required(),
                 TextInput::make('rig_no'),
+
                 DatePicker::make('well_indented_date'),
                 TextInput::make('well_indented_time'),
-                TextInput::make('job_carried_out')->columnSpan('full'),
+                DatePicker::make('well_taken_up_date'),
+                TextInput::make('well_taken_up_time'),
+                DatePicker::make('well_handed_over_date'),
+                TextInput::make('well_handed_over_time'),
+
+                Textarea::make('job_carried_out')->columnSpan('full'),
+                Textarea::make('observations_by_logging_chief')->columnSpan('full'),
+
+                Select::make('logging_chief_id')
+                    ->relationship('loggingChief', 'name')
+                    ->searchable()
+                    ->preload(),
+                TextInput::make('logging_chief_name'),
+                TextInput::make('logging_chief_designation'),
+                TextInput::make('logging_chief_signature'),
+                DateTimePicker::make('logging_chief_signed_at'),
+
                 TextInput::make('rig_representative_email')->email(),
+                Textarea::make('rig_representative_observations'),
+                TextInput::make('rig_representative_signature'),
+                TextInput::make('rig_representative_name'),
+                TextInput::make('rig_representative_designation'),
+                DateTimePicker::make('rig_representative_signed_at'),
+
                 TextInput::make('status'),
+                TextInput::make('signature_token')->disabled(),
+                Toggle::make('is_final_submitted'),
+                DateTimePicker::make('final_submitted_at'),
+
+                Select::make('created_by')
+                    ->relationship('creator', 'name')
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

@@ -6,6 +6,7 @@ use App\Models\Jcr;
 use App\Models\User;
 use App\Models\ExplosiveChecklist;
 use App\Models\timeRegister;
+use App\Services\SapService;
 use App\Notifications\JcrAssignedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -1094,4 +1095,43 @@ class JcrController extends Controller
 
         return $request->validate($rules);
     }
+
+    /**
+     * Push JCR to SAP
+     */
+    public function pushToSap(Request $request, Jcr $jcr)
+    {
+        $user = Auth::user();
+
+        // Check if user has technical_support_group role
+        if (!$user->hasAnyRole(['Technical_Support_Group'])) {
+            return back()->with('error', 'You do not have permission to push JCRs to SAP. Only Technical Support Group can perform this action.');
+        }
+
+        // Check if JCR is approved and signed
+        if (!$jcr->canPushToSap()) {
+            return back()->with('error', 'JCR must be approved and signed by Operation Incharge before pushing to SAP.');
+        }
+
+        // Check if already pushed
+        if ($jcr->isPushedToSap()) {
+            return back()->with('error', 'This JCR has already been pushed to SAP.');
+        }
+
+        try {
+            // Use SAP Service to push JCR
+            $sapService = new SapService();
+            $result = $sapService->pushJcrToSap($jcr);
+
+            if ($result['success']) {
+                return redirect()->route('jcr.show', $jcr->id)
+                    ->with('success', $result['message']);
+            } else {
+                return back()->with('error', $result['message']);
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to push JCR to SAP: ' . $e->getMessage());
+        }
+    }
 }
+

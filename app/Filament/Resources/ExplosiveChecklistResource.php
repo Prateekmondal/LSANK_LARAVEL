@@ -6,6 +6,10 @@ use App\Filament\Resources\ExplosiveChecklistResource\Pages;
 use App\Filament\Resources\ExplosiveChecklistResource\RelationManagers;
 use App\Models\ExplosiveChecklist;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -40,9 +44,28 @@ class ExplosiveChecklistResource extends Resource
                 Forms\Components\TextInput::make('job_type')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('checklist_data')
-                    ->required()
-                    ->columnSpanFull(),
+                Repeater::make('checklist_data')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Checklist Item')
+                            ->required()
+                            ->columnSpan('full'),
+                        Toggle::make('status')
+                            ->label('Status (Yes/No)')
+                            ->onIcon('heroicon-m-check-circle')
+                            ->offIcon('heroicon-m-x-circle')
+                            ->default(false)
+                            ->dehydrateStateUsing(fn($state) => $state ? '1' : '0')
+                            ->afterStateHydrated(function (Toggle $component, $state) {
+                                $component->state($state === '1' || $state === 1 || $state === true);
+                            }),
+                        Textarea::make('comments')
+                            ->label('Comments')
+                            ->columnSpan('full'),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull()
+                    ->required(),
                 Forms\Components\TextInput::make('status')
                     ->required(),
                 Forms\Components\Select::make('creator_id')

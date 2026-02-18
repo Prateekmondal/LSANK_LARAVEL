@@ -92,6 +92,11 @@
                                         <td class="text-center">{{ $currentFyCounts[$i] ?? 0 }}</td>
                                     </tr>
                                 @endforeach
+                                <tr class="text-center">
+                                    <td class="fw-bold">Total Jobs</td>
+                                    <td class="fw-bold">{{ array_sum($previousFyCounts) }}</td>
+                                    <td class="fw-bold">{{ array_sum($currentFyCounts) }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

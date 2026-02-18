@@ -29,8 +29,19 @@ class LogsRecordedResource extends Resource
                     ->preload(),
                 TextInput::make('runNo')->numeric(),
                 TextInput::make('logRecorded'),
-                TextInput::make('bottomDepth'),
-                TextInput::make('topDepth'),
+                TextInput::make('bottomDepth')->numeric(),
+                TextInput::make('topDepth')->numeric(),
+                TextInput::make('toolNo'),
+                TextInput::make('logQuality'),
+                TextInput::make('bottomShotDepth')->numeric(),
+                TextInput::make('topShotDepth')->numeric(),
+                TextInput::make('charge'),
+                TextInput::make('chargeNo'),
+                TextInput::make('primaChord'),
+                TextInput::make('primaChordQty')->numeric(),
+                TextInput::make('fuse'),
+                TextInput::make('fuseNo'),
+                TextInput::make('fMf')->numeric(),
             ]);
     }
 

@@ -45,6 +45,7 @@
                         <th class="text-center">Log Recorded</th>
                         <th class="text-center">Personnel</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">SAP Doc. No.</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -92,7 +93,8 @@
                                 @if($partyChief)
                                     <span class="badge bg-{{ $jcr->status_badge_color }}">{{ ucwords(strtolower($partyChief['name'])) }}</span>
                                 @endif
-                                </td>
+                            </td>
+                            <td class="text-center {{ $jcr->sap_document_number ? 'text-success' : 'text-danger' }}">{{ $jcr->sap_document_number ?? 'N/A' }}</td>
                             <td class="text-center">
                                 @if($jcr->final_submit && $jcr->party_chief_id)
                                     <a href="{{ route('jcr.show', $jcr->id) }}" class="btn btn-info btn-sm">View</a>

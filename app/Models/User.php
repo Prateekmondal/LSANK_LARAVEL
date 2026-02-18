@@ -8,6 +8,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Concerns\HasAvatar;
 use Illuminate\Support\Facades\Gate;
@@ -17,7 +18,7 @@ use App\Traits\Auditable;
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, Auditable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
     // use HasAvatar;
 
     public $timestamps = false;

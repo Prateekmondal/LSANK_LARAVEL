@@ -47,6 +47,13 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('sign_as_party_chief', [JcrPolicy::class, 'signAsPartyChief']);
         Gate::define('sign_as_operation_incharge', [JcrPolicy::class, 'signAsOperationIncharge']);
         Gate::define('approve jcr', [JcrPolicy::class, 'approve']);
+        // Allow Technical Support Group (and super-admin) to push JCRs to SAP
+        Gate::define('push_jcr_to_sap', function ($user) {
+            if (method_exists($user, 'hasAnyRole')) {
+                return $user->hasAnyRole(['Technical_Support_Group', 'super-admin']);
+            }
+            return false;
+        });
 
         // Dynamic sitemap links for footer
         view()->composer('layouts.footer', function ($view) {

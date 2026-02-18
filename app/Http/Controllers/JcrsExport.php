@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Http\Controllers;
 
 use App\Models\Jcr;
 use Carbon\Carbon;
