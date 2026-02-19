@@ -39,8 +39,18 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         $this->registerPolicies();
+        \App\Models\User::observe(\App\Observers\UserObserver::class);
         \App\Models\AuditLog::observe(\App\Observers\AuditLogObserver::class);
-        // Gate definitions for role-based access
+        // Prevent non-super-admin users from deleting records via UI (including Filament)
+        Gate::before(function ($user, $ability) {
+            if (in_array($ability, ['delete', 'deleteAny'])) {
+                if (method_exists($user, 'hasRole') && $user->hasRole('super-admin')) {
+                    return null; // allow super-admins to proceed to policy checks
+                }
+                return false; // deny delete abilities for other users
+            }
+            return null;
+        });
         Gate::define('create jcr', [JcrPolicy::class, 'create']);
         Gate::define('edit jcr', [JcrPolicy::class, 'update']);
         Gate::define('delete jcr', [JcrPolicy::class, 'delete']);

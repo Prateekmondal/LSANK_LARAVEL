@@ -21,6 +21,10 @@
         margin: 10mm;
     }
 
+    .page-landscape {
+        font-size: 15px;
+    }
+
     /* Assign named page */
     .page-portrait {
         page: portrait;

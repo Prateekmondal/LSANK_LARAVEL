@@ -52,11 +52,12 @@ class timeRegister extends Model
 
     protected $casts = [
         'well_indented_date' => 'datetime:Y-m-d',
-        'well_indented_time' => 'datetime:h:m',
+        // Time-only fields should be strings to avoid Carbon timezone parsing
+        'well_indented_time' => 'string',
         'well_taken_up_date' => 'datetime:Y-m-d',
-        'well_taken_up_time' => 'datetime:h:m',
+        'well_taken_up_time' => 'string',
         'well_handed_over_date' => 'datetime:Y-m-d',
-        'well_handed_over_time' => 'datetime:h:m',
+        'well_handed_over_time' => 'string',
         'logging_chief_signed_at' => 'datetime',
         'rig_representative_signed_at' => 'datetime',
         'final_submitted_at' => 'datetime',

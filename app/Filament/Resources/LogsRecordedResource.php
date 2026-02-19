@@ -61,7 +61,10 @@ class LogsRecordedResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ])
+            ->defaultsort(function (Builder $query): Builder {
+                return $query->orderBy('jcr_id', 'desc');
+            });
     }
 
     public static function getPages(): array

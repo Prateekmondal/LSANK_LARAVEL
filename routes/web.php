@@ -21,13 +21,6 @@ if (app()->environment('local')) {
     });
 }
 
-// Route::get('/dashboard', function () {
-// $user = Auth::user();
-//     $jcrs = Auth::user()->jcrs()->with(['users', 'logs', 'explosives'])->orderBy('arrivalOffice_date', 'desc')
-//             ->orderBy('arrivalOffice_time', 'desc')->paginate(10);
-//     return view('dashboard', ['jcrs'=>$jcrs, 'user'=>$user]);
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,8 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// JCR Routes - Protected by auth middleware
-Route::middleware(['auth'])->group(function () {
+// JCR Routes - Protected by auth and approval middleware
+Route::middleware(['auth', 'check.approval'])->group(function () {
 
     // JCR Resource Routes (CRUD operations)
     Route::resource('jcr', JcrController::class);
@@ -92,7 +85,7 @@ Route::middleware('auth')->prefix('jcr')->group(function () {
 
 Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us.store');
 
-Route::prefix('checklists')->middleware('auth')->group(function () {
+Route::prefix('checklists')->middleware(['auth', 'check.approval'])->group(function () {
     Route::get('/', [ChecklistController::class, 'index'])->name('checklists.index');
     Route::get('/create/{type}', [ChecklistController::class, 'create'])->name('checklists.create');
     Route::post('/store/{type}', [ChecklistController::class, 'store'])->name('checklists.store');
@@ -135,7 +128,7 @@ Route::get('/rig-signature/{token}', [TimeRegisterController::class, 'rigSignatu
 Route::post('/rig-signature/{token}', [TimeRegisterController::class, 'storeRigSignature'])
     ->name('time-registers.store-rig-signature');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'check.approval'])->group(function () {
     // AJAX routes for time register details
     Route::get('/ajax/time-register/{id}/details', [JcrController::class, 'getTimeRegisterDetails'])
         ->name('ajax.time-register.details');

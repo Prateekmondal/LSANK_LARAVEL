@@ -55,7 +55,7 @@
                             <td class="text-center">{{ $jcr->jobDate->format('Y-m-d') }}<br>{{ $jcr->jobDate->format('l') }}</td>
                             <td class="text-center">{{ $jcr->indentNo }}</td>
                             <td class="text-center">{{ $jcr->wellNo }}</td>
-                            <td class="text-center"><span>{{ $jcr->assembled_date->format('Y-m-d') }}</span> <span>{{ $jcr->assembled_time->format('H:i') }}</span> - <span>{{ $jcr->arrivalOffice_date->format('Y-m-d') }}</span> <span>{{ $jcr->arrivalOffice_time->format('H:i') }}</span></td>
+                            <td class="text-center"><span>{{ $jcr->assembled_date->format('Y-m-d') }}</span> <span>{{ date('H:i', strtotime($jcr->assembled_time)) }}</span> - <span>{{ $jcr->arrivalOffice_date->format('Y-m-d') }}</span> <span>{{ date('H:i', strtotime($jcr->arrivalOffice_time)) }}</span></td>
                             <td class="text-center">
                                 @switch($index % 4)
                                             @case(1)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\UserPendingApprovalNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,12 +42,18 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'is_approved' => false,  // User starts as unapproved
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Notify admins about new user registration
+        $admins = User::role(['super-admin', 'Location Manager', 'Head_Logging_Services'])->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new UserPendingApprovalNotification($user));
+        }
 
-        return redirect(route('dashboard', absolute: false));
+        // Do not auto-login; user must wait for approval
+        return redirect(route('login'))->with('status', 'Registration successful! Please wait for approval by an administrator before logging in.');
     }
 }

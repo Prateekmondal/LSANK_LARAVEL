@@ -38,6 +38,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'description',
         'avatar',
         'status',
+        'is_approved',
+        'approved_at',
+        'approved_by',
         'email_verified_at',
         'password',
     ];
@@ -61,6 +64,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'approved_at' => 'datetime',
+            'is_approved' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -145,5 +150,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function timeRegisters()
     {
         return $this->hasMany(TimeRegister::class, 'created_by');
+    }
+
+    // Relationship with approver user
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

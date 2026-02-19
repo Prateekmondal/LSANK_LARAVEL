@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
 use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Actions\Action;
 
 class JcrResource extends Resource
 {
@@ -40,11 +41,13 @@ class JcrResource extends Resource
                         Forms\Components\TextInput::make('wellNo')
                             ->required(),
                         Forms\Components\DatePicker::make('jobDate')
+                            ->native(false)
                             ->required(),
                         Forms\Components\TextInput::make('jobNo')
                             ->required()
                             ->numeric(),
                         Forms\Components\DatePicker::make('workOrderDate')
+                            ->native(false)
                             ->required(),
                         Forms\Components\TextInput::make('indentNo')
                             ->required(),
@@ -76,96 +79,75 @@ class JcrResource extends Resource
                         Forms\Components\DatePicker::make('assembled_date')
                             ->date()
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('assembled_time')
                             ->seconds(false)
                             ->native(false)
                             ->displayFormat('H:i')
                             ->format('H:i')
-                            ->required()
-                            ->timezone('GMT+5:23')
-                            ->native(false),
+                            ->required(),
                         Forms\Components\DatePicker::make('depOffice_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('depOffice_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('arrivalSite_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('arrivalSite_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('indented_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('indented_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('wellReadiness_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('wellReadiness_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('wellTaken_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('wellTaken_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('rigUP_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('rigUP_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('wellHandOver_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('wellHandOver_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('depSite_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('depSite_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\DatePicker::make('arrivalOffice_date')
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TimePicker::make('arrivalOffice_time')
                             ->seconds(false)
                             ->required()
-                            ->timezone('GMT+5:23')
                             ->native(false),
                         Forms\Components\TextInput::make('preparationTime')
                             ->required()
@@ -327,6 +309,9 @@ class JcrResource extends Resource
                     ]),
                 ])
                 ->columnSpan('full')
+                ->skippable()
+                ->nextAction(fn (Action $action) => $action->label('Next'))
+                ->previousAction(fn (Action $action) => $action->label('Previous'))
             ]);
     }
 
@@ -377,7 +362,6 @@ class JcrResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

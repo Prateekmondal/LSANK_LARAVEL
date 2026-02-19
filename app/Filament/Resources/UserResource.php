@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use PhpParser\NodeVisitor\NameResolver;
 use Closure;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Collection;
 
 class UserResource extends Resource
 {
@@ -62,6 +63,17 @@ class UserResource extends Resource
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->dehydrated(fn($state) => filled($state))
                     ->required(fn(string $context): bool => $context === 'create'),
+                Forms\Components\Section::make('Approval Status')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_approved')
+                            ->label('Approved')
+                            ->helperText('Toggle to approve or reject user access'),
+                        Forms\Components\DateTimePicker::make('approved_at')
+                            ->label('Approved At')
+                            ->disabled()
+                            ->nullable(),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -88,6 +100,13 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\IconColumn::make('is_approved')
+                    ->boolean()
+                    ->label('Approved'),
+                Tables\Columns\TextColumn::make('approved_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->label('Approved At'),
             ])
             ->filters([
                 //
@@ -98,6 +117,15 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('approve')
+                        ->label('Approve')
+                        ->action(fn (Collection $records) => $records->each(fn ($record) => $record->update([
+                            'is_approved' => true,
+                            'approved_at' => now(),
+                        ])))
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success'),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

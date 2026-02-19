@@ -50,19 +50,22 @@ class TimeRegisterResource extends Resource
                 TextInput::make('logging_chief_name'),
                 TextInput::make('logging_chief_designation'),
                 TextInput::make('logging_chief_signature'),
-                DateTimePicker::make('logging_chief_signed_at'),
+                DateTimePicker::make('logging_chief_signed_at')
+                    ->native(false),
 
                 TextInput::make('rig_representative_email')->email(),
                 Textarea::make('rig_representative_observations'),
                 TextInput::make('rig_representative_signature'),
                 TextInput::make('rig_representative_name'),
                 TextInput::make('rig_representative_designation'),
-                DateTimePicker::make('rig_representative_signed_at'),
+                DateTimePicker::make('rig_representative_signed_at')
+                    ->native(false),
 
                 TextInput::make('status'),
                 TextInput::make('signature_token')->disabled(),
                 Toggle::make('is_final_submitted'),
-                DateTimePicker::make('final_submitted_at'),
+                DateTimePicker::make('final_submitted_at')
+                    ->native(false),
 
                 Select::make('created_by')
                     ->relationship('creator', 'name')
@@ -88,7 +91,11 @@ class TimeRegisterResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ])
+            ->defaultsort(function (Builder $query): Builder {
+            return $query->orderBy('well_handed_over_date', 'desc')
+                        ->orderBy('well_handed_over_time', 'desc');
+                    });
     }
 
     public static function getEloquentQuery(): Builder

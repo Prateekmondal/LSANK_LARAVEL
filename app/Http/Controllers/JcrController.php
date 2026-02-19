@@ -139,7 +139,7 @@ class JcrController extends Controller
                 ->whereBetween('arrivalOffice_date', [$start, $end])
                 ->orderBy('arrivalOffice_date', 'desc')
                 ->orderBy('arrivalOffice_time', 'desc')
-                ->paginate(25)
+                ->paginate(50)
                 ->appends($request->only('month'));
 
             // Dates for calendar highlighting (Y-m-d format)
@@ -158,7 +158,7 @@ class JcrController extends Controller
             $jcrs = $user->jcrs()->with(['users', 'logs', 'explosives'])
                 ->orderBy('arrivalOffice_date', 'desc')
                 ->orderBy('arrivalOffice_time', 'desc')
-                ->paginate(25);
+                ->paginate(50);
 
             $jobDates = $user->jcrs()->pluck('arrivalOffice_date')
                 ->map(function ($d) {
@@ -883,7 +883,7 @@ class JcrController extends Controller
             }
         }
 
-        $jcrs = $query->paginate(25)->withQueryString();
+        $jcrs = $query->paginate(50)->withQueryString();
 
         $rowsHtml = view('dashboard._jcr_rows', compact('jcrs'))->render();
         $paginationHtml = (string) $jcrs->links('pagination::bootstrap-5');

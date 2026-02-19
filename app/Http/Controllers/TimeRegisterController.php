@@ -17,12 +17,13 @@ class TimeRegisterController extends Controller
         $user = Auth::user();
         // Base query depends on permission
         if ($user->can('view_any_time::register')) {
-            $timeRegisters = TimeRegister::latest()->paginate(10);
+            $timeRegisters = TimeRegister::latest()->orderBy('well_handed_over_date', 'desc')->orderBy('well_handed_over_time', 'desc')->paginate(50);
         } else {
-            $timeRegisters = $user->timeRegisters()->latest()->paginate(10);
+            $timeRegisters = $user->timeRegisters()->latest()->orderBy('well_handed_over_date', 'desc')->orderBy('well_handed_over_time', 'desc')->paginate(50);
         }
         return view('time-registers.index', compact('timeRegisters'));
     }
+
 
     public function create(Request $request)
     {
