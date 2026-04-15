@@ -1,7 +1,6 @@
 @php
     $loggingTypes = ['WL', 'PCL', 'FISHING', 'TCP', 'TCP-DST', 'LWD'];
     $logTypes = ['OH', 'CH', 'PL'];
-    $unitNos = ["GJ-16-BS-4773", "GJ-16-BS-4995", "GJ-16-AF-9723", "GJ-16-BS-2279", "GJ-16-BS-4842", "GJ-16-AF-9702"];
     $wellOwners = ['Asset', 'Basin', 'Cambay'];
     $wellTypes = ['Dev', 'Exp'];
     $rigTypes = ['DRILLING', 'WORKOVER', 'RIGLESS'];
@@ -49,6 +48,11 @@
                         </div>
                         <div class="col-md-3">
                             <p><strong>Logging Chief:</strong> {{ $jcr->timeRegister->logging_chief_name }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>Indent No.:</strong> {{ $jcr->timeRegister->indentNo }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -169,6 +173,22 @@
                                     @endforeach
                                 </select>
                                 @error('logType')
+                                    <small class='error'>{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div id='div_id_logging_unit_type' class='mb-3'>
+                                <label for='id_logging_unit_type' class='form-label requiredField'>
+                                    Logging Unit Type<span class='asteriskField'>*</span>
+                                </label>
+                                <select name='logging_unit_type' class='select form-select' id='id_logging_unit_type'>
+                                    <option value='departmental' {{ old('logging_unit_type', $jcr->logging_unit_type ?? 'departmental') == 'departmental' ? 'selected' : '' }}>
+                                        Departmental
+                                    </option>
+                                    <option value='contractual' {{ old('logging_unit_type', $jcr->logging_unit_type ?? 'departmental') == 'contractual' ? 'selected' : '' }}>
+                                        Contractual
+                                    </option>
+                                </select>
+                                @error('logging_unit_type')
                                     <small class='error'>{{ $message }}</small>
                                 @enderror
                             </div>
@@ -344,245 +364,234 @@
                         <div class='form-card step'>
                             <h2 class='card-header rounded border-0 fs-title text-center'>Time info</h2>
                             <div id='div_id_assembled' class='mb-3'>
-                                <label class='form-label requiredField'>Assembled<span
-                                        class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='assembled_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_assembled_date'
-                                                autocomplete='on' maxlength='16'
-                                                value="{{ old('assembled_date', date('Y-m-d', strtotime($jcr->assembled_date))) }}">
-                                            @error('assembled_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='assembled_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_assembled_time' autocomplete='on'
-                                                maxlength='16'
-                                                value='{{ old("assembled_time", date("H:i", strtotime($jcr->assembled_time))) }}'>
-                                            @error('assembled_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Assembled<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='assembled_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_assembled_date'
+                                            autocomplete='on' maxlength='16'
+                                            value="{{ old('assembled_date', date('Y-m-d', strtotime($jcr->assembled_date))) }}">
+                                        @error('assembled_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='assembled_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_assembled_time' autocomplete='on'
+                                            maxlength='16'
+                                            value='{{ old("assembled_time", date("H:i", strtotime($jcr->assembled_time))) }}'>
+                                        @error('assembled_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_depOffice' class='mb-3'>
-                                <label class='form-label requiredField'>Departure Office<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depOffice_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_depOffice_date'
-                                                autocomplete='off' maxlength='16'
-                                                value="{{ old('depOffice_date') ? old('depOffice_date') : date('Y-m-d', strtotime($jcr->depOffice_date)) }}">
-                                            @error('depOffice_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depOffice_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_depOffice_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('depOffice_time') ? old('depOffice_time') : date('H:i', strtotime($jcr->depOffice_time)) }}">
-                                            @error('depOffice_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Departure Office<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depOffice_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_depOffice_date'
+                                            autocomplete='off' maxlength='16'
+                                            value="{{ old('depOffice_date') ? old('depOffice_date') : date('Y-m-d', strtotime($jcr->depOffice_date)) }}">
+                                        @error('depOffice_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depOffice_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_depOffice_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('depOffice_time') ? old('depOffice_time') : date('H:i', strtotime($jcr->depOffice_time)) }}">
+                                        @error('depOffice_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_arrivalSite' class='mb-3'>
-                                <label class='form-label requiredField'>Arrival Site<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalSite_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_arrivalSite_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('arrivalSite_date') ? old('arrivalSite_date') : date('Y-m-d', strtotime($jcr->arrivalSite_date)) }}">
-                                            @error('arrivalSite_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalSite_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_arrivalSite_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('arrivalSite_time') ? old('arrivalSite_time') : date('H:i', strtotime($jcr->arrivalSite_time)) }}">
-                                            @error('arrivalSite_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Arrival Site<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalSite_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_arrivalSite_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('arrivalSite_date') ? old('arrivalSite_date') : date('Y-m-d', strtotime($jcr->arrivalSite_date)) }}">
+                                        @error('arrivalSite_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalSite_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_arrivalSite_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('arrivalSite_time') ? old('arrivalSite_time') : date('H:i', strtotime($jcr->arrivalSite_time)) }}">
+                                        @error('arrivalSite_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_indented' class='mb-3'>
-                                <label class='form-label requiredField'>Indented<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='indented_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_indented_date'
-                                                autocomplete='off' maxlength='16'
-                                                value="{{ old('indented_date', date('Y-m-d', strtotime($jcr->indented_date))) }}">
-                                            @error('indented_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='indented_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_indented_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('indented_time', date('H:i', strtotime($jcr->indented_time))) }}">
-                                            @error('indented_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Indented<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='indented_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_indented_date'
+                                            autocomplete='off' maxlength='16'
+                                            value="{{ old('indented_date', date('Y-m-d', strtotime($jcr->indented_date))) }}">
+                                        @error('indented_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='indented_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_indented_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('indented_time', date('H:i', strtotime($jcr->indented_time))) }}">
+                                        @error('indented_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_wellReadiness' class='mb-3'>
-                                <label class='form-label requiredField'>Well Readiness<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellReadiness_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_wellReadiness_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('wellReadiness_date') ? old('wellReadiness_date') : date('Y-m-d', strtotime($jcr->wellReadiness_date)) }}">
-                                            @error('wellReadiness_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellReadiness_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_wellReadiness_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('wellReadiness_time') ? old('wellReadiness_time') : date('H:i', strtotime($jcr->wellReadiness_time)) }}">
-                                            @error('wellReadiness_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Well Readiness<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellReadiness_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_wellReadiness_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('wellReadiness_date') ? old('wellReadiness_date') : date('Y-m-d', strtotime($jcr->wellReadiness_date)) }}">
+                                        @error('wellReadiness_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellReadiness_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_wellReadiness_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('wellReadiness_time') ? old('wellReadiness_time') : date('H:i', strtotime($jcr->wellReadiness_time)) }}">
+                                        @error('wellReadiness_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_wellTaken' class='mb-3'>
-                                <label class='form-label requiredField'>Well Taken<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellTaken_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_wellTaken_date'
-                                                autocomplete='off' maxlength='16'
-                                                value="{{ old('wellTaken_date') ? old('wellTaken_date') : date('Y-m-d', strtotime($jcr->wellTaken_date)) }}">
-                                            @error('wellTaken_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellTaken_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_wellTaken_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('wellTaken_time') ? old('wellTaken_time') : date('H:i', strtotime($jcr->wellTaken_time)) }}">
-                                            @error('wellTaken_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Well Taken<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellTaken_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_wellTaken_date'
+                                            autocomplete='off' maxlength='16'
+                                            value="{{ old('wellTaken_date') ? old('wellTaken_date') : date('Y-m-d', strtotime($jcr->wellTaken_date)) }}">
+                                        @error('wellTaken_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellTaken_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_wellTaken_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('wellTaken_time') ? old('wellTaken_time') : date('H:i', strtotime($jcr->wellTaken_time)) }}">
+                                        @error('wellTaken_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_rigUP' class='mb-3'>
-                                <label class='form-label requiredField'>Rig Up<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='rigUP_date' placeholder='YYYY-MM-DD' data-mask='0000-00-00'
-                                                class='datetimeinput form-control' id='id_rigUP_date' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('rigUP_date') ? old('rigUP_date') : date('Y-m-d', strtotime($jcr->rigUP_date)) }}">
-                                            @error('rigUP_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='rigUP_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_rigUP_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('rigUP_time') ? old('rigUP_time') : date('H:i', strtotime($jcr->rigUP_time)) }}">
-                                            @error('rigUP_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Rig Up<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='rigUP_date' placeholder='YYYY-MM-DD' data-mask='0000-00-00'
+                                            class='datetimeinput form-control' id='id_rigUP_date' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('rigUP_date') ? old('rigUP_date') : date('Y-m-d', strtotime($jcr->rigUP_date)) }}">
+                                        @error('rigUP_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='rigUP_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_rigUP_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('rigUP_time') ? old('rigUP_time') : date('H:i', strtotime($jcr->rigUP_time)) }}">
+                                        @error('rigUP_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_wellHandOver' class='mb-3'>
-                                <label class='form-label requiredField'>Well Hand Over<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellHandOver_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_wellHandOver_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('wellHandOver_date') ? old('wellHandOver_date') : date('Y-m-d', strtotime($jcr->wellHandOver_date)) }}">
-                                            @error('wellHandOver_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellHandOver_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_wellHandOver_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('wellHandOver_time') ? old('wellHandOver_time') : date('H:i', strtotime($jcr->wellHandOver_time)) }}">
-                                            @error('wellHandOver_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Well Hand Over<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellHandOver_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_wellHandOver_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('wellHandOver_date') ? old('wellHandOver_date') : date('Y-m-d', strtotime($jcr->wellHandOver_date)) }}">
+                                        @error('wellHandOver_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellHandOver_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_wellHandOver_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('wellHandOver_time') ? old('wellHandOver_time') : date('H:i', strtotime($jcr->wellHandOver_time)) }}">
+                                        @error('wellHandOver_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_depSite' class='mb-3'>
-                                <label class='form-label requiredField'>Departure Site<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depSite_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_depSite_date'
-                                                autocomplete='off' maxlength='16'
-                                                value="{{ old('depSite_date') ? old('depSite_date') : date('Y-m-d', strtotime($jcr->depSite_date)) }}">
-                                            @error('depSite_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depSite_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_depSite_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('depSite_time') ? old('depSite_time') : date('H:i', strtotime($jcr->depSite_time)) }}">
-                                            @error('depSite_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Departure Site<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depSite_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_depSite_date'
+                                            autocomplete='off' maxlength='16'
+                                            value="{{ old('depSite_date') ? old('depSite_date') : date('Y-m-d', strtotime($jcr->depSite_date)) }}">
+                                        @error('depSite_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depSite_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_depSite_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('depSite_time') ? old('depSite_time') : date('H:i', strtotime($jcr->depSite_time)) }}">
+                                        @error('depSite_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_arrivalOffice' class='mb-3'>
-                                <label class='form-label requiredField'>Arrival Office<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalOffice_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_arrivalOffice_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('arrivalOffice_date') ? old('arrivalOffice_date') : date('Y-m-d', strtotime($jcr->arrivalOffice_date)) }}">
-                                            @error('arrivalOffice_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalOffice_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_arrivalOffice_time' autocomplete='off'
-                                                maxlength='16'
-                                                value="{{ old('arrivalOffice_time') ? old('arrivalOffice_time') : date('H:i', strtotime($jcr->arrivalOffice_time)) }}">
-                                            @error('arrivalOffice_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Arrival Office<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalOffice_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_arrivalOffice_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('arrivalOffice_date') ? old('arrivalOffice_date') : date('Y-m-d', strtotime($jcr->arrivalOffice_date)) }}">
+                                        @error('arrivalOffice_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalOffice_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_arrivalOffice_time' autocomplete='off'
+                                            maxlength='16'
+                                            value="{{ old('arrivalOffice_time') ? old('arrivalOffice_time') : date('H:i', strtotime($jcr->arrivalOffice_time)) }}">
+                                        @error('arrivalOffice_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_preparationTime' class='mb-3'>
                                 <label for='id_preparationTime' class='form-label requiredField'>
@@ -1041,7 +1050,7 @@
                                         id='select_{{ $index + 1 }}' name='personnel[{{ $index }}][user_id]'>
                                         <option value=''>--- Select Personnel ---</option>
                                         @foreach ($users->sortBy('seniority') as $user)
-                                            <option value='{{ $user->id }}' {{ $selectedUserId == $user->id ? 'selected' : ''}}>{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" {{ $selectedUserId == $user->id ? 'selected' : ''}}>{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     <button class='btn btn-danger btn-sm remove my-3' id='remove_personnel_{{ $index + 1 }}' type='button'><i class='fa fa-minus-circle'></i></button>
@@ -1101,13 +1110,12 @@
                                                 class='form-label requiredField'>
                                                 Type of Logs Recorded<span class='asteriskField'>*</span> </label>
                                             <select name='logrecorded[{{ $index }}][logRecorded]'
-                                                class='textinput textInput form-control logsRecorded'
+                                                class='textinput textInput form-control mb-3 logsRecorded'
                                                 id='id_logmodel_set-{{ $index + 1 }}-logRecorded' required>
                                                 <option value="" disabled>--- Select Recorded Log ---</option>
                                                 <optgroup label="Cased Hole logs" id="CH">
                                                 <optgroup label="Explosive logs" id="explosive-logs">
-                                                    <option value="Perforation(CCL)" {{ $old_logrecorded['logRecorded'] == 'Perforation(CCL)' ? 'selected' : '' }}>
-                                                        Perforation(CCL)</option>
+                                                    <option value="Perforation(CCL)" {{ $old_logrecorded['logRecorded'] == 'Perforation(CCL)' ? 'selected' : '' }}>Perforation(CCL)</option>
                                                     <option value="TTP(CCL)" {{ $old_logrecorded['logRecorded'] == 'TTP(CCL)' ? 'selected' : '' }}>TTP(CCL)</option>
                                                     <option value="Bridge Plug(CCL)" {{ $old_logrecorded['logRecorded'] == 'Bridge Plug(CCL)' ? 'selected' : '' }}>Bridge Plug(CCL)</option>
                                                     <option value="Tubing Puncture" {{ $old_logrecorded['logRecorded'] == 'Tubing Puncture' ? 'selected' : '' }}>Tubing Puncture</option>
@@ -1130,20 +1138,18 @@
                                                 </optgroup>
                                                 <optgroup label="Open Hole Logs" id="OHL">
                                                 <optgroup label="Explosive logs" id="oh-non-explosive-logs"></optgroup>
-                                                <option value="HDIL-ORIT-SP-GR" {{ $old_logrecorded['logRecorded'] == 'HDIL-ORIT-SP-GR' ? 'selected' : '' }}>
-                                                    HDIL-ORIT-SP-GR</option>
-                                                <option value="RTEX-ORIT-SP-GR" {{ $old_logrecorded['logRecorded'] == 'RTEX-ORIT-SP-GR' ? 'selected' : '' }}>
-                                                    RTEX-ORIT-SP-GR</option>
+                                                <option value="HDIL-ORIT-SP-GR" {{ $old_logrecorded['logRecorded'] == 'HDIL-ORIT-SP-GR' ? 'selected' : '' }}>HDIL-ORIT-SP-GR</option>
+                                                <option value="RTEX-ORIT-SP-GR" {{ $old_logrecorded['logRecorded'] == 'RTEX-ORIT-SP-GR' ? 'selected' : '' }}>RTEX-ORIT-SP-GR</option>
                                                 <option value="ZDEN-CN-GR" {{ $old_logrecorded['logRecorded'] == 'ZDEN-CN-GR' ? 'selected' : '' }}>ZDEN-CN-GR</option>
                                                 <option value="STAR-ORIT-GR" {{ $old_logrecorded['logRecorded'] == 'STAR-ORIT-GR' ? 'selected' : '' }}>STAR-ORIT-GR</option>
                                                 <option value="XMAC-ORIT-GR" {{ $old_logrecorded['logRecorded'] == 'XMAC-ORIT-GR' ? 'selected' : '' }}>XMAC-ORIT-GR</option>
                                                 <optgroup label="Explosive logs" id="oh-explosive-logs"></optgroup>
                                                 </optgroup>
                                                 <optgroup label="Explosive logs" id="other-explosive-logs">
-                                                    <option value="">Other Explosive Logs {{ $old_logrecorded['logRecorded'] == 'Other Explosive Logs' ? 'selected' : '' }}</option>
+                                                    <option value="Other Explosive Logs">Other Explosive Logs {{ $old_logrecorded['logRecorded'] == 'Other Explosive Logs' ? 'selected' : '' }}</option>
                                                 </optgroup>
                                                 <optgroup label="Non-Explosive logs" id="other-non-explosive-logs">
-                                                    <option value="" {{ $old_logrecorded['logRecorded'] == 'Other Non-Explosive Logs' ? 'selected' : '' }}>Other Non-Explosive Logs</option>
+                                                    <option value="Other Non-Explosive Logs" {{ $old_logrecorded['logRecorded'] == 'Other Non-Explosive Logs' ? 'selected' : '' }}>Other Non-Explosive Logs</option>
                                                 </optgroup>
                                             </select>
                                             @error('logrecorded.*.logRecorded')
@@ -1281,6 +1287,11 @@
                                 @endforeach
                             @elseif(!$jcr->logs->isEmpty())
                                 @foreach($jcr['logs'] as $index => $logsrecorded)
+                                    @php
+                                        $predefinedOptions = ['Perforation(CCL)', 'TTP(CCL)', 'Bridge Plug(CCL)', 'Tubing Puncture', 'Casing Cutter', 'Tubing Cutter', 'Junk Basket(CCL)', 'GR-CCL', 'GR-TCL', 'SBT-GR-CCL', 'RBT-GR-CCL', 'ULTEX-GR-CCL', 'Production Log', 'Temperature Log', 'HDIL-ORIT-SP-GR', 'RTEX-ORIT-SP-GR', 'ZDEN-CN-GR', 'STAR-ORIT-GR', 'XMAC-ORIT-GR', 'Other'];
+                                        $isCustomValue = !in_array($logsrecorded['logRecorded'], $predefinedOptions) && $logsrecorded['logRecorded'] !== '';
+                                        $isOtherSelected = $logsrecorded['logRecorded'] === 'Other' || $isCustomValue;
+                                    @endphp
                                     <div class='log-form' id='id-log-form_{{$index + 1}}'>
                                         @if ($index > 0)
                                             <hr class='my-3' style='color:#000000; border-top:5px solid; opacity:0.5;'>
@@ -1303,13 +1314,12 @@
                                                 class='form-label requiredField'>
                                                 Type of Logs Recorded<span class='asteriskField'>*</span> </label>
                                             <select name='logrecorded[{{ $index }}][logRecorded]'
-                                                class='textinput textInput form-control logsRecorded'
+                                                class='textinput textInput form-control mb-3 logsRecorded'
                                                 id='id_logmodel_set-{{ $index + 1 }}-logRecorded' required>
                                                 <option value="" disabled>--- Select Recorded Log ---</option>
                                                 <optgroup label="Cased Hole logs" id="CH">
                                                 <optgroup label="Explosive logs" id="explosive-logs">
-                                                    <option value="Perforation(CCL)" {{ $logsrecorded['logRecorded'] == 'Perforation(CCL)' ? 'selected' : '' }}>
-                                                        Perforation(CCL)</option>
+                                                    <option value="Perforation(CCL)" {{ $logsrecorded['logRecorded'] == 'Perforation(CCL)' ? 'selected' : '' }}>Perforation(CCL)</option>
                                                     <option value="TTP(CCL)" {{ $logsrecorded['logRecorded'] == 'TTP(CCL)' ? 'selected' : '' }}>TTP(CCL)</option>
                                                     <option value="Bridge Plug(CCL)" {{ $logsrecorded['logRecorded'] == 'Bridge Plug(CCL)' ? 'selected' : '' }}>Bridge Plug(CCL)</option>
                                                     <option value="Tubing Puncture" {{ $logsrecorded['logRecorded'] == 'Tubing Puncture' ? 'selected' : '' }}>Tubing Puncture</option>
@@ -1330,16 +1340,30 @@
                                                     <option value="Temperature Log" {{ $logsrecorded['logRecorded'] == 'Temperature Log' ? 'selected' : '' }}>Temperature Log</option>
                                                 </optgroup>
                                                 <optgroup label="Open Hole Logs" id="OHL">
-                                                    <option value="HDIL-ORIT-SP-GR" {{ $logsrecorded['logRecorded'] == 'HDIL-ORIT-SP-GR' ? 'selected' : '' }}>
-                                                        HDIL-ORIT-SP-GR</option>
-                                                    <option value="RTEX-ORIT-SP-GR" {{ $logsrecorded['logRecorded'] == 'RTEX-ORIT-SP-GR' ? 'selected' : '' }}>
-                                                        RTEX-ORIT-SP-GR</option>
+                                                    <option value="HDIL-ORIT-SP-GR" {{ $logsrecorded['logRecorded'] == 'HDIL-ORIT-SP-GR' ? 'selected' : '' }}>HDIL-ORIT-SP-GR</option>
+                                                    <option value="RTEX-ORIT-SP-GR" {{ $logsrecorded['logRecorded'] == 'RTEX-ORIT-SP-GR' ? 'selected' : '' }}>RTEX-ORIT-SP-GR</option>
                                                     <option value="ZDEN-CN-GR" {{ $logsrecorded['logRecorded'] == 'ZDEN-CN-GR' ? 'selected' : '' }}>ZDEN-CN-GR</option>
                                                     <option value="STAR-ORIT-GR" {{ $logsrecorded['logRecorded'] == 'STAR-ORIT-GR' ? 'selected' : '' }}>STAR-ORIT-GR</option>
                                                     <option value="XMAC-ORIT-GR" {{ $logsrecorded['logRecorded'] == 'XMAC-ORIT-GR' ? 'selected' : '' }}>XMAC-ORIT-GR</option>
                                                 </optgroup>
-                                                <option value="Other">Other</option>
+                                                </optgroup>
+                                                <optgroup label="Explosive logs" id="other-explosive-logs">
+                                                    <option value="Other Explosive Logs" {{ $logsrecorded['logRecorded'] == 'Other Explosive Logs' ? 'selected' : '' }}>Other Explosive Logs</option>
+                                                </optgroup>
+                                                <optgroup label="Non-Explosive logs" id="other-non-explosive-logs">
+                                                    <option value="Other Non-Explosive Logs" {{ $logsrecorded['logRecorded'] == 'Other Non-Explosive Logs' ? 'selected' : '' }}>Other Non-Explosive Logs</option>
+                                                </optgroup>
                                             </select>
+                                            @if($isOtherSelected)
+                                                <div id='div_logmodel_set-{{ $index + 1 }}-otherLogDescription' class='mb-3'>
+                                                    <label for='id_logmodel_set-{{ $index + 1 }}-otherLogDescription' class='form-label requiredField'>
+                                                        Please specify<span class='asteriskField'>*</span>
+                                                    </label>
+                                                    <input type='text' name='logrecorded[{{ $index }}][otherLogDescription]' maxlength='255'
+                                                    class='textinput textInput form-control' id='id_logmodel_set-{{ $index + 1 }}-otherLogDescription'
+                                                    value='{{ $isCustomValue ? $logsrecorded->otherLogDescription : "" }}'>
+                                                </div>
+                                            @endif
                                             @error('logrecorded.*.logRecorded')
                                                 <small class='error'>{{ $message }}</small>
                                             @enderror
@@ -2106,6 +2130,22 @@
                                     <small class='error'>{{ $message }}</small>
                                 @enderror
                             </div>
+                            <div id='div_id_logging_unit_type' class='mb-3'>
+                                <label for='id_logging_unit_type' class='form-label requiredField'>
+                                    Logging Unit Type<span class='asteriskField'>*</span>
+                                </label>
+                                <select name='logging_unit_type' class='select form-select' id='id_logging_unit_type' required>
+                                    <option value='departmental' {{ old('logging_unit_type', 'departmental') == 'departmental' ? 'selected' : '' }}>
+                                        Departmental
+                                    </option>
+                                    <option value='contractual' {{ old('logging_unit_type', 'departmental') == 'contractual' ? 'selected' : '' }}>
+                                        Contractual
+                                    </option>
+                                </select>
+                                @error('logging_unit_type')
+                                    <small class='error'>{{ $message }}</small>
+                                @enderror
+                            </div>
                             <div id='div_id_unitNo' class='mb-3'>
                                 <label for='id_unitNo' class='form-label requiredField'>
                                     Logging Unit Number<span class='asteriskField'>*</span>
@@ -2286,229 +2326,218 @@
                         <div class='form-card step'>
                             <h2 class='card-header rounded border-0 fs-title text-center'>Time info</h2>
                             <div id='div_id_assembled' class='mb-3'>
-                                <label class='form-label requiredField'>Assembled<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='assembled_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_assembled_date'
-                                                autocomplete='on' maxlength='16' value="{{ old('assembled_date') }}" required>
-                                            @error('assembled_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='assembled_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_assembled_time' autocomplete='on'
-                                                maxlength='16' value="{{ old('assembled_time') }}" required>
-                                            @error('assembled_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Assembled<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='assembled_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_assembled_date'
+                                            autocomplete='on' maxlength='16' value="{{ old('assembled_date') }}" required>
+                                        @error('assembled_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='assembled_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_assembled_time' autocomplete='on'
+                                            maxlength='16' value="{{ old('assembled_time') }}" required>
+                                        @error('assembled_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_depOffice' class='mb-3'>
-                                <label class='form-label requiredField'>Departure Office<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depOffice_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_depOffice_date'
-                                                autocomplete='off' maxlength='16' value="{{ old('depOffice_date') }}" required>
-                                            @error('depOffice_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depOffice_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_depOffice_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('depOffice_time') }}" required>
-                                            @error('depOffice_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Departure Office<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depOffice_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_depOffice_date'
+                                            autocomplete='off' maxlength='16' value="{{ old('depOffice_date') }}" required>
+                                        @error('depOffice_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depOffice_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_depOffice_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('depOffice_time') }}" required>
+                                        @error('depOffice_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_arrivalSite' class='mb-3'>
-                                <label class='form-label requiredField'>Arrival Site<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalSite_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_arrivalSite_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('arrivalSite_date') }}" required>
-                                            @error('arrivalSite_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalSite_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_arrivalSite_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('arrivalSite_time') }}" required>
-                                            @error('arrivalSite_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Arrival Site<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalSite_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_arrivalSite_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('arrivalSite_date') }}" required>
+                                        @error('arrivalSite_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalSite_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_arrivalSite_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('arrivalSite_time') }}" required>
+                                        @error('arrivalSite_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_indented' class='mb-3'>
-                                <label class='form-label requiredField'>
-                                    Indented<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='indented_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_indented_date'
-                                                autocomplete='off' maxlength='16' value="{{ old('indented_date') }}" required>
-                                            @error('indented_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='indented_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_indented_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('indented_time') }}" required>
-                                            @error('indented_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Indented<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='indented_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_indented_date'
+                                            autocomplete='off' maxlength='16' value="{{ old('indented_date') }}" required>
+                                        @error('indented_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='indented_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_indented_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('indented_time') }}" required>
+                                        @error('indented_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_wellReadiness' class='mb-3'>
-                                <label class='form-label requiredField'>Well Readiness<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellReadiness_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_wellReadiness_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('wellReadiness_date') }}" required>
-                                            @error('wellReadiness_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellReadiness_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_wellReadiness_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('wellReadiness_time') }}" required>
-                                            @error('wellReadiness_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Well Readiness<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellReadiness_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_wellReadiness_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('wellReadiness_date') }}" required>
+                                        @error('wellReadiness_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellReadiness_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_wellReadiness_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('wellReadiness_time') }}" required>
+                                        @error('wellReadiness_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_wellTaken' class='mb-3'>
-                                <label class='form-label requiredField'>Well Taken<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellTaken_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_wellTaken_date'
-                                                autocomplete='off' maxlength='16' value="{{ old('wellTaken_date') }}" required>
-                                            @error('wellTaken_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellTaken_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_wellTaken_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('wellTaken_time') }}" required>
-                                            @error('wellTaken_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Well Taken<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellTaken_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_wellTaken_date'
+                                            autocomplete='off' maxlength='16' value="{{ old('wellTaken_date') }}" required>
+                                        @error('wellTaken_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellTaken_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_wellTaken_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('wellTaken_time') }}" required>
+                                        @error('wellTaken_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_rigUP' class='mb-3'>
-                                <label class='form-label requiredField'>Rig Up<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='rigUP_date' placeholder='YYYY-MM-DD' data-mask='0000-00-00'
-                                                class='datetimeinput form-control' id='id_rigUP_date' autocomplete='off'
-                                                maxlength='16' value="{{ old('rigUP_date') }}" required>
-                                            @error('rigUP_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='rigUP_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_rigUP_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('rigUP_time') }}" required>
-                                            @error('rigUP_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Rig Up<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='rigUP_date' placeholder='YYYY-MM-DD' data-mask='0000-00-00'
+                                            class='datetimeinput form-control' id='id_rigUP_date' autocomplete='off'
+                                            maxlength='16' value="{{ old('rigUP_date') }}" required>
+                                        @error('rigUP_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='rigUP_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_rigUP_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('rigUP_time') }}" required>
+                                        @error('rigUP_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_wellHandOver' class='mb-3'>
-                                <label class='form-label requiredField'>Well Hand Over<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellHandOver_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_wellHandOver_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('wellHandOver_date') }}" required>
-                                            @error('wellHandOver_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='wellHandOver_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_wellHandOver_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('wellHandOver_time') }}" required>
-                                            @error('wellHandOver_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Well Hand Over<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellHandOver_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_wellHandOver_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('wellHandOver_date') }}" required>
+                                        @error('wellHandOver_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='wellHandOver_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_wellHandOver_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('wellHandOver_time') }}" required>
+                                        @error('wellHandOver_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_depSite' class='mb-3'>
-                                <label class='form-label requiredField'>Departure Site<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depSite_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control' id='id_depSite_date'
-                                                autocomplete='off' maxlength='16' value="{{ old('depSite_date') }}" required>
-                                            @error('depSite_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='depSite_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_depSite_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('depSite_time') }}" required>
-                                            @error('depSite_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Departure Site<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depSite_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control' id='id_depSite_date'
+                                            autocomplete='off' maxlength='16' value="{{ old('depSite_date') }}" required>
+                                        @error('depSite_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='depSite_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_depSite_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('depSite_time') }}" required>
+                                        @error('depSite_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_arrivalOffice' class='mb-3'>
-                                <label class='form-label requiredField'>Arrival Office<span class='asteriskField'>*</span>
-                                    <div class='d-flex'>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalOffice_date' placeholder='YYYY-MM-DD'
-                                                data-mask='0000-00-00' class='datetimeinput form-control'
-                                                id='id_arrivalOffice_date' autocomplete='off' maxlength='16'
-                                                value="{{ old('arrivalOffice_date') }}" required>
-                                            @error('arrivalOffice_date')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
-                                        <div class='container-fluid mx-1 p-0'>
-                                            <input type='text' name='arrivalOffice_time' placeholder='HH:MM' data-mask='00:00'
-                                                class='datetimeinput form-control' id='id_arrivalOffice_time' autocomplete='off'
-                                                maxlength='16' value="{{ old('arrivalOffice_time') }}" required>
-                                            @error('arrivalOffice_time')
-                                                <small class='error'>{{ $message }}</small>
-                                            @enderror
-                                        </div>
+                                <label class='form-label requiredField'>Arrival Office<span class='asteriskField'>*</span></label>
+                                <div class='d-flex'>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalOffice_date' placeholder='YYYY-MM-DD'
+                                            data-mask='0000-00-00' class='datetimeinput form-control'
+                                            id='id_arrivalOffice_date' autocomplete='off' maxlength='16'
+                                            value="{{ old('arrivalOffice_date') }}" required>
+                                        @error('arrivalOffice_date')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                </label>
+                                    <div class='container-fluid mx-1 p-0'>
+                                        <input type='text' name='arrivalOffice_time' placeholder='HH:MM' data-mask='00:00'
+                                            class='datetimeinput form-control' id='id_arrivalOffice_time' autocomplete='off'
+                                            maxlength='16' value="{{ old('arrivalOffice_time') }}" required>
+                                        @error('arrivalOffice_time')
+                                            <small class='error'>{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div id='div_id_preparationTime' class='mb-3'>
                                 <label for='id_preparationTime' class='form-label requiredField'>
@@ -3019,7 +3048,7 @@
                                                 class='form-label requiredField'>
                                                 Type of Logs Recorded<span class='asteriskField'>*</span> </label>
                                             <select name='logrecorded[{{ $index }}][logRecorded]'
-                                                class='textinput textInput form-control logsRecorded'
+                                                class='textinput textInput form-control mb-3 logsRecorded'
                                                 id='id_logmodel_set-{{ $index + 1 }}-logRecorded' required>
                                                 <option value="" disabled>--- Select Recorded Log ---</option>
                                                 <optgroup label="Cased Hole logs" id="CH">
@@ -3061,10 +3090,10 @@
                                                 </optgroup>
                                                 </optgroup>
                                                 <optgroup label="Explosive logs" id="other-explosive-logs">
-                                                    <option value="">Other Explosive Logs {{ $old_logrecorded['logRecorded'] == 'Other Explosive Logs' ? 'selected' : '' }}</option>
+                                                    <option value="Other Explosive Logs">Other Explosive Logs {{ $old_logrecorded['logRecorded'] == 'Other Explosive Logs' ? 'selected' : '' }}</option>
                                                 </optgroup>
                                                 <optgroup label="Non-Explosive logs" id="other-non-explosive-logs">
-                                                    <option value="" {{ $old_logrecorded['logRecorded'] == 'Other Non-Explosive Logs' ? 'selected' : '' }}>Other Non-Explosive Logs</option>
+                                                    <option value="Other Non-Explosive Logs" {{ $old_logrecorded['logRecorded'] == 'Other Non-Explosive Logs' ? 'selected' : '' }}>Other Non-Explosive Logs</option>
                                                 </optgroup>
                                             </select>
                                             @error('logrecorded.*.logRecorded')
@@ -3107,7 +3136,7 @@
                                             <input type='text' name='logrecorded[{{ $index }}][logQuality]' maxlength='20'
                                                 class='textinput textInput form-control'
                                                 id='id_logmodel_set-{{ $index + 1 }}-logQuality'
-                                                value='{{ $old_logrecorded['logQuality'] }}' required>
+                                                value='{{ $old_logrecorded["logQuality"] }}' required>
                                             @error('logrecorded.*.logQuality')
                                                 <small class='error'>{{ $message }}</small>
                                             @enderror
@@ -3119,14 +3148,14 @@
                                             </label> <input type='number' name='logrecorded[{{ $index }}][bottomShotDepth]'
                                                 step='any' class='numberinput form-control'
                                                 id='id_logmodel_set-{{ $index + 1 }}-bottomShotDepth'
-                                                value='{{ $old_logrecorded['bottomShotDepth'] }}'>
+                                                value='{{ $old_logrecorded["bottomShotDepth"] }}'>
                                         </div>
                                         <div id='div_logmodel_set-{{ $index + 1 }}-topShotDepth' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-topShotDepth' class='form-label'>
                                                 Top Shot Depth(m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][topShotDepth]' step='any'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-topShotDepth'
-                                                value='{{ $old_logrecorded['topShotDepth'] }}'>
+                                                value='{{ $old_logrecorded["topShotDepth"] }}'>
                                         </div>
                                         <div id='div_logmodel_set-{{ $index + 1 }}-charge' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-charge' class='form-label'>Charge
@@ -3134,8 +3163,8 @@
                                             <select name='logrecorded[{{ $index }}][charge]'
                                                 class='textinput textInput form-control'
                                                 id='id_logmodel_set-{{ $index + 1 }}-charge'
-                                                value='{{ $old_logrecorded['charge'] }}'>
-                                                <option value='' {{ $old_logrecorded['charge'] == '' ? 'selected' : '' }}>--- Select
+                                                value='{{ $old_logrecorded["charge"] }}'>
+                                                <option value='' {{ $old_logrecorded["charge"] == '' ? 'selected' : '' }}>--- Select
                                                     Charge type ---</option>
                                                 @foreach ($explosivelists as $explosives)
                                                     <option value='{{ $explosives }}' {{ $old_logrecorded['charge'] == $explosives ? 'selected' : '' }}>{{ $explosives }}</option>
@@ -3148,7 +3177,7 @@
                                                 Charge Qty.(Nos.)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][chargeNo]'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-chargeNo'
-                                                value='{{ $old_logrecorded['chargeNo'] }}'>
+                                                value='{{ $old_logrecorded["chargeNo"] }}'>
                                         </div>
                                         <div id='div_logmodel_set-{{ $index + 1 }}-primaChord' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-primaChord' class='form-label'>Prima Chord
@@ -3169,7 +3198,7 @@
                                                 P/C Length (m)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][primaChordQty]' step='any'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-primaChordQty'
-                                                value='{{ $old_logrecorded['primaChordQty'] }}'>
+                                                value='{{ $old_logrecorded["primaChordQty"] }}'>
                                         </div>
                                         <div id='div_logmodel_set-{{ $index + 1 }}-fuse' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fuse' class='form-label'>Fuse
@@ -3189,7 +3218,7 @@
                                                 Fuse Qty. (Nos.)
                                             </label> <input type='number' name='logrecorded[{{ $index }}][fuseNo]'
                                                 class='numberinput form-control' id='id_logmodel_set-{{ $index + 1 }}-fuseNo'
-                                                value='{{ $old_logrecorded['fuseNo'] }}'>
+                                                value='{{ $old_logrecorded["fuseNo"] }}'>
                                         </div>
                                         <div id='div_logmodel_set-{{ $index + 1 }}-fMf' class='mb-3 explosive-job d-none'>
                                             <label for='id_logmodel_set-{{ $index + 1 }}-fMf' class='form-label'>F/MF</label>
@@ -3220,7 +3249,7 @@
                                         <label for='id_logmodel_set-1-logRecorded' class='form-label requiredField'>
                                             Type of Logs Recorded<span class='asteriskField'>*</span> </label>
                                         <select name='logrecorded[0][logRecorded]'
-                                            class='textinput textInput form-control logsRecorded'
+                                            class='textinput textInput form-control mb-3 logsRecorded'
                                             id='id_logmodel_set-1-logRecorded' required>
                                             <option value="" selected disabled>--- Select Recorded Log ---</option>
                                             <optgroup label="Cased Hole logs" id="CH">
@@ -3259,10 +3288,10 @@
                                             </optgroup>
                                             </optgroup>
                                             <optgroup label="Explosive logs" id="other-explosive-logs">
-                                                <option value="">Other Explosive Logs</option>
+                                                <option value="Other Explosive Logs">Other Explosive Logs</option>
                                             </optgroup>
                                             <optgroup label="Non-Explosive logs" id="other-non-explosive-logs">
-                                                <option value="">Other Non-Explosive Logs</option>
+                                                <option value="Other Non-Explosive Logs">Other Non-Explosive Logs</option>
                                             </optgroup>
                                         </select>
                                         @error('logrecorded.*.logRecorded')
@@ -3593,7 +3622,7 @@
                                 class='select form-select' id='id_permitWork' required>
                                 <option value='' {{ old('permitWork') == '' ? 'selected' : ''}}>--- Select Form of
                                     permit to work ---</option>
-                                <option value='1' {{ old('permitWork') == '1' ? 'selected' : ''}}>Yes
+                                <option value='1' {{ old('permitWork') == '1' ? 'selected' : 'selected'}}>Yes
                                 </option>
                                 <option value='0' {{ old('permitWork') == '0' ? 'selected' : ''}}>No</option>
                             </select>
@@ -3627,7 +3656,7 @@
                                 class='select form-select' id='id_safetyMeeting' required>
                                 <option value='' {{ old('safetyMeeting') == '' ? 'selected' : ''}}>--- Select
                                     Safety Meeting conducted ---</option>
-                                <option value='1' {{ old('safetyMeeting') == '1' ? 'selected' : ''}}>Yes
+                                <option value='1' {{ old('safetyMeeting') == '1' ? 'selected' : 'selected'}}>Yes
                                 </option>
                                 <option value='0' {{ old('safetyMeeting') == '0' ? 'selected' : ''}}>No</option>
                             </select>
@@ -3642,7 +3671,7 @@
                                 class='select form-select' id='id_jobCloseMeeting' required>
                                 <option value='' {{ old('jobCloseMeeting') == '' ? 'selected' : '' }}>--- Select
                                     Job Close up Meeting ---</option>
-                                <option value='1' {{ old('jobCloseMeeting') == '1' ? 'selected' : '' }}>
+                                <option value='1' {{ old('jobCloseMeeting') == '1' ? 'selected' : 'selected' }}>
                                     Yes</option>
                                 <option value='0' {{ old('jobCloseMeeting') == '0' ? 'selected' : '' }}>No
                                 </option>
@@ -3655,11 +3684,11 @@
                             <label for='id_nearMiss' class='form-label requiredField'>
                                 Near Miss<span class='asteriskField'>*</span>
                             </label><select name='nearMiss' placeholder='Near Miss' class='select form-select'
-                                id='id_nearMiss'>
-                                <option value='' {{ old('nearMiss') == '' ? 'selected' : '' }}>--- Select Nea requiredr
+                                id='id_nearMiss' required>
+                                <option value='' {{ old('nearMiss') == '' ? 'selected' : '' }}>--- Select Near
                                     Miss ---</option>
                                 <option value='1' {{ old('nearMiss') == '1' ? 'selected' : '' }}>Yes</option>
-                                <option value='0' {{ old('nearMiss') == '0' ? 'selected' : '' }}>No
+                                <option value='0' {{ old('nearMiss') == '0' ? 'selected' : 'selected' }}>No
                                 </option>
                             </select>
                             @error('nearMiss')

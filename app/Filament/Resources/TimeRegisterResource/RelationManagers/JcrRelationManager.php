@@ -10,7 +10,7 @@ use Filament\Tables\Table;
 
 class JcrRelationManager extends RelationManager
 {
-    protected static string $relationship = 'jcr';
+    protected static string $relationship = 'jcrs';
 
     public function form(Form $form): Form
     {

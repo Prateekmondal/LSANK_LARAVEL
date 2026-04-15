@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
+use App\Traits\Auditable;
+
 class timeRegister extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'logging_unit_no',
@@ -71,6 +73,13 @@ class timeRegister extends Model
         static::creating(function ($model) {
             $model->signature_token = Str::random(32);
         });
+
+        static::deleting(function ($model) {
+            // Ensure all related JCRs are explicitly deleted in Eloquent before FK cascade triggers
+            $model->jcrs()->each(function ($jcr) {
+                $jcr->delete();
+            });
+        });
     }
 
     // Relationships
@@ -84,6 +93,12 @@ class timeRegister extends Model
         return $this->belongsTo(User::class, 'logging_chief_id');
     }
 
+    public function jcrs()
+    {
+        return $this->hasMany(Jcr::class, 'time_register_id');
+    }
+
+    // Convenience alias/singular relation for legacy code using "jcr"
     public function jcr()
     {
         return $this->hasOne(Jcr::class, 'time_register_id');
@@ -92,11 +107,12 @@ class timeRegister extends Model
     // Scopes
     public function scopeAvailableForLinking($query)
     {
-        return $query->whereDoesntHave('jcr')
-                    ->where(function($q) {
-                        $q->where('is_final_submitted', true)
-                          ->orWhere('status', 'completed');
-                    });
+        // Allow all TimeRegisters that are finalized or completed (not just unlinked ones)
+        // Multiple JCRs can now link to the same TimeRegister
+        return $query->where(function($q) {
+            $q->where('is_final_submitted', true)
+              ->orWhere('status', 'completed');
+        })->orderBy('well_taken_up_date', 'desc')->orderBy('well_taken_up_time', 'desc');
     }
 
     /**

@@ -22,6 +22,7 @@ class SuperAdminSeeder extends Seeder
             'email' => 'prateekmondal@gmail.com',
             'phone' => 9476433227,
             'password' => 'Testing321#',
+            'is_approved' => true,
         ]);
 
         // $user = User::get()->where('cpf','=', 134283);

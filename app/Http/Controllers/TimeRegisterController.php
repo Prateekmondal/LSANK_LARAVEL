@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\TimeRegister;
 use App\Models\Jcr;
 use App\Mail\RigSignatureRequest;
+use App\Mail\TimeRegisterSignedCopy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
@@ -169,6 +170,31 @@ class TimeRegisterController extends Controller
         }
     }
 
+    public function resendSignedCopy(TimeRegister $timeRegister)
+    {
+        if (!$timeRegister->rig_representative_email) {
+            return redirect()->route('time-registers.show', $timeRegister)
+                ->with('error', 'No rig representative email is set for this Time Register.');
+        }
+
+        if (!$timeRegister->rig_representative_signature) {
+            return redirect()->route('time-registers.show', $timeRegister)
+                ->with('error', 'This Time Register has not been signed by the rig representative yet.');
+        }
+
+        try {
+            Mail::to($timeRegister->rig_representative_email)->send(new TimeRegisterSignedCopy($timeRegister));
+
+            return redirect()->route('time-registers.show', $timeRegister)
+                ->with('success', 'Signed Time Register copy resent to rig representative.');
+        } catch (\Exception $e) {
+            \Log::error('Failed to resend signed time register copy: ' . $e->getMessage());
+
+            return redirect()->route('time-registers.show', $timeRegister)
+                ->with('error', 'Failed to resend signed time register copy email.');
+        }
+    }
+
     public function show(TimeRegister $timeRegister)
     {
         $timeRegister->load('loggingChief', 'creator');
@@ -262,6 +288,14 @@ class TimeRegisterController extends Controller
         $validated['rig_representative_signed_at'] = now();
 
         $timeRegister->update($validated);
+
+        // Send signed copy PDF via email to the rig representative
+        try {
+            Mail::to($timeRegister->rig_representative_email)->send(new TimeRegisterSignedCopy($timeRegister));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send signed time register copy: ' . $e->getMessage());
+            // Don't fail the signature process if email fails
+        }
 
         return view('time-registers.signature-thankyou');
     }

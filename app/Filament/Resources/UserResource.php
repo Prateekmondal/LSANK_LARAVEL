@@ -28,6 +28,9 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('cpf')
+                    ->required()
+                    ->numeric(),
                 Forms\Components\TextInput::make('seniority')
                     ->required()
                     ->numeric()
@@ -39,7 +42,6 @@ class UserResource extends Resource
                     ->email()
                     ->required(),
                 Forms\Components\TextInput::make('phone')
-                    ->required()
                     ->tel(),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull()

@@ -358,7 +358,7 @@ $(document).ready(function () {
             // Run No
             "<div id='div_logmodel_set-" + nextindex + "-runNo' class='mb-3'><label for='id_logmodel_set-" + nextindex + "-runNo' class='form-label requiredField'>Run No.<span class='asteriskField'>*</span></label><input type='number' name='logrecorded[" + (nextindex - 1) + "][runNo]' class='numberinput form-control' id='id_logmodel_set-" + nextindex + "-runNo' value=" + nextindex + "></div>" +
             // Type of Logs Recorded
-            "<div id='div_logmodel_set-" + nextindex + "-logRecorded' class='mb-3'><label for='id_logmodel_set-" + nextindex + "-logRecorded' class='form-label requiredField'>Type of Logs Recorded<span class='asteriskField'>*</span> </label><select name='logrecorded[" + (nextindex - 1) + "][logRecorded]' class='textinput textInput form-control logsRecorded' id='id_logmodel_set-" + nextindex + "-logRecorded' required><option value='' selected disabled>--- Select Recorded Log ---</option><optgroup label='Cased Hole logs' id='CH'><optgroup label='Explosive logs' id='explosive-logs'><option value='Perforation(CCL)'>Perforation(CCL)</option><option value='TTP(CCL)'>TTP(CCL)</option><option value='Bridge Plug(CCL)'>Bridge Plug(CCL)</option><option value='Tubing Puncture'>Tubing Puncture</option><option value='Casing Cutter'>Casing Cutter</option><option value='Tubing Cutter'>Tubing Cutter</option><option value='Packer Setting'>Packer Setting</option></optgroup><optgroup label='Non-Explosive logs' id='non-explosive-logs'><option value='Junk Basket(CCL)'>Junk Basket(CCL)</option><option value='GR-CCL'>GR-CCL</option><option value='GR-TCL'>GR-TCL</option><option value='SBT-GR-CCL'>SBT-GR-CCL</option><option value='RBT-GR-CCL'>RBT-GR-CCL</option><option value='ULTEX-GR-CCL'>ULTEX-GR-CCL</option></optgroup></optgroup><optgroup label='Production Logs' id='PL'><option value='Production Log'>Production Log</option><option value='Temperature Log'>Temperature Log</option></optgroup><optgroup label='Open Hole Logs' id='OHL'><optgroup label='Non-Explosive logs' id='oh-non-explosive-logs'><option value='HDIL-ORIT-SP-GR'>HDIL-ORIT-SP-GR</option><option value='RTEX-ORIT-SP-GR'>RTEX-ORIT-SP-GR</option><option value='ZDEN-CN-GR'>ZDEN-CN-GR</option><option value='STAR-ORIT-GR'>STAR-ORIT-GR</option><option value='XMAC-ORIT-GR'>XMAC-ORIT-GR</option></optgroup><optgroup label='Explosive logs' id='oh-explosive-logs'><option value='SWC'>SWC</option></optgroup></optgroup><optgroup label='Explosive logs' id='other-explosive-logs'><option value=''>Other Explosive Logs</option></optgroup><optgroup label='Non-Explosive logs' id='other-non-explosive-logs'><option value=''>Other Non-Explosive Logs</option></optgroup></select></div>" +
+            "<div id='div_logmodel_set-" + nextindex + "-logRecorded' class='mb-3'><label for='id_logmodel_set-" + nextindex + "-logRecorded' class='form-label requiredField'>Type of Logs Recorded<span class='asteriskField'>*</span> </label><select name='logrecorded[" + (nextindex - 1) + "][logRecorded]' class='textinput textInput form-control logsRecorded' id='id_logmodel_set-" + nextindex + "-logRecorded' required><option value='' selected disabled>--- Select Recorded Log ---</option><optgroup label='Cased Hole logs' id='CH'><optgroup label='Explosive logs' id='explosive-logs'><option value='Perforation(CCL)'>Perforation(CCL)</option><option value='TTP(CCL)'>TTP(CCL)</option><option value='Bridge Plug(CCL)'>Bridge Plug(CCL)</option><option value='Tubing Puncture'>Tubing Puncture</option><option value='Casing Cutter'>Casing Cutter</option><option value='Tubing Cutter'>Tubing Cutter</option><option value='Packer Setting'>Packer Setting</option></optgroup><optgroup label='Non-Explosive logs' id='non-explosive-logs'><option value='Junk Basket(CCL)'>Junk Basket(CCL)</option><option value='GR-CCL'>GR-CCL</option><option value='GR-TCL'>GR-TCL</option><option value='SBT-GR-CCL'>SBT-GR-CCL</option><option value='RBT-GR-CCL'>RBT-GR-CCL</option><option value='ULTEX-GR-CCL'>ULTEX-GR-CCL</option></optgroup></optgroup><optgroup label='Production Logs' id='PL'><option value='Production Log'>Production Log</option><option value='Temperature Log'>Temperature Log</option></optgroup><optgroup label='Open Hole Logs' id='OHL'><optgroup label='Non-Explosive logs' id='oh-non-explosive-logs'><option value='HDIL-ORIT-SP-GR'>HDIL-ORIT-SP-GR</option><option value='RTEX-ORIT-SP-GR'>RTEX-ORIT-SP-GR</option><option value='ZDEN-CN-GR'>ZDEN-CN-GR</option><option value='STAR-ORIT-GR'>STAR-ORIT-GR</option><option value='XMAC-ORIT-GR'>XMAC-ORIT-GR</option></optgroup><optgroup label='Explosive logs' id='oh-explosive-logs'><option value='SWC'>SWC</option></optgroup></optgroup><optgroup label='Explosive logs' id='other-explosive-logs'><option value='Other Explosive Logs'>Other Explosive Logs</option></optgroup><optgroup label='Non-Explosive logs' id='other-non-explosive-logs'><option value='Other Non-Explosive Logs'>Other Non-Explosive Logs</option></optgroup></select></div>" +
             // Bottom Depth
             "<div id='div_logmodel_set-" + nextindex + "-bottomDepth' class='mb-3'><label for='id_logmodel_set-" + nextindex + "-bottomDepth' class='form-label requiredField'>Bottom Depth(m)<span class='asteriskField'>*</span> </label> <input type='number' name='logrecorded[" + (nextindex - 1) + "][bottomDepth]' step='any' class='numberinput form-control'id='id_logmodel_set-" + nextindex + "-bottomDepth'></div>" +
             // Top Depth
@@ -380,6 +380,9 @@ $(document).ready(function () {
             // Remove button
             "<button class='btn btn-danger btn-sm remove my-3' id='remove_logs_" + nextindex + "'type='button'><i class='fa fa-minus-circle'></i></button>"
         );
+        
+        // Attach change event handler to the newly created logsRecorded select
+        $('#id_logmodel_set-' + nextindex + '-logRecorded').on('change', toggleOtherLogDescription);
     });
 
     $('#add_more_explosive').click(function (event) {
@@ -618,18 +621,18 @@ $(document).ready(function () {
         let hasExplosiveRun = false;
 
         $('.logsRecorded').each(function () {
-            const selectedOption = $(this).find('option:selected');
+            var selectedOption = $(this).find('option:selected');
 
             if (
                 selectedOption.closest('optgroup').attr('id') === 'explosive-logs' ||
                 selectedOption.closest('optgroup').attr('id') === 'oh-explosive-logs' ||
-                selectedOption.text() === 'Other Explosive Logs'
+                selectedOption.val() === 'Other Explosive Logs'
             ) {
                 hasExplosiveRun = true;
                 return false; // break loop
             }
         });
-
+        
         if (hasExplosiveRun) {
             $('#div-explosive').removeClass('d-none');
         } else {
@@ -659,6 +662,73 @@ $(document).ready(function () {
         toggleSWCSection();
     });
 
+    // Handle show/hide of "Other" log description field - works for both existing and new logs
+    function toggleOtherLogDescription() {
+        var $select = $(this);
+        var $formContainer = $select.closest('.log-form');
+        
+        // Extract the index from the select id (e.g., 'id_logmodel_set-1-logRecorded' -> '1')
+        var selectId = $select.attr('id');
+        var indexMatch = selectId.match(/logmodel_set-(\d+)-/);
+        var index = indexMatch ? indexMatch[1] : '1';
+        var $parentDiv = $formContainer.find('#div_logmodel_set-' + index + '-logRecorded');
+        
+        var fieldId = 'div_logmodel_set-' + index + '-otherLogDescription';
+        var $otherDescDiv = $formContainer.find('#' + fieldId);
+        
+        // Check if "Other" is selected
+        var isOtherSelected = $select.val().includes('Other');
+        
+        if (isOtherSelected) {
+            // Show/create the field
+            if ($otherDescDiv.length > 0) {
+                // Field exists in HTML (edit mode) - show it
+                $parentDiv.append($otherDescDiv);
+                $otherDescDiv.removeClass('d-none');
+                $otherDescDiv.find('input').attr('required', 'required');
+            } else {
+                // Field doesn't exist - create it dynamically for new logs
+                var inputId = 'id_logmodel_set-' + index + '-otherLogDescription';
+                var inputName = $select.attr('name').replace('[logRecorded]', '[otherLogDescription]');
+                
+                var fieldHtml = "<div id='" + fieldId + "' class='mb-3'>" +
+                    "<label for='" + inputId + "' class='form-label requiredField'>" +
+                    "Please specify<span class='asteriskField'>*</span>" +
+                    "</label>" +
+                    "<input type='text' name='" + inputName + "' maxlength='255' " +
+                    "class='textinput textInput form-control' id='" + inputId + "' required>" +
+                    "</div>";
+                
+                $select.after(fieldHtml);
+            }
+            
+            // Make explosive job fields visible and enabled (but not required)
+            $formContainer.find('.explosive-job').removeClass('d-none').find('input, select');
+        } else {
+            // Hide/remove the description field when "Other" is not selected
+            if ($otherDescDiv.length > 0) {
+                // Check if this is a newly added log (dynamically created) or edit mode
+                var isNewLog = $formContainer[0].id.match(/^id-log-form_\d+$/) !== null;
+                
+                if (isNewLog) {
+                    // Newly added log - remove the field entirely
+                    $otherDescDiv.remove();
+                } else {
+                    // Edit mode - just hide the field
+                    $otherDescDiv.addClass('d-none');
+                    $otherDescDiv.find('input').removeAttr('required').val('');
+                }
+            }
+            
+            // Hide explosive job fields when "Other" is not selected
+            $formContainer.find('.explosive-job').addClass('d-none').find('input, select');
+        }
+    }
+
+    // Attach handler to existing logsRecorded selects
+    $('.logsRecorded').on('change', toggleOtherLogDescription);
+    
+    // Initialize for existing selects that might have "Other" selected
     $('.logsRecorded').each(function () {
         $(this).trigger('change');
     });

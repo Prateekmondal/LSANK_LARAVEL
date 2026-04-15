@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-    <div class="row justify-content-center">
+    <div class="row w-75 justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-success text-white">

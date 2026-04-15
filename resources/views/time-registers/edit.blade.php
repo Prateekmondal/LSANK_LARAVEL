@@ -36,26 +36,7 @@ $unitNos = ["GJ-16-BS-4773", "GJ-16-BS-4995", "GJ-16-AF-9723", "GJ-16-BS-2279", 
         <small class="text-muted">for JCR: {{ $jcr->jcr_number }}</small>
         @endif
     </h1>
-
-    <!-- Logging Chief Info Card -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fas fa-user-shield"></i> Logging Chief Information</h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <p><strong>Name:</strong> {{ Auth::user()->name }}</p>
-                </div>
-                <div class="col-md-4">
-                    <p><strong>Designation:</strong> {{ Auth::user()->designation ?? 'Logging Chief' }}</p>
-                </div>
-                <div class="col-md-4">
-                    <p><strong>Signed At:</strong> Will be captured during preview</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <div class="card w-100">
         <form action="{{ isset($timeRegister) ? route('time-registers.update', $timeRegister) : route('time-registers.store') }}" method="POST">
             @csrf

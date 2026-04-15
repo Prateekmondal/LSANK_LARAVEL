@@ -7,9 +7,11 @@ use Mail;
 use App\Mail\ContactMail;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Auditable;
+
 class contact extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     public $timestamps = false;
 

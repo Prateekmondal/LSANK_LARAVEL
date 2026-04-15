@@ -58,6 +58,17 @@ class ExplosiveChecklist extends Model
         return $this->hasMany(ChecklistForward::class);
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($checklist) {
+            $checklist->signatures()->delete();
+            $checklist->forwards()->delete();
+            if ($checklist->externalSignature) {
+                $checklist->externalSignature->delete();
+            }
+        });
+    }
+
     public function jcr()
     {
         return $this->belongsTo(Jcr::class);

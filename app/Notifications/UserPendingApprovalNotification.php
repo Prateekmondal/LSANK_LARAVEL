@@ -8,10 +8,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserPendingApprovalNotification extends Notification implements ShouldQueue
+class UserPendingApprovalNotification extends Notification
 {
-	use Queueable;
-
+	// Queueing is disabled here so user approvals are notified immediately,
+	// avoiding 'silent' behavior when no queue worker is running.
 	protected User $newUser;
 
 	/**
@@ -55,7 +55,7 @@ class UserPendingApprovalNotification extends Notification implements ShouldQueu
 			->line('Email: ' . $this->newUser->email)
 			->line('CPF: ' . $this->newUser->cpf)
 			->line('Registered: ' . $registeredAt)
-			->action('Review & Approve user', url('/admin/resources/users'))
+			->action('Review & Approve user', url('/admin/users/' . $this->newUser->id))
 			->line('Please log in to the admin panel and approve or reject this user.');
 	}
 
@@ -74,7 +74,7 @@ class UserPendingApprovalNotification extends Notification implements ShouldQueu
 			'user_email' => $this->newUser->email,
 			'user_cpf' => $this->newUser->cpf,
 			'message' => 'New user ' . $this->newUser->name . ' (' . $this->newUser->email . ') is pending approval.',
-			'action_url' => url('/admin/resources/users'),
+			'link' => url('/admin/users/' . $this->newUser->id),
 		];
 	}
 }

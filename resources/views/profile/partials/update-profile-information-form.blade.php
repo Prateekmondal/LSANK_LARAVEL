@@ -12,8 +12,8 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-    <div class="d-flex gap-4">
-        <div class="w-50 mt-6 px-6 py-4 shadow-md overflow-hidden">
+    <div class="row g-3">
+        <div class="col-md-6 order-2">
             <form method="post" action="{{ route('profile.update') }}" class="mt-6">
                 @csrf
                 @method('patch')
@@ -83,9 +83,9 @@
             </form>
         </div>
 
-        <div class="w-50 sm:max-w-md mt-6 px-6 py-4 overflow-hidden sm:rounded-lg">
+        <div class="col-md-6 order-1">
             <div class="d-flex justify-content-center">
-                <image id="avatar" name="avatar" class="mt-1 block w-full" style="width: 15rem; border-radius: 50%;"
+                <image id="avatar" name="avatar" class="mt-1 block w-full rounded-circle"
                     src="{{ Storage::url('images/profile_image/' . $user->avatar) }}" required autofocus
                     autocomplete="avatar" />
             </div>

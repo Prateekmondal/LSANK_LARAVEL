@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="card w-100">
         <div class="card-header bg-primary text-white">
             <h3 class="m-0">Please review all details before final submission</h3>

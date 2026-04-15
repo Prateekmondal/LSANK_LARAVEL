@@ -59,6 +59,13 @@ class JcrResource extends Resource
                             ->numeric(),
                         Forms\Components\TextInput::make('unitNo')
                             ->required(),
+                        Forms\Components\Select::make('logging_unit_type')
+                            ->options([
+                                'departmental' => 'Departmental',
+                                'contractual' => 'Contractual',
+                            ])
+                            ->default('departmental')
+                            ->required(),
                         Forms\Components\TextInput::make('loggingType')
                             ->required(),
                         Forms\Components\TextInput::make('logType')
@@ -321,6 +328,13 @@ class JcrResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('wellNo')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('logging_unit_type')
+                    ->label('Logging Unit Type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'departmental' => 'success',
+                        'contractual' => 'warning',
+                    }),
                 Tables\Columns\TextColumn::make('jobDate')
                     ->date()
                     ->sortable(),

@@ -23,4 +23,5 @@ yarn-error.log
 /.zed
 .DS_STORE
 **/.DS_Store
+**/.jpeg
 *.sql

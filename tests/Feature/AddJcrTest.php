@@ -44,6 +44,7 @@ class AddJcrTest extends TestCase
             'kb' => 10.2,
             'gl' => 8.25,
             'unitNo' => 'XX-11-Y-0000',
+            'logging_unit_type' => 'departmental',
             'loggingType' => 'Test logging',
             'logType' => 'Test log',
             'wellOwner' => 'Test well owner',

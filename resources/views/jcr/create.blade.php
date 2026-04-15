@@ -94,6 +94,39 @@
         </div>
     </div>
 
+    <!-- WellNo Match Selection Modal -->
+    <div class="modal fade" id="wellNoMatchModal" tabindex="-1" aria-labelledby="wellNoMatchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="wellNoMatchModalLabel">Existing JCR Found for Well No</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>We found existing JCR entries whose well number is contained in your entry. Choose one to prefill the form fields (excludes Time Info, Logs Recorded, SWC, Explosive Info and HSE Info).</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="wellNoMatchTable">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Job Date</th>
+                                    <th>Well No</th>
+                                    <th>Unit No</th>
+                                    <th>Field/Area</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="applyWellNoMatch">Use Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Time Register Selection Modal -->
     <div class="modal fade" id="timeRegisterModal" tabindex="-1" role="dialog" aria-labelledby="timeRegisterModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg" role="document">
@@ -122,15 +155,36 @@
                                     <h6 class="mb-1">{{ $timeRegister->logging_unit_no }}</h6>
                                     <small class="text-success">
                                         @if($timeRegister->is_final_submitted)
-                                        Final Submitted
+                                            <div class="d-flex">
+                                                <div>
+                                                    @foreach($timeRegister->jcrs as $timeRegisterJCR)
+                                                        <div class="d-flex">
+                                                        Linked JCR Date: {{ date('d/m/Y', strtotime($timeRegisterJCR->wellTaken_date)) }} |
+                                                        Linked JCR Well: {{ $timeRegisterJCR->wellNo ?? 'N/A' }} |
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <div>Final Submitted</div>
+                                            </div>
                                         @else
-                                        {{ ucfirst($timeRegister->status) }}
+                                            <div class="d-flex">
+                                                <div>
+                                                    @foreach($timeRegister->jcrs as $timeRegisterJCR)
+                                                        <div class="d-flex">
+                                                        Linked JCR Date: {{ date('d/m/Y', strtotime($timeRegisterJCR->wellTaken_date)) }} |
+                                                        Linked JCR Well: {{ $timeRegisterJCR->wellNo ?? 'N/A' }} |
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <div>{{ ucfirst($timeRegister->status) }}</div>
+                                            </div>
                                         @endif
                                     </small>
                                 </div>
                                 <p class="mb-1">
                                     <strong>Well:</strong> {{ $timeRegister->well_no }} | 
-                                    <strong>Rig:</strong> {{ $timeRegister->rig_no }}
+                                    <strong>Rig:</strong> {{ $timeRegister->rig_no }} |
+                                    <strong>Well Taken:</strong> {{ date('d/m/Y', strtotime($timeRegister->well_taken_up_date)) }}
                                 </p>
                                 <small class="text-muted">
                                     Job: {{ Str::limit($timeRegister->job_carried_out, 80) }}
@@ -309,8 +363,139 @@
             var missingModal = new bootstrap.Modal(document.getElementById('missingChecklistModal'));
             missingModal.show();
         }
-    </script>
-    <script>
+
+        // WellNo matching and auto-prefill
+        document.addEventListener('DOMContentLoaded', function () {
+            var wellNoInput = document.getElementById('id_wellNo');
+            if (!wellNoInput) return;
+
+            var searchTimeout = null;
+            wellNoInput.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    var value = wellNoInput.value.trim();
+                    if (value.length < 2) {
+                        return;
+                    }
+                    fetch(`{{ route('jcr.ajax.wellNoMatch') }}?wellNo=${encodeURIComponent(value)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.data || data.data.length === 0) {
+                                return;
+                            }
+
+                            var tableBody = document.querySelector('#wellNoMatchTable tbody');
+                            tableBody.innerHTML = '';
+                            window.__matchedJcrsForWellNo = data.data || [];
+                            window.__matchedJcrsForWellNo.forEach(function (item, index) {
+                                var row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td><input type="radio" name="selectedWellNoJcr" value="${index}" data-id="${item.id}"></td>
+                                    <td>${item.arrivalOffice_date ? item.arrivalOffice_date : item.jobDate || ''}</td>
+                                    <td>${item.wellNo}</td>
+                                    <td>${item.unitNo || ''}</td>
+                                    <td>${item.fieldName || ''}</td>
+                                `;
+                                tableBody.appendChild(row);
+                            });
+
+                            var wellNoModal = new bootstrap.Modal(document.getElementById('wellNoMatchModal'));
+                            wellNoModal.show();
+                        })
+                        .catch(err => {
+                            console.error('WellNo search failed', err);
+                        });
+                }, 600);
+            });
+
+            document.getElementById('applyWellNoMatch').addEventListener('click', function () {
+                var selected = document.querySelector('input[name="selectedWellNoJcr"]:checked');
+                if (!selected) {
+                    alert('Please select a row first.');
+                    return;
+                }
+                var selectedIndex = parseInt(selected.value, 10);
+                var jcrData = (window.__matchedJcrsForWellNo || [])[selectedIndex] || null;
+                if (!jcrData) {
+                    alert('Unable to load selected JCR data.');
+                    return;
+                }
+
+                // Override jobDate with arrivalOffice_date as per request
+                if (jcrData.arrivalOffice_date) {
+                    jcrData.jobDate = jcrData.arrivalOffice_date;
+                }
+
+                fillFormFromJcr(jcrData);
+                var wellNoModalElement = document.getElementById('wellNoMatchModal');
+                bootstrap.Modal.getInstance(wellNoModalElement).hide();
+            });
+
+            function fillFormFromJcr(jcrData) {
+                var excludedFieldsets = ['timeinfo', 'logsrecorded', 'swc', 'explosiveinfo', 'hseinfo'];
+                var excludedNames = ['time_register_id', 'selected_time_register_id', 'final_submit', 'creator_id', 'creator_signature', 'creator_signed_at', 'party_chief_id', 'party_chief_signature', 'party_chief_signed_at', 'operation_incharge_id', 'operation_incharge_signature', 'operation_incharge_signed_at', 'status', 'sap_document_number', 'sap_pushed_at', 'sap_status'];
+                var excludedIds = ['id_jobDate', 'id_jobNo', 'id_workOrderDate', 'id_indentNo']; // add IDs here to explicitly avoid prefill
+
+                document.querySelectorAll('#msform [name]').forEach(function (el) {
+                    var name = el.name;
+                    if (!name || !(name in jcrData)) return;
+
+                    
+                    var insideExcluded = excludedFieldsets.some(function (fieldsetId) {
+                        return el.closest('#' + fieldsetId) !== null;
+                    });
+                    if (insideExcluded) return;
+                    
+                    if (excludedNames.includes(name)) return;
+                    if (el.id && excludedIds.includes(el.id)) return;
+
+                    // set input, select or textarea
+                    if (el.tagName.toLowerCase() === 'select' || el.tagName.toLowerCase() === 'textarea' || el.type === 'text' || el.type === 'number' || el.type === 'date' || el.type === 'time') {
+                        el.value = jcrData[name] !== null && jcrData[name] !== undefined ? jcrData[name] : '';
+                    }
+                    if (el.type === 'checkbox') {
+                        el.checked = !!jcrData[name];
+                    }
+                });
+
+                // Prefill personnel fieldset from matched JCR users (if returned)
+                if (Array.isArray(jcrData.users)) {
+                    var wrapper = document.getElementById('wrapper');
+                    if (wrapper) {
+                        var userSelectTemplate = wrapper.querySelector('.element');
+                        var optionsHtml = '';
+                        if (userSelectTemplate) {
+                            var firstSelect = userSelectTemplate.querySelector('select');
+                            if (firstSelect) optionsHtml = firstSelect.innerHTML;
+                        }
+
+                        wrapper.innerHTML = '';
+
+                        jcrData.users.forEach(function (userItem, idx) {
+                            var newIndex = idx + 1;
+                            var element = document.createElement('div');
+                            element.className = 'mb-3 element';
+                            element.id = 'userinlinemodel_' + newIndex;
+                            element.innerHTML = `
+                                <label for='select_${newIndex}' class='form-label requiredField' id='personnellabel_${newIndex}'>Personnel<span class='asteriskField' id='asterisk_${newIndex}'>*</span></label>
+                                <select data-live-search='true' class='select form-select personnelselect' id='select_${newIndex}' name='personnel[${idx}][user_id]'>
+                                    ${optionsHtml || "<option value=''>--- Select Personnel ---</option>"}
+                                </select>
+                                <button class='btn btn-danger btn-sm remove my-3' id='remove_personnel_${newIndex}' type='button'><i class='fa fa-minus-circle'></i></button>
+                            `;
+                            wrapper.appendChild(element);
+
+                            var selectEl = element.querySelector('select');
+                            if (selectEl) {
+                                selectEl.value = userItem.id || userItem.user_id || '';
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        
+        
         let selectedTimeRegisterId = null;
 
         // Show modal on page load
@@ -394,20 +579,20 @@
                             <div class="col-md-6">
                                 <p><strong>Logging Unit:</strong> ${data.logging_unit_no}</p>
                                 <p><strong>Well No:</strong> ${data.well_no}</p>
-                                <p><strong>Rig No:</strong> ${data.rig_no}</p>
-                                <p><strong>Logging Chief:</strong> ${data.logging_chief_name}</p>
                             </div>
                             <div class="col-md-6">
+                                <p><strong>Rig No:</strong> ${data.rig_no}</p>
                                 <p><strong>Well Indented:</strong> ${formattedTime} on ${formattedDate}</p>
-                                <p><strong>Status:</strong> <span class="badge badge-success">${data.status}</span></p>
-                                <p><strong>Final Submitted:</strong> ${data.is_final_submitted ? 'Yes' : 'No'}</p>
-                                <p><strong>Designation:</strong> ${data.logging_chief_designation}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <p><strong>Job Carried Out:</strong></p>
-                                <p class="bg-light p-2 rounded">${data.job_carried_out}</p>
+                                <p><strong>Indent No.:</strong> ${data.indent_no}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p><strong>Job Carried Out:</strong> ${data.job_carried_out}</p>
                             </div>
                         </div>
                     `;

@@ -3,7 +3,6 @@
 
 @section('content')
 <div class="container">
-    <h1>Time Register Details</h1>
     
     <div class="card w-100">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -34,6 +33,13 @@
             <form action="{{ route('time-registers.resend', $timeRegister) }}" method="POST" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-info">Resend Email</button>
+            </form>
+            @endif
+
+            @if($timeRegister->rig_representative_signature && $timeRegister->rig_representative_email)
+            <form action="{{ route('time-registers.resend-signed-copy', $timeRegister) }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-success">Resend Signed Copy</button>
             </form>
             @endif
         </div>

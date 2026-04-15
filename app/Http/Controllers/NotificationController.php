@@ -88,7 +88,7 @@ class NotificationController extends Controller
         $notification->markAsRead();
 
         // redirect to stored link or fallback to notifications index/home
-        $link = data_get($notification->data, 'link', route('jcr.index'));
+        $link = data_get($notification->data, 'link', data_get($notification->data, 'action_url', route('jcr.index')));
         return redirect($link);
     }
 }

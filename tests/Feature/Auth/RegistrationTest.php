@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\User;
+use App\Notifications\UserPendingApprovalNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -16,8 +19,13 @@ class RegistrationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_new_users_can_register(): void
+    public function test_new_users_can_register_and_admins_are_notified(): void
     {
+        Notification::fake();
+
+        $admin = User::factory()->create();
+        $admin->assignRole('super-admin');
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'cpf' => 123456,
@@ -26,7 +34,15 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+        $response->assertRedirect(route('login', absolute: false));
+
+        Notification::assertSentTo(
+            $admin,
+            UserPendingApprovalNotification::class,
+            function ($notification, $channels) {
+                return in_array('mail', $channels) && in_array('database', $channels);
+            }
+        );
     }
 }

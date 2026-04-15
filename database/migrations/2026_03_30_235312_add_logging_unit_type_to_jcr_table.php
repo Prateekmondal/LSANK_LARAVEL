@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('type');
-            $table->morphs('notifiable');
-            $table->text('data');
-            $table->timestamp('read_at')->nullable();
-            $table->timestamps();
+        Schema::table('jcr', function (Blueprint $table) {
+            $table->enum('logging_unit_type', ['departmental', 'contractual'])->default('departmental')->after('unitNo');
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::table('jcr', function (Blueprint $table) {
+            $table->dropColumn('logging_unit_type');
+        });
     }
 };

@@ -44,6 +44,9 @@ Route::middleware(['auth', 'check.approval'])->group(function () {
 
     Route::delete('jcr/{jcr}', [JcrController::class, 'destroy'])->name('jcr.destroy');
 
+    // AJAX helper for wellNo matching and prefill
+    Route::get('ajax/jcr/well-no-match', [JcrController::class, 'ajaxFindJcrByWellNo'])->name('jcr.ajax.wellNoMatch');
+
     // JCR Preview and Signature Routes
     Route::get('jcr/{jcr}/preview', [JcrController::class, 'preview'])->name('jcr.preview');
     Route::post('jcr/{jcr}/submit', [JcrController::class, 'submit'])->name('jcr.submit');
@@ -145,6 +148,10 @@ Route::middleware(['auth', 'check.approval'])->group(function () {
     // Resend signature request email to rig representative
     Route::post('/time-registers/{timeRegister}/resend', [TimeRegisterController::class, 'resend'])
         ->name('time-registers.resend');
+    
+    // Resend signed copy email to rig representative
+    Route::post('/time-registers/{timeRegister}/resend-signed-copy', [TimeRegisterController::class, 'resendSignedCopy'])
+        ->name('time-registers.resend-signed-copy');
     
 });
 

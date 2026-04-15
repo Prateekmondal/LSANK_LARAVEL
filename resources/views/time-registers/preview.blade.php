@@ -1,9 +1,6 @@
-<!-- resources/views/time-registers/preview.blade.php -->
 @extends('layouts.app')
 
 @section('content')
-
-<!-- Add this to resources/views/time-registers/preview.blade.php -->
 
 @if(session('from_jcr'))
 <div class="alert alert-info">

@@ -1,3 +1,15 @@
+
+<div class="row mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <img class="img-fluid" src="/static/images/ongc.png" style="max-height: 80px;"/>
+        <div class="text-center">
+            <h2 class="fw-bold">Oil and Natural Gas Corporation Limited</h2>
+            <h4 class="fw-bold">Well Logging Services, Ankleshwar Asset, Ankleshwar-393010</h4>
+            <h2 class="fw-bold">Job Carried Out Report</h2>
+        </div>
+        <div>&nbsp;</div>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-6">
         <p><strong>Logging Unit No:</strong> {{ $timeRegister->logging_unit_no }}</p>

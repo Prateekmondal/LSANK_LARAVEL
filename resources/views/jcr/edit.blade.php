@@ -122,15 +122,36 @@
                                     <h6 class="mb-1">{{ $timeRegister->logging_unit_no }}</h6>
                                     <small class="text-success">
                                         @if($timeRegister->is_final_submitted)
-                                        Final Submitted
+                                            <div class="d-flex">
+                                                <div>
+                                                    @foreach($timeRegister->jcrs as $timeRegisterJCR)
+                                                        <div class="d-flex">
+                                                        Linked JCR Date: {{ date('d/m/Y', strtotime($timeRegisterJCR->wellTaken_date)) }} |
+                                                        Linked JCR Well: {{ $timeRegisterJCR->wellNo ?? 'N/A' }} |
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <div>Final Submitted</div>
+                                            </div>
                                         @else
-                                        {{ ucfirst($timeRegister->status) }}
+                                            <div class="d-flex">
+                                                <div>
+                                                    @foreach($timeRegister->jcrs as $timeRegisterJCR)
+                                                        <div class="d-flex">
+                                                        Linked JCR Date: {{ date('d/m/Y', strtotime($timeRegisterJCR->wellTaken_date)) }} |
+                                                        Linked JCR Well: {{ $timeRegisterJCR->wellNo ?? 'N/A' }} |
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <div>{{ ucfirst($timeRegister->status) }}</div>
+                                            </div>
                                         @endif
                                     </small>
                                 </div>
                                 <p class="mb-1">
                                     <strong>Well:</strong> {{ $timeRegister->well_no }} | 
-                                    <strong>Rig:</strong> {{ $timeRegister->rig_no }}
+                                    <strong>Rig:</strong> {{ $timeRegister->rig_no }} |
+                                    <strong>Well Taken:</strong> {{ date('d/m/Y', strtotime($timeRegister->well_taken_up_date)) }}
                                 </p>
                                 <small class="text-muted">
                                     Job: {{ Str::limit($timeRegister->job_carried_out, 80) }}
@@ -394,20 +415,15 @@
                             <div class="col-md-6">
                                 <p><strong>Logging Unit:</strong> ${data.logging_unit_no}</p>
                                 <p><strong>Well No:</strong> ${data.well_no}</p>
-                                <p><strong>Rig No:</strong> ${data.rig_no}</p>
-                                <p><strong>Logging Chief:</strong> ${data.logging_chief_name}</p>
                             </div>
                             <div class="col-md-6">
+                                <p><strong>Rig No:</strong> ${data.rig_no}</p>
                                 <p><strong>Well Indented:</strong> ${formattedTime} on ${formattedDate}</p>
-                                <p><strong>Status:</strong> <span class="badge badge-success">${data.status}</span></p>
-                                <p><strong>Final Submitted:</strong> ${data.is_final_submitted ? 'Yes' : 'No'}</p>
-                                <p><strong>Designation:</strong> ${data.logging_chief_designation}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <p><strong>Job Carried Out:</strong></p>
-                                <p class="bg-light p-2 rounded">${data.job_carried_out}</p>
+                                <p><strong>Job Carried Out:</strong> ${data.job_carried_out}</p>
                             </div>
                         </div>
                     `;

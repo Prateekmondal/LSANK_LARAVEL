@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jcr;
 use App\Models\User;
+use App\Models\loggingUnit;
 use App\Models\ExplosiveChecklist;
 use App\Models\timeRegister;
 use App\Services\SapService;
@@ -78,6 +79,7 @@ class JcrController extends Controller
         $this->authorize('create', Jcr::class);
 
         $users = User::orderBy('seniority')->get()->where('status', 1);
+        $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
         $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
             ->where('creator_id', auth()->id())
             ->get();
@@ -90,9 +92,9 @@ class JcrController extends Controller
         ];
 
         // Get available time registers for linking (exclude those whose job already has all three checklist types linked)
-        $availableTimeRegisters = TimeRegister::availableForLinking()->withoutFullyLinkedChecklists()->get();
+        $availableTimeRegisters = TimeRegister::availableForLinking()->withoutFullyLinkedChecklists()->with('jcrs')->get();
         // dd($unlinkedChecklists);
-        return view('jcr.create', compact('users', 'groupedUnlinkedChecklists', 'availableTimeRegisters'));
+        return view('jcr.create', compact('users', 'unitNos', 'groupedUnlinkedChecklists', 'availableTimeRegisters'));
     }
     
     public function view()
@@ -310,10 +312,12 @@ class JcrController extends Controller
             if (isset($validated['logrecorded'])) {
                 $jcr->logs()->createMany($validated['logrecorded']);
             }
-
+            // dd($validated);
             // Create explosives
-            if (isset($validated['explosive'])) {
-                $jcr->explosives()->createMany($validated['explosive']);
+            foreach ($validated['explosive'] as $explosive) {
+                if (isset($explosive['explosive'])) {
+                    $jcr->explosives()->createMany($validated['explosive']);
+                }
             }
 
             // Attach selected checklists (only those owned by the creator and currently unlinked)
@@ -407,9 +411,9 @@ class JcrController extends Controller
                 $jcr->logs()->delete();
                 $jcr->logs()->createMany($validated['logrecorded']);
             }
-            
+            // dd($validated);
             // Update or create explosives
-            if (isset($validated['explosive'])) {
+            if (isset($validated['explosive']['explosive'])) {
                 $jcr->explosives()->delete();
                 $jcr->explosives()->createMany($validated['explosive']);
             }
@@ -643,6 +647,7 @@ class JcrController extends Controller
         $this->authorize('update', $jcr);
 
         $users = User::all();
+        $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
         $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
             ->where('creator_id', auth()->id())
             ->get();
@@ -662,10 +667,10 @@ class JcrController extends Controller
             'c' => $linkedChecklists->where('type', 'c')->values(),
         ];
 
-        $availableTimeRegisters = TimeRegister::availableForLinking()->get();
+        $availableTimeRegisters = TimeRegister::availableForLinking()->with('jcrs')->get();
 
         $jcr->load(['users', 'logs', 'explosives', 'checklists', 'timeRegister']);
-        return view('jcr.edit', compact('jcr', 'users', 'unlinkedChecklists', 'groupedUnlinkedChecklists', 'groupedLinkedChecklists', 'availableTimeRegisters'));
+        return view('jcr.edit', compact('jcr', 'users', 'unitNos', 'unlinkedChecklists', 'groupedUnlinkedChecklists', 'groupedLinkedChecklists', 'availableTimeRegisters'));
     }
 
     public function show(Jcr $jcr)
@@ -835,7 +840,28 @@ class JcrController extends Controller
         }
     }
 
-     // AJAX method to get time register details for modal
+    // AJAX method to find existing JCRs by wellNo content match
+    public function ajaxFindJcrByWellNo(Request $request)
+    {
+        $request->validate([
+            'wellNo' => 'required|string',
+        ]);
+
+        $wellNoInput = trim($request->input('wellNo'));
+        if ($wellNoInput === '') {
+            return response()->json(['data' => []]);
+        }
+
+        $matches = Jcr::with('users')
+            ->whereRaw('? LIKE CONCAT("%", wellNo, "%")', [$wellNoInput])
+            ->orderBy('arrivalOffice_date', 'desc')
+            ->limit(12)
+            ->get();
+
+        return response()->json(['data' => $matches]);
+    }
+
+    // AJAX method to get time register details for modal
     public function getTimeRegisterDetails($id)
     {
         // Fetch time register regardless of whether it is currently available for linking so
@@ -849,6 +875,7 @@ class JcrController extends Controller
         return response()->json([
             'id' => $timeRegister->id,
             'logging_unit_no' => $timeRegister->logging_unit_no,
+            'indent_no' => $timeRegister->indent_no,
             'well_no' => $timeRegister->well_no,
             'rig_no' => $timeRegister->rig_no,
             'job_carried_out' => $timeRegister->job_carried_out,
@@ -931,6 +958,7 @@ class JcrController extends Controller
             'kb' => 'nullable|numeric',
             'gl' => 'nullable|numeric',
             'unitNo' => 'required|string',
+            'logging_unit_type' => 'required|in:departmental,contractual',
             'loggingType' => 'required|string',
             'logType' => 'required|string',
             'wellOwner' => 'required|string',
@@ -1035,6 +1063,7 @@ class JcrController extends Controller
             'logrecorded.*.fuse' => 'nullable|string',
             'logrecorded.*.fuseNo' => 'nullable|integer',
             'logrecorded.*.fMf' => 'nullable|string',
+            'logrecorded.*.otherLogDescription' => 'nullable|string',
 
             // side wall core'
             'attempted' => 'nullable|integer',

@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotification;
 
+use App\Traits\Auditable;
+
 class Notification extends DatabaseNotification
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $casts = [
         'data' => 'array',

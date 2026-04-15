@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container py-5">
-        <div class="row justify-content-center">
+        <div class="row w-100 justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">

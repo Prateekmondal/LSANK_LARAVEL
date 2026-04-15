@@ -92,7 +92,7 @@ class TimeRegisterPolicy
             return true;
         }
 
-        if ($timeRegister->jcr && $timeRegister->jcr->creator_id === $user->id) {
+        if ($timeRegister->jcrs()->where('creator_id', $user->id)->exists()) {
             return true;
         }
 

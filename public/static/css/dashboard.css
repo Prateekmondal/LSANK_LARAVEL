@@ -1,76 +1,238 @@
 .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-        .dashboard {
-            display: flex;
-            gap: 20px;
-        }
-        .left-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .right-panel {
-            flex: 2;
-            border-radius: 10px;
-        }
-        .panel-section {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-        }
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .profile-pic {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #e9ecef;
-        }
-        .job-counts {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        .job-count-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .job-count-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #0d6efd;
-        }
-        .calendar {
-            width: 100%;
-        }
-        .highlighted-date {
-            background-color: #0d6efd;
-            color: white;
-            border-radius: 50%;
-        }
-        .table-responsive {
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-        .job-type-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+    flex: 1;
+    padding: 20px;
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.right-panel {
+    border-radius: 10px;
+}
+
+.panel-section {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.profile-header h4 {
+    margin: 0;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    flex-shrink: 0;
+}
+
+.job-count-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.job-count-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0d6efd;
+    margin-bottom: 5px;
+}
+
+.job-count-label {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.calendar {
+    width: 100%;
+}
+
+.highlighted-date {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border-radius: 50%;
+}
+
+.job-type-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin: 2px;
+}
+
+.small {
+    color: black !important;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .main-content {
+        padding: 15px;
+    }
+
+    .dashboard {
+        gap: 15px;
+    }
+
+    .panel-section {
+        padding: 15px;
+    }
+
+    .left-panel {
+        gap: 15px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-header h4 {
+        width: 100%;
+    }
+
+    .profile-info {
+        flex-direction: row;
+    }
+
+    .profile-pic {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .main-content {
+        padding: 12px;
+    }
+
+    .panel-section {
+        padding: 12px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-header .btn {
+        width: 100%;
+    }
+
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+    }
+
+    .profile-info {
+        gap: 10px;
+    }
+
+    .job-count-label {
+        font-size: 12px;
+    }
+
+    .job-count-number {
+        font-size: 24px;
+    }
+
+    .btn-sm {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .main-content {
+        padding: 10px;
+    }
+
+    .dashboard {
+        gap: 10px;
+    }
+
+    .panel-section {
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .profile-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+    }
+
+    .profile-info h5 {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .profile-info p {
+        font-size: 0.85rem;
+    }
+
+    .job-count-number {
+        font-size: 20px;
+    }
+
+    .job-count-label {
+        font-size: 11px;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    h4, h5 {
+        font-size: 1.1rem;
+    }
+}

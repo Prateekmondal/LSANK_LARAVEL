@@ -20,8 +20,8 @@
                 <!-- Links -->
                 <p class="text-uppercase h4 fw-bold mb-4 mb-md-5">Useful links</p>
                 <p class="text-start h6"><a href="/" class="text-reset text-white">Home</a></p>
-                <p class="text-start h6"><a href="/profile" class="text-reset text-white">Profile</a></p>
-                <p class="text-start h6"><a href="/jcr/add" class="text-reset text-white">Add New JCR</a></p>
+                <p class="text-start h6"><a href="/profile/edit" class="text-reset text-white">Profile</a></p>
+                <p class="text-start h6"><a href="/jcr/create" class="text-reset text-white">Add New JCR</a></p>
                 <p class="text-start h6"><a href="/checklists" class="text-reset text-white">Checklists</a></p>
                 <p class="text-start h6"><a href="/time-registers" class="text-reset text-white">Time Registers</a></p>
             </div>
@@ -59,7 +59,7 @@
         </div>
     </div>
     <div class="text-left p-3">Copyright &copy
-        <?= date("Y") ?> <a class="text-reset fw-bold" href="/LSANK_php">Logging Services, Ankleswar</a> All rights
+        <?= date("Y") ?> <a class="text-reset fw-bold" href="/">Logging Services, Ankleswar</a> All rights
         reserved.
     </div>
 </footer>

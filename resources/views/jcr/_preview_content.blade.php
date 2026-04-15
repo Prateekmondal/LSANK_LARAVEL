@@ -3,13 +3,14 @@
     <tbody>
         <tr class="text-sm text-md">
             <td class="w-25">
-                <img class="img-fluid" src="/static/images/ongc.png" style="max-width: 80px;"/>
+                <div class="d-flex">
+                    <img class="img-fluid" src="/static/images/ongc.png" style="max-height: 80px;"/>
+                    <h3>Well Logging Services<br>ONGC, Ankleshwar</h3>
+                </div>
             </td>
-            <td class="fw-semibold w-25">
-                <h2>Well Logging Services<br>ONGC, Ankleshwar</h2></td>
-            <td class="fw-bold w-25">
-                <h1>JOB COMPLETION REPORT</h1></td>
-            <td class="w-25">&nbsp;</td>
+            <td class="w-25">
+                <h2 class="fw-bold">JOB COMPLETION REPORT</h2></td>
+            <td class="w-25 text-end"><h3><span class="badge rounded-5" @if($jcr->logging_unit_type === 'contractual') style="background-color: #faf388; color: #ff6200;" @else style="color: black;" @endif>{{ ucfirst($jcr['logging_unit_type']) }}</span></h3></td>
         </tr>
         </tbody>
     </table>
@@ -620,12 +621,12 @@
             @foreach ($jcr->logs as $log)
             <tr>
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['runNo'] }}</td>
-            <td colspan="2" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['logRecorded'] }}</td>
+            <td colspan="2" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">@if (preg_match("/Other/i", $log['logRecorded'])) {{ $log['otherLogDescription'] }} @else {{ $log['logRecorded'] }} @endif</td>
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['bottomDepth'] }}</td>
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['topDepth'] }}</td>
             <td colspan="3" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['toolNo'] }}</td>
             <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['logQuality'] }}</td>
-            @if (str_contains(strtoupper($log['logRecorded']), 'PERFORATION') | str_contains(strtoupper($log['logRecorded']), 'TTP') | str_contains(strtoupper($log['logRecorded']), 'BP') | str_contains(strtoupper($log['logRecorded']), 'BRIDGE PLUG') | str_contains(strtoupper($log['logRecorded']), 'TUBING PUNCTURE'))
+            @if (str_contains(strtoupper($log['logRecorded']), 'PERFORATION') | str_contains(strtoupper($log['logRecorded']), 'TTP') | str_contains(strtoupper($log['logRecorded']), 'BP') | str_contains(strtoupper($log['logRecorded']), 'BRIDGE PLUG') | str_contains(strtoupper($log['logRecorded']), 'TUBING PUNCTURE') | str_contains(strtoupper($log['logRecorded']), 'OTHER EXPLOSIVE'))
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['runNo'] }}</td>
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['bottomShotDepth'] }}</td>
                 <td colspan="1" align="center" style="border-left: 1px solid #333; border-right: 1px solid #333;">{{ $log['topShotDepth'] }}</td>

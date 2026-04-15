@@ -22,9 +22,13 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('avatar')->default('default.png');
             $table->tinyInteger('status')->default(1);
+            $table->boolean('is_approved')->default(false);
+            $table->timestamp('approved_at')->nullable();
+            $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

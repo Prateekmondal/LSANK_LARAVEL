@@ -17,6 +17,7 @@ class logsRecorded extends Model
         'jcr_id',
         'runNo',
         'logRecorded',
+        'otherLogDescription',
         'bottomDepth',
         'topDepth',
         'toolNo',

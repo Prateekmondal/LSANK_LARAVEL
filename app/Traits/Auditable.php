@@ -26,22 +26,43 @@ trait Auditable
 
     protected static function logChange(Model $model, string $event)
     {
-        $original = $event === 'updated' ? $model->getOriginal() : null;
-        
-        $hiddenFields = ['password', 'remember_token']; // Add sensitive fields
-        
-        $oldValues = $original ? array_diff_key($original, array_flip($hiddenFields)) : null;
-        $newValues = $event !== 'deleted' 
-            ? array_diff_key($model->toArray(), array_flip($hiddenFields)) 
-            : null;
+        $changes = [];
+        $oldValues = null;
+        $newValues = null;
+
+        if ($event === 'updated') {
+            // For updates, compute only the changed fields
+            foreach ($model->getAttributes() as $key => $newValue) {
+                $oldValue = $model->getOriginal($key);
+                if ($oldValue !== $newValue) {
+                    $changes[$key] = ['old' => $oldValue, 'new' => $newValue];
+
+                    $oldValues[$key] = $oldValue;
+                    $newValues[$key] = $newValue;
+                }
+            }
+            // Store changes in new_values; old_values can be null or omitted
+            // $newValues = $changes;
+        } elseif ($event === 'created') {
+            // For creations, store all new values (or nothing if you prefer minimal logging)
+            $newValues = array_diff_key($model->toArray(), array_flip(['password', 'remember_token']));
+        } elseif ($event === 'deleted') {
+            // For deletions, store the old values
+            $oldValues = array_diff_key($model->getOriginal(), array_flip(['password', 'remember_token']));
+        }
+
+        // Skip logging if no changes (e.g., for updates with no actual changes)
+        if (empty($changes) && $event === 'updated') {
+            return;
+        }
 
 
         AuditLog::create([
             'event'        => $event,
             'auditable_type' => get_class($model),
             'auditable_id'  => $model->id,
-            'old_values'   => $original,
-            'new_values'   => $event === 'deleted' ? null : $model->toArray(),
+            'old_values'   => $oldValues,
+            'new_values'   => $newValues,
             'url'         => request()?->fullUrl(),
             'ip_address'  => request()?->ip(),
             'user_agent'  => request()?->userAgent(),

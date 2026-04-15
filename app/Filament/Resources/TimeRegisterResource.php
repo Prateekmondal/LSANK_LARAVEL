@@ -79,6 +79,7 @@ class TimeRegisterResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
+                TextColumn::make('jcr_id')->sortable(),
                 TextColumn::make('logging_unit_no')->sortable()->searchable(),
                 TextColumn::make('well_no')->sortable()->searchable(),
                 TextColumn::make('rig_no')->sortable(),
@@ -100,7 +101,7 @@ class TimeRegisterResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['loggingChief', 'creator', 'jcr']);
+        return parent::getEloquentQuery()->with(['loggingChief', 'creator', 'jcrs']);
     }
 
     public static function getPages(): array

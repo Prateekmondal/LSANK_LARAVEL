@@ -25,6 +25,7 @@ class Jcr extends Model
         'kb',
         'gl',
         'unitNo',
+        'logging_unit_type',
         'loggingType',
         'logType',
         'wellOwner',
@@ -299,6 +300,15 @@ class Jcr extends Model
         }
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($jcr) {
+            $jcr->checklists()->each(function ($checklist) {
+                $checklist->delete();
+            });
+        });
+    }
+
     public function checklists()
     {
         return $this->hasMany(ExplosiveChecklist::class);
@@ -325,10 +335,7 @@ class Jcr extends Model
     // Get available time registers for linking
     public static function getAvailableTimeRegisters()
     {
-        return TimeRegister::whereDoesntHave('jcr')
-            ->where('is_final_submitted', true)
-            ->orWhere('status', 'completed')
-            ->get();
+        return TimeRegister::availableForLinking()->get();
     }
 
     // Scope for JCRs without time register

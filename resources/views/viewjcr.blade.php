@@ -25,6 +25,7 @@
                         <td class="py-4">Time</td>
                         <td class="py-4">Well ID</td>
                         <td class="py-4">Unit</td>
+                        <td class="py-4">Logging Unit Type</td>
                         <td class="py-4">Logs recorded</td>
                         <td class="py-4">Interval</td>
                         <td class="py-4">Personnel</td>
@@ -41,6 +42,7 @@
                                     </td>
                                     <td class="align-middle w-auto" name="wellNo">{{$jcr['wellNo']}}</td>
                                     <td class="align-middle w-auto">{{$jcr['unitNo']}}</td>
+                                    <td class="align-middle w-auto">{{ ucfirst($jcr['logging_unit_type']) }}</td>
                                     <td class="align-middle w-auto">
                                         @switch($index % 4)
                                                 @case(1)
