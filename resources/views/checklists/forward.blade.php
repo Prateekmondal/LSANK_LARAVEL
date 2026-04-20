@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <div class="card">
+    <div class="card w-100">
         <div class="card-header">
             <h2>Forward Checklist for Signature</h2>
         </div>

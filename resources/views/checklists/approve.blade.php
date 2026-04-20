@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <div class="card mb-4 w-75">
+    <div class="card mb-4 w-100">
         <div class="card-header">
             <h2>Checklist Approval</h2>
         </div>

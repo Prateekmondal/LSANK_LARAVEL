@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container">
-        <div class="card mb-4">
+        <div class="card mb-4 w-100">
             <div class="card-header">
                 <h2>{{ $checklist->type_name }} Checklist Preview</h2>
             </div>

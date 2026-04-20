@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <div class="card w-75">
+    <div class="card w-100">
         <div class="card-header">
             <h2>Edit {{ $title }}</h2>
         </div>

@@ -72,9 +72,6 @@
     <div class="row mb-4">
         <div class="col-md-11 mx-auto">
             <div class="card mb-3 w-100 mx-auto">
-                <div class="card-header">
-                    <h4>Time Register</h4>
-                </div>
                 <div class="card-body">
                     @include('time-registers._preview')
                 </div>
