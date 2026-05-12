@@ -19,11 +19,7 @@ body {
 	height: 100%;
 	background: var(--background-color);
 	background-attachment: fixed;
-}
-
-header {
-	height: 50px;
-	margin-bottom: 10px;
+	padding-top: 56px; 
 }
 
 .main-section {
@@ -37,7 +33,6 @@ ul {
 
 .navbar {
 	background-color: var(--header-background-color);
-	width: 100%;
 }
 
 .navbar-brand {
@@ -82,19 +77,6 @@ ul {
 	display: flex;
 }
 
-/* form input{
-	display: block;
-	width: 80%;
-	background: #e2e2e2;
-	outline: none;
-	border: none;
-	border-radius: 2rem;
-	padding: 1rem 2rem;
-	margin-bottom: 1rem;
-	margin-left: auto;
-	margin-right: auto;
-} */
-
 small {
 	color: red;
 }
@@ -111,15 +93,6 @@ small {
 	border-radius: 0.2em;
 	margin-right: 0.5em;
 	vertical-align: text-top;
-}
-
-.content-section {
-	background: #ffffff;
-	padding: 10px 20px;
-	border: 1px solid #dddddd;
-	border-radius: 3px;
-	margin-right: auto;
-	margin-left: auto;
 }
 
 .table-responsive {

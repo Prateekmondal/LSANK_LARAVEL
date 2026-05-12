@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
+    private $timestamps = true;
     /**
      * Run the migrations.
      */
@@ -114,6 +116,7 @@ return new class extends Migration
             $table->text('objective')->nullable();
             $table->text('observations')->nullable();
             $table->text('contingents')->nullable();
+            $table->timestamps(); // Adds nullable created_at and updated_at columns
         });
     }
 

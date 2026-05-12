@@ -25,47 +25,12 @@
         </div>
         
         <div class="card-body">
-            @include('checklists.partials.show-header-type-' . $checklist->type)
-            
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Status:</strong> 
-                    <span class="badge bg-{{ $checklist->status === 'signed' ? 'success' : ($checklist->status === 'completed' ? 'primary' : 'warning') }}">
-                        {{ ucfirst($checklist->status) }}
-                    </span>
-                </div>
-                <div class="col-md-4"><strong>Created By:</strong> {{ $checklist->creator->name }}</div>
-                <div class="col-md-4"><strong>Confirmed:</strong> {{ $checklist->status === 'signed' ? 'Yes' : 'No' }}</div>
-            </div>
-            
-            <div class="table-responsive mb-4">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Item</th>
-                            <th>Status</th>
-                            <th>Comments</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($checklist->checklist_data as $item)
-                        <tr>
-                            <td>{{ $item['name'] }}</td>
-                            <td>
-                                <span class="badge bg-{{ $item['status'] ? 'success' : ($item['status'] == null ? 'warning' : 'danger') }}">
-                                    {{ $item['status'] ? 'Yes' : ($item['status'] == null ? 'N/A' : 'No') }}
-                                </span>
-                            </td>
-                            <td>{{ $item['comments'] ?? 'N/A' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                @include('checklists.partials._preview_content')
         </div>
     </div>
     
     <!-- Signatures Section -->
-    <div class="card mt-4 w-75">
+    <div class="card mt-4 w-100">
         <div class="card-header">
             <h4>Signatures</h4>
         </div>

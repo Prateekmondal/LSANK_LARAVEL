@@ -1,6 +1,3 @@
-@php
-$unitNos = ["GJ-16-BS-4773", "GJ-16-BS-4995", "GJ-16-AF-9723", "GJ-16-BS-2279", "GJ-16-BS-4842", "GJ-16-AF-9702"];
-@endphp
 <div class="col-md-4">
     <label for="logging_unit_no" class="form-label">Logging unit <span class='asteriskField'>*</span></label>
     <select name='logging_unit_no' class='select form-select' id='logging_unit_no'>

@@ -81,7 +81,6 @@ class JcrController extends Controller
         $users = User::orderBy('seniority')->get()->where('status', 1);
         $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
         $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
-            ->where('creator_id', auth()->id())
             ->get();
 
         // Group unlinked checklists by type for the view
@@ -314,10 +313,8 @@ class JcrController extends Controller
             }
             // dd($validated);
             // Create explosives
-            foreach ($validated['explosive'] as $explosive) {
-                if (isset($explosive['explosive'])) {
-                    $jcr->explosives()->createMany($validated['explosive']);
-                }
+            if (isset($validated['explosive'])) {
+                $jcr->explosives()->createMany($validated['explosive']);
             }
 
             // Attach selected checklists (only those owned by the creator and currently unlinked)
@@ -413,7 +410,7 @@ class JcrController extends Controller
             }
             // dd($validated);
             // Update or create explosives
-            if (isset($validated['explosive']['explosive'])) {
+            if (isset($validated['explosive'])) {
                 $jcr->explosives()->delete();
                 $jcr->explosives()->createMany($validated['explosive']);
             }
@@ -433,7 +430,7 @@ class JcrController extends Controller
             $timeRegister = TimeRegister::findOrFail($validated['time_register_id']);
             
             if (!$timeRegister->isAvailableForLinking() && $timeRegister->id !== $jcr->time_register_id) {
-                dd($validated);
+                // dd($validated);
                 return redirect()->back()
                     ->withInput()
                     ->with('error', 'Selected Time Register is not available for linking.');
@@ -649,7 +646,6 @@ class JcrController extends Controller
         $users = User::all();
         $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
         $unlinkedChecklists = ExplosiveChecklist::whereNull('jcr_id')
-            ->where('creator_id', auth()->id())
             ->get();
 
             // Group unlinked checklists by type for the edit view
@@ -742,14 +738,14 @@ class JcrController extends Controller
      */
     public function download(Request $request): View
     {
-        dd('hello');
+        // dd('hello');
         $users = User::all();
         if (Auth::user()->can('view_any_jcr')) {
             $jcrs = Jcr::with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
         } else {
             $jcrs = Auth::user()->jcrs()->with(['users', 'logs', 'explosives'])->get()->where('id', '=', $request->get('id'))->first();
         }
-        dd($jcrs);
+        // dd($jcrs);
         return view("downloadjcr", ['jcrs' => $jcrs, 'users' => $users]);
     }
 

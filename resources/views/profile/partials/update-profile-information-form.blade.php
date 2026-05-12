@@ -93,7 +93,6 @@
                 @csrf
                 @method('patch')
                 <div class="m-2">
-                    <x-input-label for="avatar" :value="__('Avatar')">Avatar</x-input-label>
                     <x-text-input id="avatar" name="avatar" type="file" class="mt-1 block w-full"
                         value="{{ old('avatar') ? old('avatar') : $user->avatar}}" autofocus
                         autocomplete="avatar"></x-text-input>

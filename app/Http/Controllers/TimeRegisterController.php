@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TimeRegister;
 use App\Models\Jcr;
+use App\Models\loggingUnit;
 use App\Mail\RigSignatureRequest;
 use App\Mail\TimeRegisterSignedCopy;
 use Illuminate\Http\Request;
@@ -29,10 +30,11 @@ class TimeRegisterController extends Controller
     public function create(Request $request)
     {
         $this->authorize('create', TimeRegister::class);
+        $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
 
         $fromJcr = $request->has('from_jcr');
         
-        return view('time-registers.create', compact('fromJcr'));
+        return view('time-registers.create', compact('fromJcr', 'unitNos'));
     }
 
     public function store(Request $request)
@@ -66,7 +68,6 @@ class TimeRegisterController extends Controller
         $validated['logging_chief_name'] = $user->name;
         $validated['logging_chief_designation'] = $user->designation ?? 'Logging Chief';
         $validated['logging_chief_signature'] = $user->name;
-        $validated['logging_chief_signed_at'] = now();
 
         $timeRegister = TimeRegister::create($validated);
 
@@ -106,7 +107,6 @@ class TimeRegisterController extends Controller
             'logging_chief_id' => $user->id,
             'logging_chief_name' => $user->name,
             'logging_chief_designation' => $user->designation ?? 'Logging Chief',
-            'logging_chief_signature' => $signatureData,
             'logging_chief_signed_at' => now(),
             'status' => 'preview',
         ]);
@@ -129,8 +129,15 @@ class TimeRegisterController extends Controller
         // Send email to rig representative
         Mail::to($validated['rig_representative_email'])->send(new RigSignatureRequest($timeRegister));
 
+        // Capture logging chief details from logged-in user
+        $user = Auth::user();
+
         // Update with rig representative email and final submission details
         $timeRegister->update([
+            'logging_chief_id' => $user->id,
+            'logging_chief_name' => $user->name,
+            'logging_chief_designation' => $user->designation ?? 'Logging Chief',
+            'logging_chief_signed_at' => now(),
             'rig_representative_email' => $validated['rig_representative_email'],
             'status' => 'pending_signature',
             'is_final_submitted' => true,
@@ -204,8 +211,9 @@ class TimeRegisterController extends Controller
     public function edit(TimeRegister $timeRegister)
     {
         $this->authorize('update', $timeRegister);
+        $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
 
-        return view('time-registers.edit', compact('timeRegister'));
+        return view('time-registers.edit', compact('timeRegister', 'unitNos'));
     }
 
     public function update(Request $request, TimeRegister $timeRegister)

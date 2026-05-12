@@ -1,7 +1,4 @@
 <!-- resources/views/time-registers/create.blade.php -->
-@php
-$unitNos = ["GJ-16-BS-4773", "GJ-16-BS-4995", "GJ-16-AF-9723", "GJ-16-BS-2279", "GJ-16-BS-4842", "GJ-16-AF-9702"];
-@endphp
 @extends('layouts.app')
 
 @section('content')

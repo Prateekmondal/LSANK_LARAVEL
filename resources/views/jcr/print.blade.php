@@ -97,9 +97,6 @@
     <div class="row mb-4">
         <div class="col-md-11 mx-auto">
             <div class="card">
-                <div class="card-header">
-                    <h2>Checklist A: Pre-Departure Checklist</h2>
-                </div>
                 <div class="card-body">
                     @include('checklists.partials._preview_content', ['checklist' => $groupedChecklists['a']])
                 </div>
@@ -164,9 +161,6 @@
     <div class="row mb-4">
         <div class="col-md-11 mx-auto">
             <div class="card">
-                <div class="card-header">
-                    <h2>Checklist B: On- Site Checklist</h2>
-                </div>
                 <div class="card-body">
                     @include('checklists.partials._preview_content', ['checklist' => $groupedChecklists['b']])
                 </div>
@@ -203,12 +197,13 @@
                                         <div class="signature mb-3 p-3 border rounded">
                                             <h5>Approver Signature</h5>
                                             <div class="d-flex align-items-center">
-                                            <div class="signature-avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                {{ substr($groupedChecklists['b']->externalSignature->name, 0, 1) }}
-                                            </div>
-                                            <div class="ms-3">
-                                                <strong>{{ $groupedChecklists['b']->externalSignature->name }}</strong><br>
-                                                {{ $groupedChecklists['b']->externalSignature->signed_at->format('d/m/Y H:i') }}
+                                                <div class="signature-avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                    {{ substr($groupedChecklists['b']->externalSignature->name, 0, 1) }}
+                                                </div>
+                                                <div class="ms-3">
+                                                    <strong>{{ $groupedChecklists['b']->externalSignature->name }}</strong><br>
+                                                    {{ $groupedChecklists['b']->externalSignature->signed_at->format('d/m/Y H:i') }}
+                                                </div>
                                             </div>
                                         </div>
                                     @endif
@@ -228,9 +223,6 @@
     <div class="row mb-4">
         <div class="col-md-11 mx-auto">
             <div class="card">
-                <div class="card-header">
-                    <h2>Checklist C: Upon-Arrival Checklist</h2>
-                </div>
                 <div class="card-body">
                     @include('checklists.partials._preview_content', ['checklist' => $groupedChecklists['c']])
                 </div>

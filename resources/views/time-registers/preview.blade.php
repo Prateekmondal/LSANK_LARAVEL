@@ -35,22 +35,6 @@
             <h4>Time Register Details</h4>
         </div>
         <div class="card-body">
-            <!-- Logging Chief Signature Section -->
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-signature"></i> Logging Chief Signature</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p><strong>Name:</strong> {{ $timeRegister->logging_chief_name }}</p>
-                            <p><strong>Designation:</strong> {{ $timeRegister->logging_chief_designation }}</p>
-                            <p><strong>Signed At:</strong> {{ $timeRegister->logging_chief_signed_at->format('Y-m-d H:i:s') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             @include('time-registers._preview')
         </div>
         <div class="card-footer">

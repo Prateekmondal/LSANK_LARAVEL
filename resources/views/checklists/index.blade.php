@@ -22,15 +22,15 @@
     <div class="card w-100">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped">
                     <thead>
                         <tr>
                             <th>Type</th>
                             <th>Well Name</th>
                             <th>Date</th>
-                            <th>Logging Unit</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th class="d-none d-lg-table-cell">Logging Unit</th>
+                            <th class="d-none d-lg-table-cell">Status</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,21 +39,23 @@
                                 <td>{{ $checklist->type_name }}</td>
                                 <td>{{ $checklist->well_no }}</td>
                                 <td>{{ $checklist->date->format('d/m/Y') }}</td>
-                                <td>{{ $checklist->logging_unit_no }}</td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">{{ $checklist->logging_unit_no }}</td>
+                                <td class="d-none d-lg-table-cell">
                                     <span class="badge bg-{{ $checklist->status === 'signed' ? 'success' : ($checklist->status === 'completed' ? 'primary' : 'warning') }}">
                                         {{ ucfirst($checklist->status) }}
                                     </span>
                                 </td>
-                                <td>
-                                    @if ($checklist->status === 'draft')
-                                        <a href="{{ route('checklists.edit', ['checklist' => $checklist->id, 'type' => $checklist->type]) }}" class="btn btn-sm btn-outline-warning">
-                                            <i class="bi bi-pencil-square"></i> Edit
+                                <td class="text-center align-middle">
+                                    <div class="d-flex gap-2 justify-content-center align-items-center">
+                                        @if ($checklist->status === 'draft')
+                                            <a href="{{ route('checklists.edit', ['checklist' => $checklist->id, 'type' => $checklist->type]) }}" class="btn btn-sm btn-warning">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('checklists.show', $checklist->id) }}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> View
                                         </a>
-                                    @endif
-                                    <a href="{{ route('checklists.show', $checklist->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-eye"></i> View
-                                    </a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

@@ -6,6 +6,7 @@ use App\Models\ExplosiveChecklist;
 use App\Models\ChecklistForward;
 use App\Models\Jcr;
 use App\Models\User;
+use App\Models\loggingUnit;
 use App\Notifications\ChecklistForwardedNotification;
 use App\Notifications\ChecklistApprovalNotification;
 use App\Notifications\ExternalSignerNotification;
@@ -51,6 +52,7 @@ class ChecklistController extends Controller
         $this->authorize('create', ExplosiveChecklist::class);
 
         $types = ['a' => 'Pre-Departure', 'b' => 'On-Site', 'c' => 'Upon-Arrival'];
+        $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
 
         if (!array_key_exists($type, $types)) {
             abort(404);
@@ -61,6 +63,7 @@ class ChecklistController extends Controller
             'title' => $types[$type] . ' Checklist',
             'well_no' => $request->input('well_no'),
             'date' => $request->input('date'),
+            'unitNos' => $unitNos,
         ]);
     }
 
@@ -100,6 +103,7 @@ class ChecklistController extends Controller
     public function edit(ExplosiveChecklist $checklist, $type)
     {
         $this->authorize('update', $checklist);
+        $unitNos = loggingUnit::pluck('loggingUnit')->toArray();
 
         // Check if checklist is editable (draft status)
         // if ($checklist->status !== 'draft') {
@@ -109,7 +113,8 @@ class ChecklistController extends Controller
 
         return view('checklists.edit', [
             'checklist' => $checklist,
-            'title' => $checklist->type_name . ' Checklist'
+            'title' => $checklist->type_name . ' Checklist',
+            'unitNos' => $unitNos,
         ]);
     }
 

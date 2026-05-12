@@ -109,6 +109,27 @@
                         Please select an existing Time Register or create a new one.
                     </div>
 
+                    <!-- Search Filters -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="searchDate" class="form-label">Search by Date</label>
+                            <input type="date" class="form-control" id="searchDate" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="searchWellNo" class="form-label">Search by Well No</label>
+                            <input type="text" class="form-control" id="searchWellNo" placeholder="Enter Well No">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="searchLoggingChief" class="form-label">Search by Logging Chief</label>
+                            <input type="text" class="form-control" id="searchLoggingChief" placeholder="Enter Logging Chief Name">
+                        </div>
+                    </div>
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="clearSearchFilters()">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
+                    </div>
+
                     <!-- Available Time Registers List -->
                     <div id="availableTimeRegisters" class="mb-4">
                         <h6>Available Time Registers:</h6>
@@ -117,6 +138,9 @@
                             @foreach($availableTimeRegisters as $timeRegister)
                             <div class="list-group-item list-group-item-action time-register-item" 
                                  data-time-register-id="{{ $timeRegister->id }}"
+                                 data-date="{{ date('Y-m-d', strtotime($timeRegister->well_taken_up_date)) }}"
+                                 data-well-no="{{ $timeRegister->well_no }}"
+                                 data-logging-chief="{{ $timeRegister->logging_chief_name }}"
                                  onclick="selectTimeRegister(this, {{ $timeRegister->id }})">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">{{ $timeRegister->logging_unit_no }}</h6>
@@ -464,6 +488,51 @@
             if (confirm('Are you sure you want to cancel JCR creation?')) {
                 window.location.href = "{{ route('jcr.index') }}";
             }
+        }
+
+        // Search and filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchDate = document.getElementById('searchDate');
+            const searchWellNo = document.getElementById('searchWellNo');
+            const searchLoggingChief = document.getElementById('searchLoggingChief');
+
+            function filterTimeRegisters() {
+                const dateValue = searchDate.value.toLowerCase();
+                const wellValue = searchWellNo.value.toLowerCase();
+                const chiefValue = searchLoggingChief.value.toLowerCase();
+
+                const items = document.querySelectorAll('.time-register-item');
+                items.forEach(item => {
+                    const itemDate = item.getAttribute('data-date') || '';
+                    const itemWell = item.getAttribute('data-well-no') || '';
+                    const itemChief = item.getAttribute('data-logging-chief') || '';
+
+                    const matchesDate = !dateValue || itemDate.includes(dateValue);
+                    const matchesWell = !wellValue || itemWell.toLowerCase().includes(wellValue);
+                    const matchesChief = !chiefValue || itemChief.toLowerCase().includes(chiefValue);
+
+                    if (matchesDate && matchesWell && matchesChief) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            searchDate.addEventListener('input', filterTimeRegisters);
+            searchWellNo.addEventListener('input', filterTimeRegisters);
+            searchLoggingChief.addEventListener('input', filterTimeRegisters);
+        });
+
+        function clearSearchFilters() {
+            document.getElementById('searchDate').value = '';
+            document.getElementById('searchWellNo').value = '';
+            document.getElementById('searchLoggingChief').value = '';
+
+            const items = document.querySelectorAll('.time-register-item');
+            items.forEach(item => {
+                item.style.display = '';
+            });
         }
 
         // Handle when user returns from creating new time register

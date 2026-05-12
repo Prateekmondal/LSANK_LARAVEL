@@ -7,13 +7,9 @@
     <link rel="stylesheet" type="text/css" href='{{ asset("/static/css/welcome.css") }}'>
 @endpush
 @section('content')
-    <!-- Logging Tool and Vertical Line -->
-    <div class="logging-tool"></div>
-
+    
     <!-- Hero Section -->
     <section class="hero-section" id="home">
-        <div class="borehole-environment"></div>
-        <div class="well-logging-data"></div>
         <div class="container h-100 d-flex align-items-center position-relative" style="z-index: 5;">
             <div class="row w-100">
                 <div class="col-md-6 text-white">
@@ -51,7 +47,6 @@
                     <div class="chart-container">
                         <canvas id="jobStatsChartbar"></canvas>
                     </div>
-                    <div class="chart-legend" id="chartLegend"></div>
                 </div>
             </div>
         </div>
@@ -104,7 +99,7 @@
                     <p class="lead">Explore our recent well logging projects and field operations</p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row h-100">
                 <div class="col-md-5 left-content">
                     <div class="content-reveal">
                         <!-- In the Gallery Section, replace the image tags with these: -->

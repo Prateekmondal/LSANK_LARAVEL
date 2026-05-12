@@ -9,111 +9,69 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+section {
+    height: 94vh;
+    padding: 2rem 0;
+}
+
 /* Hero Section */
 .hero-section {
-    height: 100vh;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(to right, #0a192f 50%, #162a47 50%);
+    background: url('/static/images/screen.png') center/cover;
 }
 
-.borehole-environment {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    background: url('/static/images/borehole-bg.jpg') center/cover;
-    z-index: 1;
-    opacity: 60%;
-}
-
-.well-logging-data {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    background: url('/static/images/logging-data-bg.png') center/cover;
-    z-index: 1;
-    opacity: 60%;
-}
-
-.logging-tool {
-    position: fixed;
-    top: 57%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 65rem;
-    height: 95%;
-    background: url('/static/images/logging-tool.png') center/contain no-repeat;
-    z-index: 1000;
-    pointer-events: none;
-}
 
 /* Statistics Pie Chart Section */
-        .stats-section {
-            padding: 100px 0;
-            background-color: white;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 0 auto;
-        }
-        
-        .chart-legend {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin: 0 15px 10px;
-        }
-        
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        
-        /* Content Sections */
-        .content-section {
-            min-height: 100vh;
-            padding: 100px 0;
-            position: relative;
-            z-index: 2;
-            background-color: white;
-        }
-        
-        .left-content {
-            padding-right: 60px;
-            text-align: right;
-        }
-        
-        .right-content {
-            padding-left: 60px;
-            text-align: left;
-        }
-        
-        .section-title {
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
+.stats-section {
+    background-color: white;
+    position: relative;
+    z-index: 2;
+}
+
+.chart-container {
+    position: relative;
+    margin: 0 auto;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 15px 10px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.left-content {
+    padding-right: 60px;
+    text-align: right;
+}
+
+.right-content {
+    padding-left: 60px;
+    text-align: left;
+}
+
+.section-title {
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
 
 /* Content Sections */
 .content-section {
-    min-height: 100vh;
-    padding: 100px 0;
     position: relative;
     z-index: 2;
     background-color: var(--primary-color);
@@ -211,21 +169,6 @@ body {
 
 .btn-primary:hover {
     background-color: var(--secondary-color);
-}
-
-/* Navigation */
-.navbar {
-    z-index: 1000;
-    height: 4rem;
-}
-
-.navbar-brand {
-    font-weight: 700;
-}
-
-.nav-link {
-    margin: 0 10px;
-    font-weight: 500;
 }
 
 /* Content Reveal Animation */

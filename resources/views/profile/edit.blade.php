@@ -8,8 +8,5 @@
         <div class="panel-section container">
             @include('profile.partials.update-password-form')
         </div>
-        <div class="panel-section container">
-            @include('profile.partials.delete-user-form')
-        </div>
     </div>
 @endsection

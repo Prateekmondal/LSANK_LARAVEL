@@ -3,7 +3,7 @@
     <tbody>
         <tr class="text-sm text-md">
             <td class="w-25">
-                <div class="d-flex">
+                <div class="d-flex gap-2">
                     <img class="img-fluid" src="/static/images/ongc.png" style="max-height: 80px;"/>
                     <h3>Well Logging Services<br>ONGC, Ankleshwar</h3>
                 </div>
