@@ -18,6 +18,15 @@
                         years in Ankleshwar and surrounding regions.</p>
                     <a href="#contact" class="btn btn-primary btn-lg px-4 me-2 rb-2">Contact Us</a>
                     <a href="#services" class="btn btn-outline-light btn-lg px-4">Our Services</a>
+                    
+                    <div class="mt-4">
+                        <select class="form-select form-select-lg bg-dark text-white border-secondary w-75" onchange="if(this.value) window.location.href = window.location.protocol + '//' + this.value + '.' + window.location.host.replace('www.', '')">
+                            <option value="">-- Select a Location to Login --</option>
+                            @foreach($tenants as $tenant)
+                                <option value="{{ $tenant->id }}">{{ str($tenant->id)->headline() }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>

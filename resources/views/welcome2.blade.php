@@ -44,55 +44,6 @@ ul{list-style:none}
 img{max-width:100%;display:block}
 button{cursor:pointer;border:none;background:none;font-family:inherit}
 
-/* ════════════════════════════════════════════════════
-   NAVBAR
-   ════════════════════════════════════════════════════ */
-.wls-nav{
-    position:fixed;top:0;left:0;right:0;z-index:1000;
-    transition:background .3s,backdrop-filter .3s,box-shadow .3s;
-    padding:0 2rem;
-}
-.wls-nav.scrolled{
-    background:rgba(10,13,18,.85);
-    backdrop-filter:blur(16px);
-    box-shadow:0 1px 0 var(--border);
-}
-.nav-inner{
-    max-width:1320px;margin:0 auto;
-    display:flex;align-items:center;gap:2.5rem;
-    height:72px;
-}
-.nav-logo{display:flex;align-items:center;gap:.75rem}
-.logo-abbr{
-    font-family:var(--font-disp);font-size:2rem;color:var(--amber);
-    line-height:1;letter-spacing:.05em;
-}
-.logo-text{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-2);line-height:1.4}
-.logo-text small{color:var(--amber);opacity:.8}
-
-.nav-links{display:flex;align-items:center;gap:2rem;margin-left:auto}
-.nav-links a{font-size:.85rem;font-weight:500;color:var(--text-2);letter-spacing:.05em;text-transform:uppercase;
-    transition:color .2s;position:relative}
-.nav-links a:hover{color:var(--text-1)}
-.chevron{font-size:.7rem;opacity:.6}
-.has-dropdown{position:relative}
-.dropdown{
-    position:absolute;top:calc(100% + 12px);left:0;min-width:180px;
-    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
-    opacity:0;pointer-events:none;transform:translateY(-8px);transition:.2s;padding:.5rem 0;
-}
-.has-dropdown:hover .dropdown{opacity:1;pointer-events:all;transform:translateY(0)}
-.dropdown li a{display:block;padding:.6rem 1rem;font-size:.82rem;color:var(--text-2);transition:color .2s,background .2s}
-.dropdown li a:hover{color:var(--text-1);background:rgba(255,255,255,.04)}
-
-.nav-actions{display:flex;gap:.75rem;align-items:center}
-.btn-ghost{font-size:.82rem;font-weight:500;color:var(--text-2);padding:.45rem 1rem;border-radius:var(--radius-sm);border:1px solid var(--border);transition:.2s}
-.btn-ghost:hover{color:var(--text-1);border-color:rgba(255,255,255,.2)}
-.btn-primary{font-size:.82rem;font-weight:600;background:var(--amber);color:#0a0d12;padding:.45rem 1.1rem;border-radius:var(--radius-sm);transition:.2s}
-.btn-primary:hover{background:var(--amber-d)}
-
-.hamburger{display:none;flex-direction:column;gap:5px;padding:.5rem}
-.hamburger span{display:block;width:22px;height:2px;background:var(--text-1);border-radius:2px;transition:.3s}
 
 /* ════════════════════════════════════════════════════
    HERO
@@ -682,46 +633,6 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 @endpush
 
 @section('content')
-
-{{-- ============================================================
-     NAVBAR
-     ============================================================ --}}
-<nav class="wls-nav" id="wls-nav">
-    <div class="nav-inner">
-        <a href="{{ route('home') }}" class="nav-logo">
-            <span class="logo-abbr">WLS</span>
-            <span class="logo-text">Logging Services<br><small>Ankleshwar</small></span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="{{ route('jcr.index') }}">JCR</a></li>
-            <li class="has-dropdown">
-                <a href="#">Checklists <span class="chevron">▾</span></a>
-                <ul class="dropdown">
-                    <li><a href="#">Pre-Job</a></li>
-                    <li><a href="#">Post-Job</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#">Time Register <span class="chevron">▾</span></a>
-                <ul class="dropdown">
-                    <li><a href="#">Daily Log</a></li>
-                    <li><a href="#">Monthly Summary</a></li>
-                </ul>
-            </li>
-        </ul>
-        <div class="nav-actions">
-            @guest
-                <a href="{{ route('login') }}" class="btn-ghost">Login</a>
-                <a href="{{ route('register') }}" class="btn-primary">Register</a>
-            @else
-                <a href="{{ route('dashboard') }}" class="btn-primary">Dashboard</a>
-            @endguest
-        </div>
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-</nav>
 
 {{-- ============================================================
      HERO

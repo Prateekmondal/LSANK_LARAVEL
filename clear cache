@@ -6,8 +6,8 @@ php artisan config:clear
 php artisan filament:clear-cached-components
 php artisan optimize:clear
 
-php artisan config:cache
 php artisan config:publish --all
+php artisan config:cache
 php artisan filament:assets
 
 
