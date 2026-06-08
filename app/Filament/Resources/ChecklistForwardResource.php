@@ -4,9 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ChecklistForwardResource\Pages;
 use App\Models\ChecklistForward;
+use BackedEnum;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -16,11 +17,11 @@ class ChecklistForwardResource extends Resource
 {
     protected static ?string $model = ChecklistForward::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-share';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-share';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\Select::make('explosive_checklist_id')
                     ->relationship('checklist', 'well_no')

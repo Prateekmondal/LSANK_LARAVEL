@@ -5,29 +5,28 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ExplosiveChecklistResource\Pages;
 use App\Filament\Resources\ExplosiveChecklistResource\RelationManagers;
 use App\Models\ExplosiveChecklist;
+use BackedEnum;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-
 class ExplosiveChecklistResource extends Resource
 {
     protected static ?string $model = ExplosiveChecklist::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\Select::make('jcr_id')
                     ->relationship('jcr', 'wellNo')
@@ -134,7 +133,7 @@ class ExplosiveChecklistResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): EloquentBuilder
+    public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with(['creator', 'jcr', 'externalSignature']);
     }

@@ -6,21 +6,22 @@ use App\Filament\Resources\LoggingUnitTypeResource\Pages;
 use App\Models\loggingUnitType;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use BackedEnum;
 
 class LoggingUnitTypeResource extends Resource
 {
     protected static ?string $model = loggingUnitType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-truck';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\Select::make('loggingUnit_id')
                     ->relationship('loggingUnit', 'loggingUnit')

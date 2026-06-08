@@ -5,9 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ExternalSignatureResource\Pages;
 use App\Models\ExternalSignature;
 use Filament\Forms;
+use BackedEnum;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -17,11 +18,11 @@ class ExternalSignatureResource extends Resource
 {
     protected static ?string $model = ExternalSignature::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-pencil-square';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\Select::make('explosive_checklist_id')
                     ->relationship('checklist', 'well_no')

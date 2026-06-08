@@ -12,7 +12,7 @@ use App\Filament\Resources\JcrResource\RelationManagers\TimeRegisterRelationMana
 use App\Models\Jcr;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,16 +21,17 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Actions\Action;
+use BackedEnum;
 
 class JcrResource extends Resource
 {
     protected static ?string $model = Jcr::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-document';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Wizard::make([
                     Wizard\Step::make('Basic Info')

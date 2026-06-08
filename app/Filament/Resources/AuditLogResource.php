@@ -6,7 +6,7 @@ use App\Filament\Resources\AuditLogResource\Pages;
 use App\Filament\Resources\AuditLogResource\RelationManagers;
 use App\Models\AuditLog;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,9 +22,9 @@ class AuditLogResource extends Resource
     protected static ?string $model = AuditLog::class;
 
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\TextInput::make('event')
                     ->required()

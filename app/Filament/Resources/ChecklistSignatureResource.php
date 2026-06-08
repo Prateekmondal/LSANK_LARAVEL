@@ -4,10 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ChecklistSignatureResource\Pages;
 use App\Models\ChecklistSignature;
+use BackedEnum;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -17,11 +18,11 @@ class ChecklistSignatureResource extends Resource
 {
     protected static ?string $model = ChecklistSignature::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-check-badge';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-check-badge';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\Select::make('explosive_checklist_id')
                     ->relationship('checklist', 'well_no')

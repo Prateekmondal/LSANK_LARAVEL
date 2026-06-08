@@ -6,30 +6,34 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Pages\Auth\Login as BaseLogin;
+use Filament\Pages\Page;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Validate;
 
-class CpfLogin extends BaseLogin
+class CpfLogin extends Page
 {
-    /**
-     * Override getForms() — the Filament v3 entry point for building the login form.
-     * Replaces the default email field with a CPF (numeric) field.
-     */
-    protected function getForms(): array
+    protected static string $layout = 'filament-panels::components.page.simple';
+    
+    public ?array $data = [];
+
+    public function mount(): void
     {
-        return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->schema([
-                        $this->getCpfFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getRememberFormComponent(),
-                    ])
-                    ->statePath('data'),
-            ),
-        ];
+        if (Auth::check()) {
+            redirect(filament('admin')->getHomeUrl());
+        }
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                $this->getCpfFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
+            ])
+            ->statePath('data');
     }
 
     protected function getCpfFormComponent(): Component
@@ -44,22 +48,21 @@ class CpfLogin extends BaseLogin
             ->extraInputAttributes(['tabindex' => 1]);
     }
 
-    /**
-     * Override getCredentialsFromFormData so Filament's own authenticate()
-     * path (rate limiting, etc.) also uses CPF instead of email.
-     */
-    protected function getCredentialsFromFormData(array $data): array
+    protected function getPasswordFormComponent(): Component
     {
-        return [
-            'cpf'      => $data['cpf'],
-            'password' => $data['password'],
-        ];
+        return TextInput::make('password')
+            ->label('Password')
+            ->type('password')
+            ->required()
+            ->extraInputAttributes(['tabindex' => 2]);
     }
 
-    /**
-     * Custom authenticate() with approval check, super-admin bypass,
-     * and tenant-domain restriction for regular users.
-     */
+    protected function getRememberFormComponent(): Component
+    {
+        return Checkbox::make('remember')
+            ->label('Remember me');
+    }
+
     public function authenticate(): ?LoginResponse
     {
         $data = $this->form->getState();

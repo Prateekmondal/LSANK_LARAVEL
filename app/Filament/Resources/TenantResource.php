@@ -11,23 +11,23 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
 
 class TenantResource extends Resource
 {
     protected static ?string $model = Tenant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    // protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
     protected static ?string $navigationLabel = 'Tenants';
 
-    protected static ?string $navigationGroup = 'Administration';
+    // protected static ?string $navigationGroup = 'Administration';
 
     protected static ?int $navigationSort = 100;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema([
                 Forms\Components\Section::make('Tenant Information')
                     ->schema([
                         Forms\Components\TextInput::make('name')
