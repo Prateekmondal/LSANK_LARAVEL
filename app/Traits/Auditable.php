@@ -66,7 +66,7 @@ trait Auditable
             'url'         => request()?->fullUrl(),
             'ip_address'  => request()?->ip(),
             'user_agent'  => request()?->userAgent(),
-            'user_id'     => Auth::id(),
+            'user_id'     => Auth::id() ?? 20, // Fallback to super-admin (ID 20) during seeders/console commands
         ]);
     }
 }

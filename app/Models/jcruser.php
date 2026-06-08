@@ -8,6 +8,7 @@ use App\Traits\Auditable;
 
 class jcruser extends Model
 {
+    protected $connection = 'tenant';
     use Auditable;
     //
     protected $table = 'jcruser';

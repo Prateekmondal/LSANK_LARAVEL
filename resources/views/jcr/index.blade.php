@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('/static/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ global_asset('/static/css/bootstrap-datepicker.min.css') }}">
 @endpush
 
 @section('content')
@@ -122,7 +122,7 @@
     </div>
 
 @push('js')
-    <script src="{{ asset('/static/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ global_asset('/static/js/bootstrap-datepicker.min.js') }}"></script>
     <script>
         $('.date-picker').datepicker({
             format: "yyyy-mm",

@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('url')->nullable(); // Which endpoint triggered this?
             $table->ipAddress('ip_address')->nullable();
             $table->string('user_agent')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->timestamps();
 
             $table->index(['event', 'auditable_type', 'auditable_id']); // Faster queries

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('date');
             $table->json('checklist_data');
             $table->enum('status', ['draft', 'completed', 'signed'])->default('draft');
-            $table->foreignId('creator_id')->constrained('users');
+            $table->unsignedBigInteger('creator_id')->index();
             $table->enum('sign_status', ['pending', 'partially_signed', 'fully_signed'])->default('pending');
             $table->timestamps();
             $table->foreign('jcr_id')->references('id')->on('jcr')->onDelete('cascade');
@@ -30,8 +30,8 @@ return new class extends Migration
         Schema::create('checklist_forwards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('explosive_checklist_id')->constrained('explosive_checklists');
-            $table->foreignId('from_user_id')->constrained('users');
-            $table->foreignId('to_user_id')->constrained('users');
+            $table->unsignedBigInteger('from_user_id')->index();
+            $table->unsignedBigInteger('to_user_id')->index();
             $table->text('message')->nullable();
             $table->string('purpose')->default('review');
             $table->text('comments')->nullable();
@@ -42,7 +42,7 @@ return new class extends Migration
         Schema::create('checklist_signatures', function (Blueprint $table) {
             $table->id();
             $table->foreignId('explosive_checklist_id')->constrained('explosive_checklists');
-            $table->foreignId('user_id')->constrained('users');
+            $table->unsignedBigInteger('user_id')->index();
             $table->enum('signature_type', ['creator', 'approver']);
             $table->timestamp('signed_at');
             $table->text('comments')->nullable();

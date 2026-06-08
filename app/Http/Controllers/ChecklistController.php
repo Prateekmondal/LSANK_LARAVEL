@@ -222,16 +222,23 @@ class ChecklistController extends Controller
         $validated = $request->validate([
             'approver_id' => [
                 'nullable',
-                'exists:users,id',
-                function ($attribute, $value, $fail) {
-                    if ($value == auth()->id()) {
-                        $fail('You cannot select yourself as approver.');
-                    }
-                },
+                'integer',
             ],
             'comments' => 'nullable|string',
             'external_email' => 'nullable|email',
         ]);
+        // If approver_id provided, ensure it exists in central users and is not the current user
+        if (!empty($validated['approver_id'])) {
+            $approver = User::find($validated['approver_id']);
+            if (! $approver) {
+                return redirect()->back()->with('error', 'Selected approver not found.');
+            }
+            if ($approver->id == auth()->id()) {
+                return redirect()->back()->with('error', 'You cannot select yourself as approver.');
+            }
+        } else {
+            $approver = null;
+        }
         // dd($validated);
         // Creator signs
         $checklist->signatures()->create($validated + [
@@ -256,9 +263,10 @@ class ChecklistController extends Controller
             ]);
         } else {
             // For other checklists, set external sign status to not_required
-            // Forward to selected approver
-            $approver = User::find($validated['approver_id']);
-            $this->forwardToApprover($checklist, $approver, $validated['comments']);
+            // Forward to selected approver if present
+            if (!empty($approver)) {
+                $this->forwardToApprover($checklist, $approver, $validated['comments'] ?? null);
+            }
         }
 
         // After creating, check if all group checklists exist

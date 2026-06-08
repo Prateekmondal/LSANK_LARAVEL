@@ -7,40 +7,59 @@ use App\Models\User;
 
 class ChecklistPolicy
 {
+    /**
+     * Grant super-admins all abilities without further checks.
+     */
+    public function before(User $user, string $ability): ?bool
+    {
+        if ((bool) ($user->is_super_admin ?? false)) {
+            return true;
+        }
+        return null;
+    }
+
     public function viewAny(User $user)
     {
-        return true; // listing is handled in controller by scopes
+        return true; // listing is scoped in controller/resource queries
     }
 
     public function view(User $user, ExplosiveChecklist $checklist)
     {
-        if ($user->hasRole('Technical_Support_Group') || $user->hasRole('technical_support_group')) {
+        if ($user->hasAnyRole(['technical_support_group', 'Technical_Support_Group'])) {
             return true;
         }
 
-        if ($user->hasRole('staff') || $user->hasRole('field_staff')) {
+        if ($user->hasAnyRole(['field_staff', 'staff'])) {
             return $this->isInvolved($user, $checklist);
         }
 
-        return $this->isInvolved($user, $checklist) || $user->hasAnyRole(['super-admin', 'Head_Logging_Services', 'Location Manager']);
+        return $this->isInvolved($user, $checklist)
+            || $user->hasAnyRole(['super-admin', 'head_logging_services', 'Head_Logging_Services', 'location_manager', 'Location Manager']);
     }
 
     public function create(User $user)
     {
-        if (!$user->can('create_explosive::checklist')) {
-            return false;
-        }
-
-        return $user->hasAnyRole(['super-admin', 'Field_Officer', 'head_logging_services', 'Head_Logging_Services', 'Location Manager', 'location_manager']);
+        // The Filament Shield permission is the authoritative gate.
+        // Role names must match exactly what's in the tenant DB (all lowercase).
+        return $user->hasPermissionTo('create_explosive::checklist')
+            || $user->hasAnyRole([
+                'super-admin',
+                'field_officer',       // actual DB name
+                'Field_Officer',       // legacy / alternate casing kept for safety
+                'head_logging_services',
+                'Head_Logging_Services',
+                'location_manager',
+                'Location Manager',
+            ]);
     }
 
     public function update(User $user, ExplosiveChecklist $checklist)
     {
-        if ($user->hasRole('super-admin') || $user->hasRole('Head_Logging_Services') || $user->hasRole('head_logging_services') || $user->hasRole('Location Manager') || $user->hasRole('location_manager')) {
+        if ($user->hasAnyRole(['super-admin', 'head_logging_services', 'Head_Logging_Services', 'location_manager', 'Location Manager'])) {
             return true;
         }
 
-        if (!$user->can('update_explosive::checklist')) {
+        if (!$user->hasPermissionTo('update_explosive::checklist')) {
             return false;
         }
 
@@ -48,7 +67,7 @@ class ChecklistPolicy
             return true;
         }
 
-        if ($checklist->status === 'draft' && $user->hasAnyRole(['Field_Officer', 'field_officer']) && $this->isInvolved($user, $checklist)) {
+        if ($checklist->status === 'draft' && $user->hasAnyRole(['field_officer', 'Field_Officer']) && $this->isInvolved($user, $checklist)) {
             return true;
         }
 
@@ -61,12 +80,13 @@ class ChecklistPolicy
             return false;
         }
 
-        return $user->id === $checklist->creator_id || $user->hasAnyRole(['super-admin', 'Head_Logging_Services']);
+        return $user->id === $checklist->creator_id
+            || $user->hasAnyRole(['super-admin', 'head_logging_services', 'Head_Logging_Services']);
     }
 
     public function restore(User $user, ExplosiveChecklist $checklist)
     {
-        return $user->hasAnyRole(['super-admin', 'Head_Logging_Services']);
+        return $user->hasAnyRole(['super-admin', 'head_logging_services', 'Head_Logging_Services']);
     }
 
     public function forceDelete(User $user, ExplosiveChecklist $checklist)
@@ -76,7 +96,7 @@ class ChecklistPolicy
 
     public function forceEdit(User $user)
     {
-        return $user->hasAnyRole(['super-admin', 'Head_Logging_Services']);
+        return $user->hasAnyRole(['super-admin', 'head_logging_services', 'Head_Logging_Services']);
     }
 
     private function isInvolved(User $user, ExplosiveChecklist $checklist): bool

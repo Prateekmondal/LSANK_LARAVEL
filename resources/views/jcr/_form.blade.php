@@ -10,23 +10,7 @@
     $primachordlists = ['T-150', 'T-190', 'PT-185', 'PT-150', 'BP SECONDARY IGNITOR'];
     $detonatorlists = ['15FDE', '26FDE', '1015E', 'BP PRIMARY IGNITOR', 'CUTTER DETO 432'];
 @endphp
-@if ($errors->any())
-    <div class="container text-center">
-        @foreach ($errors->all() as $index => $error)
-            <small>{{ " " . ($index + 1) . ". " . $error }}</small>
-            <br>
-        @endforeach
-    </div>
-@endif
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@elseif(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+
 @isset($jcr)
     <!-- Selected Time Register Preview -->
     <div class="card my-4 w-75">
@@ -52,7 +36,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <p><strong>Indent No.:</strong> {{ $jcr->timeRegister->indentNo }}</p>
+                            <p><strong>Indent No.:</strong> {{ $jcr->timeRegister->indent_no }}</p>
                         </div>
                     </div>
                     <div class="row">

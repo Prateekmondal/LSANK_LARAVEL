@@ -1,8 +1,8 @@
 <nav class="navbar navbar-light navbar-expand-lg fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand mr-0 mb-0 h3" href="/">
+            <a class="navbar-brand mr-0 mb-0 h3" href="/">
             <img src="/static/images/ongc.png" class="d-inline-block align-middle" alt="" height="50rem">
-            Logging Services, Ankleswar
+            Logging Services{{ tenancy()->initialized ? ', ' . ucfirst(tenant()->name) : '' }}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
             aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">

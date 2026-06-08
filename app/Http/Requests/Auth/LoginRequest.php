@@ -59,6 +59,29 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Super-admins can log in from any tenant subdomain — skip the domain check.
+        if ($user && $user->is_super_admin) {
+            RateLimiter::clear($this->throttleKey());
+            return;
+        }
+
+        // Check if user must log in from a specific tenant subdomain
+        if ($user && $user->tenant_id) {
+            $tenant = \App\Models\Tenant::with('domains')->find($user->tenant_id);
+            $currentHost = $this->getHost();
+
+            $allowedDomains = $tenant ? $tenant->domains->pluck('domain')->toArray() : [];
+
+            if (empty($allowedDomains) || !in_array($currentHost, $allowedDomains)) {
+                Auth::logout();
+                RateLimiter::hit($this->throttleKey());
+                $locationName = $user->tenant_id ? ucfirst($user->tenant_id) : 'your assigned location';
+                throw ValidationException::withMessages([
+                    'cpf' => "You can only log in from your assigned location: {$locationName}. Please visit the correct subdomain.",
+                ]);
+            }
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

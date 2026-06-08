@@ -9,6 +9,7 @@ use App\Traits\Auditable;
 class loggingUnit extends Model
 {
     use Auditable;
+    protected $connection = 'tenant';
     public $timestamps = false;
     protected $table = 'loggingUnits';
     protected $fillable = ['loggingUnit',];

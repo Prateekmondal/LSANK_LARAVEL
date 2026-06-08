@@ -13,20 +13,21 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'id' => 20,
-            'seniority' => 23,
-            'cpf' => 134283,
-            'name' => 'Prateek Mondal',
-            'designation' => 'Senior Geophysicist(Well)',
-            'email' => 'prateekmondal@gmail.com',
-            'phone' => 9476433227,
-            'password' => 'Testing321#',
-            'is_approved' => true,
-        ]);
+        $user = User::updateOrCreate(
+            ['cpf' => 134283],
+            [
+                'id'            => 20,
+                'seniority'     => 23,
+                'name'          => 'Prateek Mondal',
+                'designation'   => 'Senior Geophysicist(Well)',
+                'email'         => 'prateekmondal@gmail.com',
+                'phone'         => 9476433227,
+                'password'      => 'Testing321#',
+                'is_approved'   => true,
+                'is_super_admin' => true, // Grants access to the central Filament admin panel
+            ]
+        );
 
-        // $user = User::get()->where('cpf','=', 134283);
-
-        $user->assignRole('super-admin');
+        // Role assignment is done via: php artisan assign:role 134283 super-admin --all-tenants
     }
 }

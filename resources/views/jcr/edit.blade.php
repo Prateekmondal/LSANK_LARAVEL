@@ -393,6 +393,7 @@
                         alert(data.error);
                         return;
                     }
+                    window.selectedTimeRegisterData = data;
                     // Helper to pad numbers
                     function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -475,6 +476,76 @@
             // Update preview
             document.getElementById('linkedTimeRegisterPreview').innerHTML = 
                 document.getElementById('timeRegisterDetails').innerHTML;
+
+            // Auto-fill common fields
+            if (window.selectedTimeRegisterData) {
+                const data = window.selectedTimeRegisterData;
+                
+                // Helper to safely set input values by element ID
+                function setVal(id, val) {
+                    const el = document.getElementById(id);
+                    if (el && val !== undefined && val !== null && val !== 'N/A') {
+                        el.value = val;
+                        // trigger change event in case there are event listeners
+                        el.dispatchEvent(new Event('change'));
+                        el.dispatchEvent(new Event('input'));
+                    }
+                }
+
+                // Helper to pad numbers
+                function pad(n) { return String(n).padStart(2, '0'); }
+
+                // Format time as HH:MM
+                function formatTime(t) {
+                    if (!t || t === 'N/A') return '';
+                    if (typeof t === 'string') {
+                        if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(t)) {
+                            const parts = t.split(':');
+                            return pad(parts[0]) + ':' + pad(parts[1]);
+                        }
+                    }
+                    const dt = new Date(t);
+                    if (!isNaN(dt)) return pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+                    return t;
+                }
+
+                // Format date as YYYY-MM-DD
+                function formatDate(d) {
+                    if (!d || d === 'N/A') return '';
+                    if (typeof d === 'string') {
+                        if (/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0, 10);
+                    }
+                    const dt = new Date(d);
+                    if (!isNaN(dt)) return dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate());
+                    return d;
+                }
+
+                setVal('id_wellNo', data.well_no);
+                setVal('id_rigNo', data.rig_no);
+                setVal('id_indentNo', data.indent_no);
+                
+                if (data.logging_unit_no) {
+                    setVal('id_unitNo', data.logging_unit_no);
+                }
+
+                // Dates & Times
+                setVal('id_indented_date', formatDate(data.well_indented_date));
+                setVal('id_indented_time', formatTime(data.well_indented_time));
+                setVal('id_wellTaken_date', formatDate(data.well_taken_up_date));
+                setVal('id_wellTaken_time', formatTime(data.well_taken_up_time));
+                setVal('id_wellHandOver_date', formatDate(data.well_handed_over_date));
+                setVal('id_wellHandOver_time', formatTime(data.well_handed_over_time));
+
+                // Also populate Job Date as the well taken up date if available
+                if (data.well_taken_up_date) {
+                    setVal('id_jobDate', formatDate(data.well_taken_up_date));
+                }
+
+                // Fetch job number in create page
+                if (typeof updateJobNoFromUnit === 'function' && data.logging_unit_no) {
+                    updateJobNoFromUnit(data.logging_unit_no);
+                }
+            }
             
             // Hide modal and show form
             $('#timeRegisterModal').modal('hide');

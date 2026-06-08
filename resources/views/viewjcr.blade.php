@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('pagecss')
-    <link rel="stylesheet" href="{{ asset('/static/css/viewjcr.css') }}">
+    <link rel="stylesheet" href="{{ global_asset('/static/css/viewjcr.css') }}">
 @endpush
 
 @section('content')

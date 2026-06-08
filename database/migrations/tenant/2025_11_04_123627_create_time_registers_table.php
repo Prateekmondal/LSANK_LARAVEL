@@ -28,7 +28,7 @@ class CreateTimeRegistersTable extends Migration
             $table->text('observations_by_logging_chief');
             
             // Logging Chief details (auto-captured from logged-in user)
-            $table->foreignId('logging_chief_id')->constrained('users');
+            $table->unsignedBigInteger('logging_chief_id')->index();
             $table->string('logging_chief_name');
             $table->string('logging_chief_designation');
             $table->text('logging_chief_signature')->nullable();
@@ -49,7 +49,7 @@ class CreateTimeRegistersTable extends Migration
             $table->timestamp('final_submitted_at')->nullable();
             
             // Creator
-            $table->foreignId('created_by')->constrained('users');
+            $table->unsignedBigInteger('created_by')->index();
             $table->timestamps();
         });
     }

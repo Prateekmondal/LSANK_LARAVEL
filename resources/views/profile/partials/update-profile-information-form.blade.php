@@ -72,6 +72,23 @@
                         autocomplete="description">{{ old('description') ? old('description') : $user->description}}</textarea>
                     <x-input-error class="mt-2" :messages="$errors->get('description')" />
                 </div>
+
+                <!-- Location (Tenant) -->
+                <div class="mb-2">
+                    <x-input-label for="tenant_id" :value="__('Location')">Location</x-input-label>
+                    <select id="tenant_id" name="tenant_id" class="form-control mt-1 block w-full">
+                        <option value="">-- Select Location --</option>
+                        @foreach($tenants ?? [] as $t)
+                            @if($t->domains->isNotEmpty())
+                                <option value="{{ $t->id }}" {{ (old('tenant_id', $user->tenant_id) === $t->id) ? 'selected' : '' }}>
+                                    {{ ucfirst($t->id) }}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <x-input-error class="mt-2" :messages="$errors->get('tenant_id')" />
+                </div>
+
                 <div class="flex items-center gap-4 mt-1">
                     <x-primary-button>{{ __('Save') }}</x-primary-button>
 
@@ -86,7 +103,7 @@
         <div class="col-md-6 order-1">
             <div class="d-flex justify-content-center">
                 <image id="avatar" name="avatar" class="mt-1 block w-full rounded-circle"
-                    src="{{ Storage::url('images/profile_image/' . $user->avatar) }}" required autofocus
+                    src="{{ asset('storage/images/profile_image/' . $user->avatar) }}" required autofocus style="height: 15rem; width: 15rem; object-fit: cover;"
                     autocomplete="avatar" />
             </div>
             <form method="post" action="{{ route('profile.update_avatar') }}" class="mt-6" enctype="multipart/form-data">

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\Shield;
 
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Forms\ShieldSelectAllToggle;
-use App\Filament\Resources\RoleResource\Pages;
+use App\Filament\Resources\Shield\RoleResource\Pages;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Facades\Filament;
@@ -165,7 +165,48 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Utils::isResourceNavigationRegistered();
+        return tenancy()->initialized && Utils::isResourceNavigationRegistered();
+    }
+
+    public static function canViewAny(): bool
+    {
+        // Allow super-admins even before tenancy middleware fires (Livewire AJAX)
+        if ((bool) (auth()->user()?->is_super_admin ?? false)) {
+            return true;
+        }
+        return tenancy()->initialized && parent::canViewAny();
+    }
+
+    public static function canCreate(): bool
+    {
+        if ((bool) (auth()->user()?->is_super_admin ?? false)) {
+            return true;
+        }
+        return tenancy()->initialized && parent::canCreate();
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        if ((bool) (auth()->user()?->is_super_admin ?? false)) {
+            return true;
+        }
+        return tenancy()->initialized && parent::canEdit($record);
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        if ((bool) (auth()->user()?->is_super_admin ?? false)) {
+            return true;
+        }
+        return tenancy()->initialized && parent::canDelete($record);
+    }
+
+    public static function canView(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        if ((bool) (auth()->user()?->is_super_admin ?? false)) {
+            return true;
+        }
+        return tenancy()->initialized && parent::canView($record);
     }
 
     public static function getNavigationGroup(): ?string
@@ -202,7 +243,7 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     public static function getNavigationBadge(): ?string
     {
-        return Utils::isResourceNavigationBadgeEnabled()
+        return (tenancy()->initialized && Utils::isResourceNavigationBadgeEnabled())
             ? strval(static::getEloquentQuery()->count())
             : null;
     }

@@ -193,7 +193,8 @@ class Jcr extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'jcruser');
+        return $this->belongsToMany(TenantUser::class, 'jcruser', 'jcr_id', 'user_id')
+                    ->using(TenantPivot::class);
     }
 
     public function logs()

@@ -485,11 +485,18 @@ class JcrController extends Controller
                 ->with('error', 'Only the creator can assign a Party Chief.');
         }
 
-        $validated = $request->validate([
-            'party_chief_id' => ['required','integer','exists:users,id'],
-        ]);
+        $partyChiefId = (int) $request->input('party_chief_id');
+        if (! $partyChiefId) {
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('error', 'Invalid Party Chief selected.');
+        }
 
-        $partyChief = User::find($validated['party_chief_id']);
+        // Resolve user via the User model (uses central connection)
+        $partyChief = User::find($partyChiefId);
+        if (! $partyChief) {
+            return redirect()->route('jcr.preview', $jcr->id)
+                ->with('error', 'Selected Party Chief not found.');
+        }
 
         // optional: ensure selected user has the party_chief role
         if (!method_exists($partyChief, 'hasRole') || !$partyChief->hasRole('party_chief')) {
@@ -877,6 +884,10 @@ class JcrController extends Controller
             'job_carried_out' => $timeRegister->job_carried_out,
             'well_indented_date' => $timeRegister->well_indented_date ? $timeRegister->well_indented_date->format('Y-m-d') : 'N/A',
             'well_indented_time' => $timeRegister->well_indented_time ?? 'N/A',
+            'well_taken_up_date' => $timeRegister->well_taken_up_date ? $timeRegister->well_taken_up_date->format('Y-m-d') : 'N/A',
+            'well_taken_up_time' => $timeRegister->well_taken_up_time ?? 'N/A',
+            'well_handed_over_date' => $timeRegister->well_handed_over_date ? $timeRegister->well_handed_over_date->format('Y-m-d') : 'N/A',
+            'well_handed_over_time' => $timeRegister->well_handed_over_time ?? 'N/A',
             'status' => $timeRegister->status,
             'is_final_submitted' => $timeRegister->is_final_submitted,
             'summary' => $timeRegister->getSelectionSummary(),

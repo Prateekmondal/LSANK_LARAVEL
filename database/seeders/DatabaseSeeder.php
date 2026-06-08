@@ -15,13 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(PermissionSeeder::class);
-        $this->call(RoleSeeder::class);
+        // $this->call(RoleSeeder::class);
 
         $this->call(SuperAdminSeeder::class);
-        $user = User::factory(10)->create();
-        $user->assignRole('Field Officer');
+        // $user = User::factory(10)->create();
+        // $user->assignRole('Field Officer');
 
-        $this->call(JcrSeeder::class);
+        // $this->call(JcrSeeder::class);
     }
 }

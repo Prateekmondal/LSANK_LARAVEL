@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Jcr;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AjaxCallController extends Controller
 {
     //
     public function getUsers()
     {
-        $user = User::orderBy('seniority')->get()->where('status', 1);
+        $user = User::orderBy('seniority')->get()->where('tenant_id',Auth::user()->tenant_id)->where('status', 1);
         return response()->json($user);
     }
     public function getCableinfo(Request $request)

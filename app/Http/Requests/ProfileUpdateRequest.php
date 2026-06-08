@@ -32,6 +32,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'description' => ['required', 'string', 'max:255'],
+            'tenant_id'   => ['nullable', 'string', 'exists:central.tenants,id'],
         ];
     }
 }

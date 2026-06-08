@@ -23,6 +23,22 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Location (Tenant) -->
+        <div class="mt-4">
+            <x-input-label for="tenant_id" :value="__('Location')" />
+            <select id="tenant_id" name="tenant_id" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                <option value="">-- Select your Location --</option>
+                @foreach($tenants ?? [] as $t)
+                    @if($t->domains->isNotEmpty())
+                        <option value="{{ $t->id }}" {{ old('tenant_id') === $t->id ? 'selected' : '' }}>
+                            {{ ucfirst($t->id) }}
+                        </option>
+                    @endif
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('tenant_id')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

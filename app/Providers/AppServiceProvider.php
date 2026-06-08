@@ -9,6 +9,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 // use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -41,14 +42,28 @@ class AppServiceProvider extends ServiceProvider
         $this->registerPolicies();
         \App\Models\User::observe(\App\Observers\UserObserver::class);
         \App\Models\AuditLog::observe(\App\Observers\AuditLogObserver::class);
+
+        // Livewire requests on tenant subdomains go through the custom
+        // /livewire/update route defined in routes/tenant.php which already
+        // includes InitializeTenancyByDomain. No addPersistentMiddleware needed.
         // Prevent non-super-admin users from deleting records via UI (including Filament)
+        // and implicitly grant super-admins (central & tenant) all other permissions.
         Gate::before(function ($user, $ability) {
+            $isCentralSuperAdmin = (bool) ($user->is_super_admin ?? false);
+            $isTenantSuperAdmin = method_exists($user, 'hasRole') && $user->hasRole('super-admin');
+            $isSuperAdmin = $isCentralSuperAdmin || $isTenantSuperAdmin;
+
             if (in_array($ability, ['delete', 'deleteAny'])) {
-                if (method_exists($user, 'hasRole') && $user->hasRole('super-admin')) {
+                if ($isSuperAdmin) {
                     return null; // allow super-admins to proceed to policy checks
                 }
                 return false; // deny delete abilities for other users
             }
+
+            if ($isSuperAdmin) {
+                return true; // Implicitly grant all other permissions to super-admins
+            }
+
             return null;
         });
         Gate::define('create jcr', [JcrPolicy::class, 'create']);

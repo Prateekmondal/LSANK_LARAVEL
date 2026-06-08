@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::table('jcr', function (Blueprint $table) {
         // Signature System
-            $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('creator_id')->index();
             $table->string('creator_signature')->nullable();
             $table->timestamp('creator_signed_at')->nullable();
             
-            $table->foreignId('party_chief_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('party_chief_id')->nullable()->index();
             $table->string('party_chief_signature')->nullable();
             $table->timestamp('party_chief_signed_at')->nullable();
             
-            $table->foreignId('operation_incharge_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('operation_incharge_id')->nullable()->index();
             $table->string('operation_incharge_signature')->nullable();
             $table->timestamp('operation_incharge_signed_at')->nullable();
 

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('/static/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ global_asset('/static/css/bootstrap-datepicker.min.css') }}">
 @endpush
 
 @push('pagecss')
-    <link rel="stylesheet" href="{{ asset('/static/css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ global_asset('/static/css/dashboard.css') }}">
     <style>
         .datepicker-inline,
         .datepicker table {
@@ -19,12 +19,12 @@
     <div class="container-fluid mt-4">
         <div class="row g-3">
             <!-- Left Panel -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-4 d-flex flex-column gap-3">
                 <!-- User Profile Section -->
                 <div class="card w-100 my-1 p-4">
                     <div class="row g-2">
                         <div class="col-5">
-                            <img src="{{ Storage::url('images/profile_image/'.$user->avatar) }}" alt="Profile Picture" class="profile-pic" style="width: 8em; height: 8em; border-radius: 50%;">
+                            <img src="{{ asset('storage/images/profile_image/'.$user->avatar) }}" alt="Profile Picture" class="profile-pic" style="width: 8em; height: 8em; border-radius: 50%;">
                         </div>
                         <div class="col-7">
                             <div class="d-flex justify-content-between align-items-center my-2">
@@ -79,11 +79,11 @@
             </div>
                 
             <!-- Right Panel -->
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-8 d-flex flex-column gap-3">
                 <!-- Statistics Panel -->
                 <div class="card w-100 my-1" style="max-height: 90vh;">
-                    <div class="row g-2">
-                        <div class="col-12 col-lg-6">
+                    <div class="row g-2 py-3 px-3">
+                        <div class="col-12 col-lg-6 px-3">
                             <h5 class="mb-3">Job Statistics</h5>
                             <canvas id="FyJobsChart" height="338rem"></canvas>
                         </div>
@@ -121,7 +121,7 @@
 
                 <!-- Job Details Table -->
                 <div class="card w-100 my-1">
-                    <div class="row g-2 mb-4">
+                    <div class="row g-2 mb-4 px-3 py-3">
                         <div class="col-12 col-md-6 mb-3 mb-md-0">
                             <h4 class="mb-0">Job Details - {{ $selectedMonth ? $selectedMonth->format('F Y') : 'All Jobs' }}</h4>
                         </div>
@@ -209,8 +209,8 @@
 @endsection
 
 @push('js')
-    <script src="{{ asset('/static/js/chart.js') }}"></script>
-    <script src="{{ asset('/static/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ global_asset('/static/js/chart.js') }}"></script>
+    <script src="{{ global_asset('/static/js/bootstrap-datepicker.min.js') }}"></script>
     <script>
         // Chart data (from backend)
         var chartLabels = @json($chartLabels ?? []);

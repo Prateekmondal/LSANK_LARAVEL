@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('jcruser', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('jcr_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->foreignId('jcr_id')->constrained('jcr')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->index();
 
-            $table->foreign('jcr_id')->references('id')->on('jcr')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreign('jcr_id')->references('id')->on('jcr')->onUpdate('cascade')->onDelete('cascade');
+            // $table->unsignedBigInteger('user_id')->index();
         });
     }
 

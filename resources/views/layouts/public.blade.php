@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="/static/bootstrap-5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/fontawesome/css/all.css">
-    <link rel="icon" href="{{ asset('/static/favicon.ico') }}">
+    <link href="{{ global_asset('/static/bootstrap-5.2.1/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ global_asset('/static/fontawesome/css/all.css') }}">
+    <link rel="icon" href="{{ global_asset('/static/favicon.ico') }}">
     <style>
         html, body {
             height: 100%;
@@ -38,6 +38,6 @@
         </div>
     </footer>
 
-    <script src="/static/bootstrap-5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ global_asset('/static/bootstrap-5.2.1/dist/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
