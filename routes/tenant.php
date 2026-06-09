@@ -133,16 +133,13 @@ Route::middleware([
     // JCR Routes - Protected by auth and approval middleware
     Route::middleware(['auth', 'check.approval'])->group(function () {
 
-        // JCR Resource Routes (CRUD operations)
-        Route::resource('jcr', JcrController::class);
-
-        // Additional JCR routes with specific permissions
+        // JCR routes with explicit definitions
+        Route::get('jcr', [JcrController::class, 'index'])->name('jcr.index');
         Route::get('jcr/create', [JcrController::class, 'create'])->name('jcr.create');
         Route::post('jcr', [JcrController::class, 'store'])->name('jcr.store');
-
+        Route::get('jcr/{jcr}', [JcrController::class, 'show'])->name('jcr.show');
         Route::get('jcr/{jcr}/edit', [JcrController::class, 'edit'])->name('jcr.edit');
         Route::put('jcr/{jcr}', [JcrController::class, 'update'])->name('jcr.update');
-
         Route::delete('jcr/{jcr}', [JcrController::class, 'destroy'])->name('jcr.destroy');
 
         // AJAX helper for wellNo matching and prefill
