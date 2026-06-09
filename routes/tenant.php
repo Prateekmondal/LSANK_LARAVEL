@@ -120,7 +120,7 @@ Route::middleware([
         ];
 
         return view('tenant_home', $data);
-    })->name('tenant_home');
+    })->name('tenant.home');
 
     Route::middleware('auth')->group(function () {
         // Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
